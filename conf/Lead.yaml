@@ -1,0 +1,29 @@
+model: Birdmin\Lead
+permissions: [view,create,edit,delete]
+title: email
+icon: users2
+no_image: /static/cms/img/no-user.svg
+labels:
+  navigation: Leads
+  singular: lead
+  plural: leads
+
+
+in_table : [email,first_name,last_name,phone,source]
+required : [email,first_name,last_name]
+unique   : []
+
+fields:
+  email|email : [Email, "The unique email for the lead"]
+  first_name|text : [First Name, "The lead's first name, if applicable"]
+  last_name|text : [Last Name, "The lead's last name, if applicable"]
+  phone|text : [Phone Number, "The 10 digit phone number of the person"]
+  affiliation|text: [Affiliation, "The lead's company or affiliation"]
+  comments|textarea: [Comments, "Comments from the lead"]
+  notes|textarea: [Notes, "Notes about this lead"]
+  interest|text: [Interest, "The reason for the lead's inquiry"]
+  source|text: [Source, "The source of this lead, i.e. google, local URL, phone call"]
+
+table:
+  columns:
+    created_at: [Created, 0, Birdmin\Formatters\date]

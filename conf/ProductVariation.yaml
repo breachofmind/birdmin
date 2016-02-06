@@ -1,0 +1,39 @@
+model: Birdmin\ProductVariation
+permissions: [view,create,edit,delete]
+title: name
+icon: bag
+labels:
+  navigation: Product Variations
+  singular: variation
+  plural: variations
+
+
+in_table : [name,color,product_id,sku,status]
+required : [product_id,name,status]
+unique   : [sku]
+
+fields:
+  name|text           : [Name,   "A name for this variation"]
+  product_id|model :
+    label             : [Parent Product, "This variation's parent product"]
+    options:
+      model: Birdmin\Product
+      nullable: false
+  sku|text            : [SKU, "A unique SKU/Reference ID for this product variation"]
+  description|html    : [Description, "A description of the variation"]
+  attributes|textarea : [Attributes, "Product attributes, such as dimensions or weight"]
+  color|color         : [Color, "Color swatch for this variation"]
+  status|radio :
+    label             : [Status, "The visibility or status of the product"]
+    options:
+      values:
+        draft: Draft
+        publish: Publish
+
+table:
+  bulk: true
+  formatters:
+    product_id: Birdmin\Formatters\id_to_model
+    color: Birdmin\Formatters\swatch
+  columns:
+    preview: [Preview, -1, Birdmin\Formatters\preview]

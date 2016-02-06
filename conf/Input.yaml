@@ -1,0 +1,24 @@
+model: Birdmin\Input
+permissions: [view,create,edit,delete]
+title: label
+icon: select2
+labels:
+  navigation: Input Register
+  singular: input
+  plural: inputs
+
+in_table : [label,object,name,type,priority]
+required : [label,object,name,type]
+unique   : []
+
+fields:
+  label|text: [Label, "The label or display name for this input"]
+  object|text: [Object, "The object or class applying this input"]
+  name|text: [Name, "The name attribute of this input"]
+  type|text: [Input type, "The style or type of input"]
+  options|code: [Options, "A JSON of optional attributes"]
+  description|textarea: [Description, "A description of this field"]
+  in_table|toggle: [In Table, "Is this input available in the list table?"]
+  required|toggle: [Required, "Is this input required to be filled in by the user?"]
+  unique|toggle: [Unique, "Is this a unique value?"]
+  priority|number: [Priority, "The order in which this input displays above others. Lower is higher"]

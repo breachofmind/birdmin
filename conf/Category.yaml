@@ -1,0 +1,29 @@
+model: Birdmin\Category
+permissions: [view,create,edit,delete]
+title: name
+icon: tag
+labels:
+  navigation: Categories
+  singular: category
+  plural: categories
+
+
+in_table : [name,slug,excerpt]
+required : [name,slug]
+unique   : [slug]
+
+fields:
+  name|text : [Name, "The name of the category"]
+  slug|slug : [Slug, "A unique URL slug for this category"]
+  description|textarea : [Description, "The description or summary of this category"]
+  excerpt|textarea : [Excerpt, "A short description of this category"]
+  object|text : [Object Group, "If given, this category can only be assigned to this type of object"]
+  parent_id|model :
+    label : [Parent Category, "The parent category to whom this category belongs"]
+    options:
+      model: Birdmin\Category
+      nullable: true
+
+table:
+  columns:
+    url: [URL, 10, Birdmin\Formatters\url]

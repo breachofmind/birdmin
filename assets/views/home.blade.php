@@ -1,0 +1,1 @@
+<h1>Welcome, @{{state.user.first_name}}</h1>

@@ -1,0 +1,105 @@
+body {
+	background:$matte-color;
+}
+body.login {
+	background:$alert-color;
+}
+
+.flex-row {
+	display:flex;
+	flex-flow:row;
+	flex-wrap:nowrap;
+}
+.flex-col {
+	display:flex;
+	flex-flow:column;
+	flex-wrap:nowrap;
+}
+
+#Application {
+	height:100vh;
+	overflow:hidden;
+}
+
+#Header {
+	height:80px;
+	padding:10px;
+	background:$secondary-color;
+}
+#Brand {
+	width:100%;
+	flex-flow:column;
+	flex:0 1 auto;
+	align-items: flex-start;
+}
+
+#SessionUser {
+	flex:0 0 300px;
+	.session-user-image {
+		flex:0 0 60px;
+		img {height:60px; width:auto; border-radius:$global-radius;}
+	}
+	.session-user-actions {
+		width:100%;
+		padding:5px 10px;
+	}
+	a {display:block; text-align:right;}
+}
+
+#Body {
+	height:calc(100vh - 80px);
+	width:100%;
+}
+
+#Side {
+	flex: 0 0 220px;
+	overflow-y:auto;
+	background:$alert-color;
+	&.collapse {
+		flex: 0 0 50px;
+		.navigation-list a {
+			text-indent:0;
+			span {display:none;}
+		}
+	}
+}
+@media screen and (max-width:$small-breakpoint) {
+	#Side {
+		flex:0 0 50px;
+		.navigation-list span {display:none;}
+		.navigation-list li.active a {text-indent:0;}
+	}
+}
+
+#Content {
+	background:white;
+	width:100%;
+}
+#PageTypeNavigation {
+	padding-top:50px;
+	background:$matte-color;
+	flex:0 0 50px;
+}
+#ActionNavigation {
+	height:48px;
+	padding-top:8px;
+	width:100%;
+	background:$matte-color;
+	position:relative;
+	overflow-y:hidden;
+	&:after {
+		content:""; display:block; position:absolute; bottom:-15px; left:0; right:0; z-index:2; height:15px;
+		background: linear-gradient(to bottom, rgba(255,255,255,1) 0%,rgba(255,255,255,0) 100%);
+
+	}
+}
+#Page {
+	width:100%;
+}
+#Viewport {
+	height:calc(100vh - 128px);
+	overflow-y:scroll; position:relative;
+}
+#View {
+	padding:20px;
+}

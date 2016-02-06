@@ -1,0 +1,30 @@
+model: Birdmin\User
+permissions: [view,manage,create,edit,delete]
+title: email
+icon: users2
+no_image: /static/cms/img/no-user.svg
+labels:
+  navigation: Users
+  singular: user
+  plural: users
+
+
+in_table : [email,first_name,last_name,phone]
+required : [email,first_name,last_name]
+unique   : [email]
+
+fields:
+  email|email : [Email, "The email and primary login for the user"]
+  first_name|text : [First Name, "The user's first name"]
+  last_name|text : [Last Name, "The user's last name"]
+  phone|text : [Phone Number, "The 10 digit phone number of the user"]
+  password|password: [Password, "A password consisting of at least 6 characters, one special character, and a number"]
+  website|url: [Website, "The user's personal or professional website or link"]
+  affiliation|text: [Affiliation, "The user's company or affiliation"]
+  position|text: [Position, "The user's job title or position"]
+  personal_info|html: [Personal Information, "A short biography or information about the user"]
+
+table:
+  columns:
+    preview: [Mug, -1, Birdmin\Formatters\preview]
+    roles: [Roles, 100, Birdmin\Formatters\roles]

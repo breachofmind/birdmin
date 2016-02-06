@@ -1,0 +1,48 @@
+model: Birdmin\Post
+permissions: [view,create,edit,delete]
+title: title
+icon: files
+labels:
+  navigation: Posts
+  singular: post
+  plural: posts
+
+
+in_table : [title,user_id,published_at,status]
+required : [title,slug,user_id]
+unique   : [slug]
+
+fields:
+  title|text    : [Title, "The title of the post"]
+  slug|slug:
+      label: [Slug,    "A unique URL slug for this post"]
+      options:
+        reference: title
+  user_id|model :
+    label: [Author,"The creator of the post"]
+    options:
+      model: Birdmin\User
+      nullable: false
+  excerpt|textarea  : [Excerpt, "A short excerpt description or summary of the post"]
+  content|html      : [Content, "The post contents or body copy"]
+  published_at|date : [Publish Date, "The date the post will be available to see publicly"]
+  status|radio :
+    label: [Status, "The current visibility of the post"]
+    options:
+      values:
+        draft: Draft
+        publish: Publish
+  type|select :
+    label: [Post Type, "The type or category of this post"]
+    value: post
+    options:
+      values:
+        post: Post
+        revision: Revision
+
+table:
+  formatters:
+    user_id: Birdmin\Formatters\id_to_user
+  columns:
+    preview: [Preview, -1, Birdmin\Formatters\preview]
+    url: [URL, 10, Birdmin\Formatters\url]

@@ -1,0 +1,112 @@
+#Content #View {
+	opacity:1;
+	transform:translateY(0px);
+	transition:all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+}
+//#Content #ActionNavigation a{
+//	opacity:1;
+//	transition:opacity 400ms;
+//}
+#Content.processing {
+	#View {
+		transform:translateY(20px);
+		opacity:0;
+	}
+	//#ActionNavigation a{
+	//	opacity:0;
+	//}
+}
+// Preloader
+.preloader {position:absolute; top:calc(50% - 50px); left:calc(50% + 50px); display:none;}
+#Content.loading, #Content.processing {
+	.preloader {display:block;}
+}
+
+#Notifications {
+	z-index:100;
+	position:fixed; top:0; left:25%; right:25%;
+	transition:all 600ms cubic-bezier(0.19, 1, 0.22, 1);
+	opacity:0;
+	p:last-child {margin:0;}
+	div.alert-box {margin:0;}
+}
+#Notifications.active {
+	opacity:1;
+}
+
+@keyframes fade-in {
+	0% {opacity:0; padding-top:20px;}
+	100% {opacity:1; padding-top:0px;}
+}
+
+@mixin ic-Spin-cycle-animation (
+	$animation-name: spin-cycle,
+	$animation-grow-to: 1,
+	$animation-shrink-to: 1,
+	$color-spin-highlight: white,
+	$color-spin-base: black
+) {
+	@keyframes #{$animation-name} {
+		from {
+			fill: $color-spin-highlight;
+			transform: scale($animation-grow-to);
+		}
+		to {
+			fill: $color-spin-base;
+			transform: scale($animation-shrink-to);
+		}
+	}
+}
+
+
+@mixin ic-Spin-cycle-branding(
+	$animation-name: spin-cycle,
+	$animation-grow-to: 1,
+	$animation-shrink-to: 0.5,
+	$spin-width: 100px,
+	$spin-height: 100px,
+	$spin-margin: 12px,
+	$color-spin-base: rgba($alert-color, 0.1),
+	$color-spin-highlight: $alert-color,
+	$number-of-paths: 8
+) {
+	@include ic-Spin-cycle-animation($animation-name, $animation-grow-to, $animation-shrink-to, $color-spin-highlight, $color-spin-base);
+	margin: $spin-margin;
+	width: $spin-width;
+	height: $spin-height;
+	> svg {
+		width: $spin-width; height: $spin-height;
+		> * {
+			fill: $color-spin-base;
+			animation-name: $animation-name;
+			animation-duration: #{$number-of-paths*50}ms;
+			@for $i from 1 through ($number-of-paths - 1) {
+				&:nth-of-type(#{$i}) {
+					animation-delay: #{$i*50}ms;
+				}
+			}
+		}
+	}
+}
+
+%ic-Spin-cycle {
+	box-sizing: border-box;
+	display: inline-block;
+	vertical-align: middle;
+	overflow: visible;
+	> svg {
+		display: block;
+		overflow: visible;
+		> * {
+			transform: translate3d(0,0,0);
+			transform-origin: center;
+			animation-iteration-count: infinite;
+		}
+	}
+}
+
+.ic-Spin-cycle--classic {
+	@extend %ic-Spin-cycle;
+	// pass no parameters into the mixin, and you get a classic spinner
+	@include ic-Spin-cycle-branding;
+}

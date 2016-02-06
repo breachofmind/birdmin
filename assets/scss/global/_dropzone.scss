@@ -1,0 +1,45 @@
+.dropzone {
+	.dz-default {
+		width:100%;
+		border:2px dashed $success-color;
+		background: transparent;
+		min-height:30px; padding:20px;
+		transition:all 150ms; margin:15px 0;
+		border-radius:5px;
+		cursor:pointer;
+		&:hover,
+		&.dz-drag-hover {background:lighten($success-color,50%);}
+	}
+	.dz-message {color:gray;}
+	.dz-image {display:none;}
+
+	.dz-details {position:absolute; top:0px; left:10px;}
+	.dz-size, .dz-filename {display:inline-block; font-size:14px; color:white;}
+	.dz-filename {margin-right:8px;}
+
+	// Progress bar
+	.dz-progress {
+		display:block; margin:5px 0; height:26px; position:relative; background:#efefef;
+		padding-right:30px;
+	}
+	.dz-upload {display:block; height:26px; background:$primary-color; position:relative;}
+
+	// States
+	.dz-error-message {
+		width:100%; background:#efefef; padding:5px 10px; font-size:14px; display:none;
+	}
+	.dz-success-mark,.dz-error-mark {display:none; position:absolute; right:6px; top:2px;}
+	.dz-success-mark {color:$success-color;}
+	.dz-error-mark {color:$alert-color;}
+	.dz-success {
+		.dz-success-mark {display:block;}
+		.dz-upload {background:$success-color;}
+	}
+	.dz-error {
+		.dz-error-mark, .dz-error-message {display:block;}
+		.dz-upload {background:$alert-color;}
+	}
+
+
+
+}

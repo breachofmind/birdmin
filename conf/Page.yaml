@@ -1,0 +1,45 @@
+model: Birdmin\Page
+permissions: [view,create,edit,delete]
+title: title
+icon: file-empty
+labels:
+  navigation: Pages
+  singular: page
+  plural: pages
+
+
+in_table : [title,slug,status]
+required : [title,slug]
+unique   : [slug]
+
+fields:
+  title|text        : [Title,   "The page title"]
+  content|html      : [Content, "The page body or content"]
+  slug|slug:
+    label: [Slug,    "A unique URL slug for this page"]
+    options:
+      reference: title
+  type|radio :
+    label: [Type, "The special type or grouping of this page"]
+    options:
+      values:
+        normal: Normal
+        landing: Landing Page
+  status|radio :
+    label: [Status, "The visibility or status of the page"]
+    options:
+      values:
+        draft: Draft
+        publish: Publish
+  parent_id|model:
+      label: [Parent Page, "The parent page to whom this page is related"]
+      options:
+        model: Birdmin\Page
+        nullable: true
+
+table:
+  bulk: true
+  formatters:
+  columns:
+    url: [URL, 10, Birdmin\Formatters\url]
+    updated_at: [Modified, 2, Birdmin\Formatters\date]

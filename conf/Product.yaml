@@ -1,0 +1,39 @@
+model: Birdmin\Product
+permissions: [view,create,edit,delete]
+title: name
+icon: bag
+labels:
+  navigation: Products
+  singular: product
+  plural: products
+
+
+in_table : [name,brand,type,sku,status]
+required : [name,slug,status]
+unique   : [slug,sku]
+
+fields:
+  name|text           : [Name,   "The product name"]
+  brand|text          : [Brand, "The brand or manufacturer"]
+  slug|slug:
+    label :             [Slug,    "A unique URL slug for this product"]
+    options:
+      reference: name
+  sku|text              : [SKU, "A unique SKU/Reference ID for this product"]
+  excerpt|textarea      : [Excerpt, "A short description of the product (SEO)"]
+  description|html      : [Description, "A longer description of the product"]
+  type|text             : [Type, "The product type"]
+  attributes|textarea   : [Attributes, "Product attributes, such as dimensions or weight"]
+  status|radio :
+    label               : [Status, "The visibility or status of the product"]
+    options:
+      values:
+        draft: Draft
+        publish: Publish
+
+table:
+  bulk: true
+  formatters:
+  columns:
+    url: [URL, 10, Birdmin\Formatters\url]
+    updated_at: [Modified, 2, Birdmin\Formatters\date]

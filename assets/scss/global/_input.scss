@@ -1,0 +1,36 @@
+.input-form {
+	border-top:3px solid $jet;
+	border-bottom:2px solid $jet;
+
+}
+
+.input-row {
+	display:flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	border:1px solid lightgray;
+	border-left:none;
+	margin-top:-1px;
+	input,select,textarea, .switch {margin:0;}
+
+	input,select,textarea {
+		border:none; border-bottom:2px solid transparent; border-radius:0;
+		&:focus {border-bottom:2px solid $primary-color; background-color:lighten($primary-color,40%);}
+	}
+	textarea {height:120px; resize:vertical;}
+}
+.input-column {
+	display:flex;
+	&.input-label {
+		flex:0 0 200px; padding:8px; border-right:1px solid lightgray;
+		label {align-self:center; color:$jet; font-weight:700;}
+	}
+	&.input-field {width:100%;}
+}
+
+.swatch {
+	height:30px; width:30px; border-radius:10px;
+}
+
+// Custom radio

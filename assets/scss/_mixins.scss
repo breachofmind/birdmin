@@ -1,0 +1,38 @@
+@mixin brd-column ($name, $flexgrow) {
+	> [data-column="#{$name}"] {
+		flex-grow:$flexgrow;
+	}
+}
+@mixin brd-flex ($name,$flex) {
+	> [data-column="#{$name}"] {
+		flex:$flex;
+	}
+}
+
+@mixin pos($top,$right,$bottom,$left) {
+	@if variable_exists('top') {
+		top:#{$top}px;
+	}
+	@if variable_exists('right') {
+		right:#{$right}px;
+	}
+	@if variable_exists('bottom') {
+		bottom:#{$bottom}px;
+	}
+	@if variable_exists('left') {
+		left:#{$left}px;
+	}
+}
+
+@mixin linearicon ($hex) {
+	content:$hex;
+	display:inline-block;
+	font-family:$icon-font-name;
+	font-style:normal;
+	speak:none;
+}
+
+@mixin button-variation($background, $color) {
+	background:$background; color:$color;
+	&:hover {background:darken($background,15%); }
+}

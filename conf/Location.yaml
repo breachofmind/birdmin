@@ -1,0 +1,37 @@
+model: Birdmin\Location
+permissions: [view,create,edit,delete]
+title: name
+icon: map-marker
+labels:
+  navigation: Locations
+  singular: location
+  plural: locations
+
+
+in_table : [name,address,city,state]
+required : [name]
+unique   : []
+
+fields:
+  name|text : [Name, "A unique name for this location"]
+  address|text : [Address, "The primary address, such as 21 First St."]
+  address_2|text : [Address 2, "The secondary part of the address, such as Suite or Apt"]
+  city|text : [City, "The name of the city or locality"]
+  state|select:
+    label: [State, "The U.S. State"]
+    value: AL
+    options:
+      values: "states"
+
+  zip|text : [Postal Code, "The 5 digit postal code or zip code"]
+  county|text : [County, "The county or parish"]
+  country|select :
+    label: [Country, "The country or city-state"]
+    value: USA
+    options:
+      values: "countries"
+
+  lat|number : [Latitude, "The decimal latitude coordinate of this location"]
+  lng|number : [Longitude, "The decimal longitude coordinate of this location"]
+  description|html : [Description, "A brief description of this location"]
+  directions|html : [Directions, "Directions to this location"]

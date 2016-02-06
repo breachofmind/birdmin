@@ -1,0 +1,16 @@
+model: Birdmin\Role
+permissions: [view,create,edit,delete]
+title: name
+icon: user-lock
+labels:
+  navigation: User Roles
+  singular: role
+  plural: roles
+
+in_table : [name,description]
+required : [name]
+unique   : [name]
+
+fields:
+  name|text: [Role Name, "The unique name of this role"]
+  description|textarea: [Description, "A brief description of what this role grants"]

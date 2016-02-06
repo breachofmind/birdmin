@@ -1,0 +1,27 @@
+model: Birdmin\Media
+permissions: [view,create,edit,delete]
+title: title
+icon: picture
+labels:
+  navigation: Media
+  singular: media
+  plural: media
+
+in_table : [file_name,file_type,file_size,title]
+required : [file_name,file_type,title]
+unique   : []
+
+fields:
+  title|text       : [Title,      "The title or title attribute"]
+  alt_text|text    : [Alt Text,   "A description of the image, for SEO purposes"]
+  file_name|static : [File Name,  "The name of the file on the server"]
+  file_type|static : [File Type,  "The MIME type of the file"]
+  file_size|static : [File Size,  "The size in bytes of the file"]
+  category|text    : [Category,   "The primary category or group for this file"]
+  caption|textarea : [Caption,    "A short description to associate with the file"]
+  metadata|hash    : [Metadata,   "Other data associated with this media"]
+
+table:
+  columns:
+    preview: [Preview, -1, Birdmin\Formatters\preview]
+    duplicate: [Duplicate, 20, Birdmin\Formatters\isDuplicate]

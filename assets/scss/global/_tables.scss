@@ -1,0 +1,103 @@
+// Special flex-table class
+.brd-table {
+	width:100%;
+	display:block;
+	padding:15px;
+	position:relative;
+	min-height:300px;
+	margin-bottom:50px;
+	&-row {
+		width:100%;
+		display:flex;
+		flex-direction:row;
+		flex-wrap:nowrap;
+		align-items:center;
+		border-bottom:1px solid lightgray;
+
+		// Cell
+		>* {
+			flex-grow:1;
+			flex-basis:0;
+			padding:0.5em;
+			justify-content: center;
+		}
+	}
+	>.brd-table-header {
+		.brd-table-headers {
+			color:$jet; font-weight:700;
+			border-bottom:2px solid $jet;
+			text-transform: capitalize;
+			>div {border-right:1px solid lightgray; min-height:40px;}
+			>div:last-child {border-right:none;}
+		}
+		.brd-table-meta {
+			text-align:right;
+			border-bottom:none;
+			background:$matte-color;
+			input[type="search"] {
+				margin:0;
+			}
+		}
+	}
+	>.brd-table-body {
+		.brd-table-row:last-child {
+			border-bottom:3px solid gray;
+		}
+	}
+
+	>.brd-table-footer {
+		color:lightgray;
+	}
+}
+
+// States
+.brd-table {
+	.overlay {visibility:hidden; opacity:0; transition:all 200ms;}
+
+	&.processing,&.loading {
+		.overlay {visibility:visible;}
+	}
+	&.processing {
+		.overlay {
+			opacity:0.5; @include pos(0,0,0,0); position:absolute; background:white;}
+	}
+	&.loading {
+		.overlay {
+			display:block; opacity:1;
+			background:url(/static/cms/img/progress-bar.gif) repeat-x #ceeaef;
+			height:10px; width:100%;
+			position:relative;
+		}
+	}
+
+}
+
+// Sorting
+.brd-table-header {
+	.sort {cursor:pointer; color:black;}
+	.sort:after {@include linearicon("\e95c"); margin-left:5px; transition:all 200ms; color:black;}
+	.sort.asc, .sort.desc {
+		color:$primary-color;
+		a, &:after {color:$primary-color;}
+	}
+	.sort.asc:after {@include linearicon("\e962");}
+	.sort.desc:after {@include linearicon("\e962"); transform:rotate(180deg); }
+}
+
+// Row width for certain columns
+.brd-table-row {
+	@include brd-column ('url', 0.25);
+	@include brd-column ('status', 0.5);
+	@include brd-column ('name', 1.25);
+	@include brd-column ('title', 1.25);
+	@include brd-column ('type', 0.5);
+	@include brd-flex ('_bulk', 0 0 30px);
+	@include brd-flex ('preview', 0 0 100px);
+	input[name="_bulk"] {
+		margin:0; padding:0;
+	}
+}
+#inputsTable .brd-table-row {
+	@include brd-column ('type', 1);
+	@include brd-column ('priority', 0.5);
+}
