@@ -2,6 +2,9 @@ model: Birdmin\ProductVariation
 permissions: [view,create,edit,delete]
 title: name
 icon: bag
+components: [
+  [Birdmin\Components\RelatedMedia, []]
+]
 labels:
   navigation: Product Variations
   singular: variation

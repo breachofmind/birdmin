@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ModelController extends Controller
 {
+
     /**
      * Constructor.
      * User is required to be signed in and
@@ -170,7 +171,7 @@ class ModelController extends Controller
      */
     public function update (Model $model, Request $request)
     {
-        $class = get_class($model);
+        $class = $this->setClass($model->getClass());
         $input = $request->all();
 
         $validator = $model->validate($input);

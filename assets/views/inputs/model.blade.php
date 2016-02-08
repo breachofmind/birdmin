@@ -2,6 +2,7 @@
 
 @section($input->uid)
     <?php $class = $input->class; ?>
+
     <select name="{{$input->nameAttribute()}}" id="{{$input->uid}}">
 
         @if($input->models && $input->isNullable())

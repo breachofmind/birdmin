@@ -7,6 +7,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\App;
 use \JsonSerializable;
+use Illuminate\Database\Eloquent\Collection;
 
 /**
  * A component is a self-contained piece of business logic and a view.
@@ -93,6 +94,20 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
             $this->attribute($key,$value);
         }
         return $this;
+    }
+
+    /**
+     * Create a collection of components from a collection of models.
+     * @param Collection $models
+     * @return \Illuminate\Support\Collection
+     */
+    public static function collection(Collection $models)
+    {
+        $components = [];
+        foreach ($models as $model) {
+            $components[] = static::create($model);
+        }
+        return collect($components);
     }
 
     /**

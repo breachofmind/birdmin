@@ -36,6 +36,12 @@ abstract class Controller extends BaseController
     protected $user;
 
     /**
+     * The currently requested class or parent class.
+     * @var string
+     */
+    protected $class;
+
+    /**
      * Controller constructor.
      * @param $template
      */
@@ -67,7 +73,6 @@ abstract class Controller extends BaseController
         $this->data['template'] = $this->template;
         $this->data['user'] = $this->user;
 
-
         if (Request::ajax())
         {
             $this->data['view'] = view($view, $this->data)->render();
@@ -96,7 +101,7 @@ abstract class Controller extends BaseController
 
     protected function setClass($name)
     {
-        return $this->setData('class',$name);
+        return $this->class = $this->setData('class',$name);
     }
 
     protected function setTable($models,$class)
