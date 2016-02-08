@@ -1,7 +1,7 @@
 (function (birdmin) {
     var app = birdmin.app;
     var button = "\n    <a ng-attrs=\"button.attributes\">\n        <i ng-if=\"button.icon\" class=\"lnr-{{button.icon}}\"></i>\n        <span>{{button.label}}</span>\n    </a>\n    ";
-    var group = "<button-action ng-repeat=\"button in buttons\" params=\"button\"/>";
+    var group = "<b-action ng-repeat=\"button in buttons\" params=\"button\"/>";
     function buttonActionGroup() {
         return {
             template: group,
@@ -25,7 +25,7 @@
             }
         };
     }
-    app.directive('buttonActionGroup', buttonActionGroup);
-    app.directive('buttonAction', ['ajax', '$compile', buttonAction]);
+    app.directive('bGroup', buttonActionGroup);
+    app.directive('bAction', ['ajax', '$compile', buttonAction]);
 })(birdmin);
 //# sourceMappingURL=ui.js.map

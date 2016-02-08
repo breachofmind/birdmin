@@ -6,7 +6,7 @@ use Birdmin\Core\Component;
 use Birdmin\Core\Model;
 use Symfony\Component\HttpFoundation\Request;
 
-class ButtonGroupComponent extends Component
+class ButtonGroup extends Component
 {
     protected $name = "Button Group";
     protected $view = "cms::components.button-group";
@@ -46,8 +46,11 @@ class ButtonGroupComponent extends Component
      * @param ButtonComponent $button
      * @return $this
      */
-    public function add(ButtonComponent $button)
+    public function add(Button $button)
     {
+        if (! $button->canRender) {
+            return $this;
+        }
         $this->buttons[] = $button;
         return $this;
     }

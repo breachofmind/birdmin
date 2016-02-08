@@ -1,10 +1,10 @@
 <?php
 namespace Birdmin\Core;
 
-use Birdmin\Components\ButtonComponent;
+use Birdmin\Components\Button;
 use Birdmin\Contracts\Hierarchical;
 use Illuminate\Container\Container;
-use Birdmin\Components\ButtonGroupComponent;
+use Birdmin\Components\ButtonGroup;
 
 class Module {
 
@@ -46,7 +46,7 @@ class Module {
         $this->extender = $extender;
         $this->app = $app;
 
-        $this->navigation = ButtonGroupComponent::create()
+        $this->navigation = ButtonGroup::create()
             ->classes('navigation-list')
             ->element('ul');
     }
@@ -67,7 +67,7 @@ class Module {
      */
     public function navigation ($class)
     {
-        ButtonComponent::create()
+        Button::create()
             ->parent($class)
             ->link('navigation')
             ->setView('cms::components.navigation')
@@ -189,10 +189,12 @@ class Module {
      */
     private function reflectionGetMethods($className)
     {
+
         $static = new \ReflectionClass($className);
         $methods = array_map(function($reflectionMethod){
             return $reflectionMethod->name;
         }, $static->getMethods());
+
         return $methods;
     }
 

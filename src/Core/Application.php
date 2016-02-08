@@ -24,7 +24,7 @@ class Application extends LaravelApplication {
      */
     public function path()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'src';
+        return $this->basePath.DS.'cms'.DS.'src';
     }
 
 
@@ -36,6 +36,15 @@ class Application extends LaravelApplication {
      */
     public function databasePath()
     {
-        return $this->basePath.DIRECTORY_SEPARATOR.'cms'.DIRECTORY_SEPARATOR.'db';
+        return $this->basePath.DS.'cms'.DS.'db';
+    }
+
+    /**
+     * Get the path to the language files.
+     * @return string
+     */
+    public function langPath()
+    {
+        return $this->basePath.DS.'cms'.DS.'assets'.DS.'lang';
     }
 }

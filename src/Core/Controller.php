@@ -10,6 +10,8 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
+use Birdmin\Components\ButtonGroup;
+use Birdmin\Support\Table;
 
 abstract class Controller extends BaseController
 {
@@ -89,6 +91,32 @@ abstract class Controller extends BaseController
             return CMSResponse::failed([$message]);
         }
         return view('cms::app', compact('user'))->withErrors([$message]);
+    }
+
+
+    protected function setClass($name)
+    {
+        return $this->setData('class',$name);
+    }
+
+    protected function setTable($models,$class)
+    {
+        $this->setData('table', Table::create($models,$class)->toJson());
+    }
+
+    protected function setActions($array=[])
+    {
+        return $this->setData('actions', ButtonGroup::build($array));
+    }
+
+    protected function setViews($array=[])
+    {
+        return $this->setData('views', ButtonGroup::build($array));
+    }
+
+    protected function setData($key,$value)
+    {
+        return $this->data[$key] = $value;
     }
     
 }

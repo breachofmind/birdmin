@@ -7,7 +7,8 @@
 <!DOCTYPE HTML>
 <html ng-app="birdmin" ng-controller="BirdminController as app" >
 <head>
-    <title ng-bind-html="template.title">Birdmin</title>
+    <title ng-bind-html="state.template.title">Birdmin</title>
+    <meta name="description" content="@{{state.template.description}}">
 
     {!! $template->head() !!}
 
@@ -18,8 +19,6 @@
 
     @include('cms::common.messaging')
 
-
-
     @include('cms::common.header')
 
 
@@ -28,16 +27,21 @@
 
         @include('cms::common.side')
 
-
-
         <main id="Content" ng-class="{processing:state.processing, loading:state.loading}" class="flex-row">
 
-            <nav id="PageTypeNavigation" bind-unsafe-html="state.views"></nav>
+            <nav id="PageTypeNavigation">
+                <a ng-repeat="button in state.views.buttons"
+                   ng-attrs="button.attributes"
+                   ng-class="{active:state.hash('grid')}">
+                    <i ng-if="button.icon" class="lnr-@{{button.icon}}"></i>
+                    <span>@{{button.label}}</span>
+                </a>
+            </nav>
 
             <div id="Page">
 
                 <nav id="ActionNavigation">
-                    <button-action-group buttons="state.actions.buttons" />
+                    <b-group buttons="state.actions.buttons"/>
                 </nav>
 
                 <div id="Viewport">

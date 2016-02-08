@@ -2,6 +2,10 @@ model: Birdmin\Product
 permissions: [view,create,edit,delete]
 title: name
 icon: bag
+components: [
+  [Birdmin\Components\RelatedMedia, []],
+  [Birdmin\Components\RelatedModels, [Birdmin\ProductVariation]]
+]
 labels:
   navigation: Products
   singular: product
@@ -22,6 +26,11 @@ fields:
   sku|text              : [SKU, "A unique SKU/Reference ID for this product"]
   excerpt|textarea      : [Excerpt, "A short description of the product (SEO)"]
   description|html      : [Description, "A longer description of the product"]
+  category_id|model :
+    label               : [Category, "The product's parent category"]
+    options:
+      model: Birdmin\Category
+      nullable: true
   type|text             : [Type, "The product type"]
   attributes|textarea   : [Attributes, "Product attributes, such as dimensions or weight"]
   status|radio :

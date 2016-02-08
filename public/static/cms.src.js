@@ -113,62 +113,99 @@ var keycodes = {
         var URL = birdmin.URL;
         var log = [];
 
-        return new function ApplicationState() {
+        function ApplicationState()
+        {
+            this.url = new URL(window.location.href);
+            this.notifications = new Notifier();
 
-            this.view = false;
-            this.views = "";
-            this.data = {};
-            this.actions = "";
+            var defaults = {
+                view:     null,
+                class:    null,
+                model:    null,
+                data:     {},
+                actions:  [],
+                views:    [],
+                table:    null,
+                user:     null
+            };
+
+            // Toggles
             this.processing = false;
-            this.loading = false;
-            this.collapse = false;
-            this.response = {};
+            this.loading    = false;
+            this.collapse   = false;
 
-            this.notifications = {
-                messageBag: [],
-                errorBag: []
-            };
 
-            this.clearDeck = function()
-            {
-                this.actions = [];
-                this.views = [];
-            };
-
+            /**
+             * Updates the application state with the response from the server.
+             * @param response
+             */
             this.setResponse = function(response)
             {
                 this.url = new URL(response.config.url);
-                this.view = response.data.view;
-                this.response = response;
-                this.data = response.data;
-                this.user = response.data.user;
-                this.actions = response.data.actions || [];
-                this.views = response.data.views || "";
+
+                for (var key in defaults) {
+                    this[key] = response.data[key] || defaults[key] || null;
+                }
             };
 
+            /**
+             * Notify the user with some messages.
+             * @param response
+             */
             this.notify = function (response)
             {
-                this.notifications = response;
+                this.notifications.set(response);
 
                 $timeout(function(){
-                    this.clearMessages();
+                    this.notifications.set();
                 }.bind(this), config.alertTimeout);
             };
 
-            this.hasMessages = function()
+            /**
+             * Check if the URL hash equals the given name.
+             * @param name
+             * @returns {boolean}
+             */
+            this.hash = function(name)
             {
-                return (this.notifications.messageBag.length > 0
-                || this.notifications.errorBag.length > 0);
+                return this.url.hash==="#"+name;
+            };
+        }
+
+        function Notifier()
+        {
+            var defaults = {
+                errors:[],
+                messages:[],
+                success:true
             };
 
-            this.clearMessages = function()
+            this.set = function(response)
             {
-                log.push($.extend(true,{},this.notifications));
-                this.notifications.messageBag = [];
-                this.notifications.errorBag = [];
+                if (! arguments.length) {
+                    response = defaults;
+                }
+                for (var key in response) {
+                    this[key] = response[key] || defaults[key];
+                }
             };
 
-        };
+            this.log = function()
+            {
+                for (var key in defaults) {
+                    log.push(defaults[key]);
+                }
+            };
+
+            this.empty = function()
+            {
+                return this.errors.length == 0 && this.messages.length == 0;
+            };
+
+            this.set();
+        }
+
+        return new ApplicationState();
     }
 
     app.service('state', ['$timeout', ApplicationStateService]);
@@ -2077,19 +2114,35 @@ return jsc.jscolor;
      */
     function brdLink (ajax)
     {
+
         return {
             restrict:"A",
-            priority:1000,
             link: function(scope,element,attrs)
             {
                 element.on('click', function(event) {
                     event.preventDefault();
+                    if (! ajax.state.url.isDifferent(attrs.href)) return;
                     ajax.get(attrs.href).then(ajax.link(true), ajax.error);
                 });
             }
         }
     }
 
+    function brdTab (state)
+    {
+        return {
+            restrict:"A",
+            link: function(scope,element,attrs)
+            {
+                var hash = attrs.brdTab;
+                element.on('click', function(event) {
+                    state.url = new birdmin.URL(attrs.href);
+                    scope.$apply();
+                    console.log(scope);
+                });
+            }
+        }
+    }
 
     /**
      * Handles a form submission.
@@ -2136,7 +2189,7 @@ return jsc.jscolor;
      * Adds attributes dynamically to an element.
      * @returns {Function}
      */
-    function addAttributes ($compile,$timeout)
+    function addAttributes ()
     {
         return {
             restrict:"A",
@@ -2144,7 +2197,6 @@ return jsc.jscolor;
                 ngAttrs: '='
             },
             link:function(scope,element,attrs) {
-
                 var attributes = scope.ngAttrs;
                 for (var attr in attributes)
                 {
@@ -2155,15 +2207,18 @@ return jsc.jscolor;
                     }
                     element.attr(attr,value);
                 }
+                element.removeAttr('ng-attrs');
+
             }
         }
     }
 
     // Create the directives.
     app.directive('brdLink', ['ajax', brdLink]);
+    app.directive('brdTab', ['state', brdTab]);
     app.directive('brdSubmit', ['ajax', 'state', brdSubmit]);
     app.directive('bindUnsafeHtml', ['$compile', bindUnsafeHtml]);
-    app.directive('ngAttrs', ['$compile','$timeout', addAttributes]);
+    app.directive('ngAttrs', addAttributes);
 
 })(birdmin.app);;
 (function(birdmin){
@@ -2278,9 +2333,28 @@ return jsc.jscolor;
          */
         this.getUrl = function()
         {
-            return this.getBaseUrl()+this.pathname+($.param(this.parameters));
+            return this.getBaseUrl()+this.pathname+($.param(this.parameters))+(this.hash || "");
         };
 
+        /**
+         * Return the relative url path.
+         * @returns {string}
+         */
+        this.getRelativeUrl = function()
+        {
+            return "/"+this.pathname+($.param(this.parameters))+(this.hash || "");
+        };
+
+        /**
+         * Check if the given path is different from this url (does not look at params or hash)
+         * @param path string
+         * @returns {boolean}
+         */
+        this.isDifferent = function(path)
+        {
+            var url = new URL(path);
+            return this.pathname !== url.pathname;
+        };
 
         /**
          * Parse the incoming url.
@@ -2354,6 +2428,8 @@ return jsc.jscolor;
         {
             var self = this;
 
+            this.state = state;
+
             /**
              * Send an http request.
              * @param url string
@@ -2391,7 +2467,6 @@ return jsc.jscolor;
             /**
              * Successful POST requests should notify user of what happened.
              * The server needs to generate the proper JSON response.
-             * @param response
              */
             this.notify = function()
             {
@@ -2418,7 +2493,6 @@ return jsc.jscolor;
             this.link = function(push)
             {
                 state.processing = true;
-                //state.clearDeck();
 
                 return function(response) {
                     state.setResponse(response);
@@ -2476,6 +2550,33 @@ return jsc.jscolor;
 (function(birdmin){
 
     var editors = {};
+
+    var dropzoneHandlers = {
+        default: function(dz)
+        {
+            dz.on('success',function(file) {
+                var response = JSON.parse(file.xhr.responseText);
+                console.log(response);
+            });
+        },
+        relate: function(dz,element)
+        {
+            var elementId = element.getAttribute('id');
+            var template = Handlebars.compile( $("#"+elementId+"Template").html() );
+            var list = $("#"+elementId+"List");
+
+            dz.on('success', function(file) {
+                var response = JSON.parse(file.xhr.responseText);
+
+                for (var index in response) {
+                    list.append(template(response[index]));
+                }
+            });
+        }
+    };
+
+
+
     var ui = new UserInterface;
 
     function UserInterface()
@@ -2489,12 +2590,6 @@ return jsc.jscolor;
             ui.getEditorElements().each(function() {
                 ui.createEditor( $(this) );
             });
-            if (document.getElementById('MediaDropzone')) {
-                Dropzone.options.MediaDropzone = {
-                    createImageThumbnails: false,
-                    previewTemplate: document.getElementById('MediaDropzoneTemplate').innerHTML
-                };
-            }
 
             return ui;
         };
@@ -2515,6 +2610,24 @@ return jsc.jscolor;
         this.getEditorElements = function()
         {
             return $('.html-editor');
+        };
+
+        /**
+         * Register a new dropzone.
+         * @param elementId string
+         */
+        this.createDropzone = function(elementId)
+        {
+            var element = document.getElementById(elementId);
+            if (!element) {
+                throw (elementId+" Dropzone does not exist");
+            }
+            var handler = dropzoneHandlers[element.getAttribute('data-handler')];
+            var dz = new Dropzone("#"+elementId, {
+                previewTemplate: document.getElementById('DropzonePreviewTemplate').innerHTML,
+                createImageThumbnails: false
+            });
+            handler(dz,element);
         };
 
         /**
@@ -3079,11 +3192,6 @@ return jsc.jscolor;
     {
         var appHistory = birdmin.history;
 
-        $scope.template = {
-            title: 'Birdmin v1.0',
-            body: '',
-        };
-
         $scope.state = state;
 
         /**
@@ -3097,7 +3205,7 @@ return jsc.jscolor;
         });
 
         // Initial load should grab view of url.
-        ajax.get(window.location.pathname).then(ajax.link(), ajax.error);
+        ajax.get(state.url.toString()).then(ajax.link(), ajax.error);
     }
 
     app.controller('BirdminController', [
@@ -3119,6 +3227,8 @@ return jsc.jscolor;
         $scope.data = {};
         $scope.search = null;
         $scope.attrs = $attrs;
+        $scope.state = state;
+        $scope.data = state.table;
 
         $scope.doSort = function(column,header) {
             table.sort(column,header);
@@ -3126,9 +3236,8 @@ return jsc.jscolor;
         $scope.doSearch = function() {
             table.search($scope.search);
         };
-        if (state.response.data.table) {
-            $scope.data = state.response.data.table;
-        }
+
+
         $("#searchTable").on('change',$scope.doSearch);
 
         var table = new $table($scope);
@@ -3169,7 +3278,7 @@ return jsc.jscolor;
 (function (birdmin) {
     var app = birdmin.app;
     var button = "\n    <a ng-attrs=\"button.attributes\">\n        <i ng-if=\"button.icon\" class=\"lnr-{{button.icon}}\"></i>\n        <span>{{button.label}}</span>\n    </a>\n    ";
-    var group = "<button-action ng-repeat=\"button in buttons\" params=\"button\"/>";
+    var group = "<b-action ng-repeat=\"button in buttons\" params=\"button\"/>";
     function buttonActionGroup() {
         return {
             template: group,
@@ -3193,7 +3302,7 @@ return jsc.jscolor;
             }
         };
     }
-    app.directive('buttonActionGroup', buttonActionGroup);
-    app.directive('buttonAction', ['ajax', '$compile', buttonAction]);
+    app.directive('bGroup', buttonActionGroup);
+    app.directive('bAction', ['ajax', '$compile', buttonAction]);
 })(birdmin);
 //# sourceMappingURL=ui.js.map

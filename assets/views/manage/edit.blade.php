@@ -13,4 +13,11 @@
 
 </form>
 
+
+@foreach($model->getComponents() as $component)
+
+    {!! $component->render() !!}
+
+@endforeach
+
 </div>

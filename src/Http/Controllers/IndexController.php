@@ -5,8 +5,7 @@ namespace Birdmin\Http\Controllers;
 use Birdmin\Core\Template;
 use Birdmin\Http\Requests;
 use Birdmin\Core\Controller;
-use Birdmin\Components\ButtonComponent;
-use Birdmin\Components\ButtonGroupComponent;
+use Birdmin\Components\Button;
 
 class IndexController extends Controller
 {
@@ -18,11 +17,9 @@ class IndexController extends Controller
 
     public function index()
     {
-        $actions = ButtonGroupComponent::build([
-            ButtonComponent::create()->link('home')->active(),
-        ])->render();
-
-        $this->data = compact('actions');
+        $this->setActions([
+            Button::create()->link('home')->active(),
+        ]);
 
         return $this->birdmin('cms::home');
     }

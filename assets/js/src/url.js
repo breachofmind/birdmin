@@ -110,9 +110,28 @@
          */
         this.getUrl = function()
         {
-            return this.getBaseUrl()+this.pathname+($.param(this.parameters));
+            return this.getBaseUrl()+this.pathname+($.param(this.parameters))+(this.hash || "");
         };
 
+        /**
+         * Return the relative url path.
+         * @returns {string}
+         */
+        this.getRelativeUrl = function()
+        {
+            return "/"+this.pathname+($.param(this.parameters))+(this.hash || "");
+        };
+
+        /**
+         * Check if the given path is different from this url (does not look at params or hash)
+         * @param path string
+         * @returns {boolean}
+         */
+        this.isDifferent = function(path)
+        {
+            var url = new URL(path);
+            return this.pathname !== url.pathname;
+        };
 
         /**
          * Parse the incoming url.

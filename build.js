@@ -29,7 +29,8 @@ $.register('cms')
         "dropzone/dist/dropzone.js",
         "angular/angular.js",
         "angular-sanitize/angular-sanitize.js",
-        "angular-animate/angular-animate.js"
+        "angular-animate/angular-animate.js",
+        "handlebars/handlebars.js"
     ], {
         dir:"{js}/lib",
         build:"{static}/cms.lib.js"

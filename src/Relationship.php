@@ -51,11 +51,14 @@ class Relationship extends BaseModel {
     /**
      * Return a collection of the child object, given the parent object.
      * @param Model $model
-     * @param string $child_object
+     * @param string|Model $child_object
      * @return Collection
      */
     public static function collection (Model $model, $child_object)
     {
+        if ($child_object instanceof Model) {
+            $child_object = $child_object->getClass();
+        }
         $relationships = Relationship::children(get_class($model), $model->id, $child_object);
         if ($relationships->isEmpty()) {
             $child_instance = new $child_object;
@@ -75,11 +78,12 @@ class Relationship extends BaseModel {
      */
     public static function exists(Model $parent, Model $child)
     {
-        return static::where('parent_id',$parent->id)
-            ->where('parent_object', get_class($parent))
+        $items = static::where('parent_id',$parent->id)
+            ->where('parent_object', $parent->getClass())
             ->where('child_id', $child->id)
-            ->where('child_object', get_class($child))
+            ->where('child_object', $child->getClass())
             ->get();
+        return $items->count() > 0;
     }
 
     /**
@@ -93,8 +97,8 @@ class Relationship extends BaseModel {
         return Relationship::create([
             'parent_id' => $parent->id,
             'child_id' => $child->id,
-            'parent_object' => get_class($parent),
-            'child_object' => get_class($child),
+            'parent_object' => $parent->getClass(),
+            'child_object' => $child->getClass(),
             'priority' => Relationship::lastPriority($parent,$child)
         ]);
     }

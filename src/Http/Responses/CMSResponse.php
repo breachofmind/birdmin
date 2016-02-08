@@ -25,8 +25,8 @@ class CMSResponse extends Response {
         }
         return new static([
             'success' => false,
-            'errorBag' => $errors,
-            'messageBag' => []
+            'errors' => $errors,
+            'messages' => []
         ]);
     }
 
@@ -41,8 +41,8 @@ class CMSResponse extends Response {
             'success' => true,
             'model' => $model->toArray(),
             'redirect' => $model->editUrl(),
-            'messageBag' => [$model::singular(true)." Saved."],
-            'errorBag' => []
+            'messages' => [$model::singular(true)." Saved."],
+            'errors' => []
         ]);
     }
 
@@ -56,8 +56,8 @@ class CMSResponse extends Response {
         return new static([
             'success' => true,
             'model' => $model->toArray(),
-            'messageBag' => [$model::singular(true)." Updated."],
-            'errorBag' => []
+            'messages' => [$model::singular(true)." Updated."],
+            'errors' => []
         ]);
     }
 

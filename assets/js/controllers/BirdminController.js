@@ -9,11 +9,6 @@
     {
         var appHistory = birdmin.history;
 
-        $scope.template = {
-            title: 'Birdmin v1.0',
-            body: '',
-        };
-
         $scope.state = state;
 
         /**
@@ -27,7 +22,7 @@
         });
 
         // Initial load should grab view of url.
-        ajax.get(window.location.pathname).then(ajax.link(), ajax.error);
+        ajax.get(state.url.toString()).then(ajax.link(), ajax.error);
     }
 
     app.controller('BirdminController', [

@@ -31,4 +31,22 @@ class MediaCollection extends Collection
         }
         return $collection;
     }
+
+    /**
+     * Relate all items in this collection to the given model.
+     * @param $model string|Model
+     * @return bool|null
+     */
+    public function attach($model)
+    {
+        if (is_string($model)) {
+            $model = Model::str($model);
+        }
+        if (!$model) return null;
+
+        foreach($this->items as $media) {
+            $model->relate($media);
+        }
+        return true;
+    }
 }

@@ -2,8 +2,8 @@
 
 namespace Birdmin\Http\Controllers;
 
-use Birdmin\Components\ButtonComponent;
-use Birdmin\Components\ButtonGroupComponent;
+use Birdmin\Components\Button;
+use Birdmin\Components\ButtonGroup;
 use Birdmin\Core\Template;
 use Birdmin\Http\Responses\CMSResponse;
 use Birdmin\Support\Table;
@@ -14,14 +14,6 @@ use Illuminate\Support\Facades\Auth;
 
 class ModelController extends Controller
 {
-
-    /**
-     * Key value store of data.
-     * This data is available in both JSON and HTML responses.
-     * @var array
-     */
-    protected $data = [];
-
     /**
      * Constructor.
      * User is required to be signed in and
@@ -39,28 +31,26 @@ class ModelController extends Controller
      */
     public function index (Request $request)
     {
-        $class = $request->model_class;
+        $class = $this->setClass($request->model_class);
 
         if ($request->ajax()) {
             $models = $class::request($request, $this->user);
-            $table = Table::create($models,$class)->toJson();
+            $this->setTable ($models,$class);
 
-            $actions = ButtonGroupComponent::build([
-                ButtonComponent::create()->parent($class)->link('home'),
-                ButtonComponent::create()->parent($class)->link('view')->active(),
-                ButtonComponent::create()->parent($class)->link('create'),
+            $this->setActions([
+                Button::create()->parent($class)->link('home'),
+                Button::create()->parent($class)->link('view')->active(),
+                Button::create()->parent($class)->link('create'),
             ]);
-
-            $views = ButtonGroupComponent::build([
-                ButtonComponent::create()->parent($class)->link('list')->active(),
-                ButtonComponent::create()->parent($class)->link('tree'),
+            $this->setViews([
+                Button::create()->parent($class)->link('list')->active(),
+                Button::create()->parent($class)->link('tree'),
             ]);
         }
 
-        $this->data = compact('class','table','actions','views');
-
         return $this->birdmin('cms::manage.all');
     }
+
 
 
     /**
@@ -71,24 +61,21 @@ class ModelController extends Controller
      */
     public function tree (Request $request)
     {
-        $class = $request->model_class;
+        $class = $this->setClass($request->model_class);
 
         if ($request->ajax()) {
-            $roots = $class::roots()->get();
+            $this->setData('roots',$class::roots()->get());
 
-            $actions = ButtonGroupComponent::build([
-                ButtonComponent::create()->parent($class)->link('home'),
-                ButtonComponent::create()->parent($class)->link('view')->active(),
-                ButtonComponent::create()->parent($class)->link('create'),
+            $this->setActions([
+                Button::create()->parent($class)->link('home'),
+                Button::create()->parent($class)->link('view')->active(),
+                Button::create()->parent($class)->link('create'),
             ]);
-
-            $views = ButtonGroupComponent::build([
-                ButtonComponent::create()->parent($class)->link('list'),
-                ButtonComponent::create()->parent($class)->link('tree')->active(),
+            $this->setViews([
+                Button::create()->parent($class)->link('list'),
+                Button::create()->parent($class)->link('tree')->active(),
             ]);
         }
-
-        $this->data = compact('class','actions','views','roots');
 
         return $this->birdmin('cms::manage.tree');
     }
@@ -101,25 +88,19 @@ class ModelController extends Controller
      */
     public function edit (Model $model, Request $request)
     {
-        $class = $request->model_class;
+        $class = $this->setClass($request->model_class);
+
+        $this->setData('model',$model);
 
         if ($this->user->cannot('edit',$class)) {
             return $this->error("Sorry, you do not have permission to edit ".$class::plural().".");
         }
-
-        $actions = ButtonGroupComponent::build([
-            ButtonComponent::create()->parent($model)->link('home'),
-            ButtonComponent::create()->parent($model)->link('view'),
-            ButtonComponent::create()->parent($model)->link('edit')->active(),
-            ButtonComponent::create()->parent($model)->action('update'),
+        $this->setActions([
+            Button::create()->parent($model)->link('home'),
+            Button::create()->parent($model)->link('view'),
+            Button::create()->parent($model)->link('edit')->active(),
+            Button::create()->parent($model)->action('update'),
         ]);
-
-        $views = ButtonGroupComponent::build([
-            ButtonComponent::create()->parent($class)->link('list'),
-            ButtonComponent::create()->parent($class)->link('tree'),
-        ]);
-
-        $this->data = compact('class','actions','views','model');
 
         return $this->birdmin('cms::manage.edit');
     }
@@ -135,23 +116,21 @@ class ModelController extends Controller
      */
     public function create (Request $request)
     {
-        $class = $request->model_class;
-        $model = new $class;
+        $class = $this->setClass($request->model_class);
+        $model = $this->setData('model',new $class);
         $model->inputs();
 
-        $actions = ButtonGroupComponent::build([
-            ButtonComponent::create()->parent($model)->link('home'),
-            ButtonComponent::create()->parent($model)->link('view'),
-            ButtonComponent::create()->parent($model)->link('create')->active(),
-            ButtonComponent::create()->parent($model)->action('save'),
+        $this->setActions([
+            Button::create()->parent($model)->link('home'),
+            Button::create()->parent($model)->link('view'),
+            Button::create()->parent($model)->link('create')->active(),
+            Button::create()->parent($model)->action('save'),
         ]);
 
-        $views = ButtonGroupComponent::build([
-            ButtonComponent::create()->parent($class)->link('list'),
-            ButtonComponent::create()->parent($class)->link('tree'),
+        $this->setViews([
+            Button::create()->parent($class)->link('list'),
+            Button::create()->parent($class)->link('tree'),
         ]);
-
-        $this->data = compact('class','actions','views','model');
 
         return $this->birdmin('cms::manage.create');
     }
@@ -165,14 +144,14 @@ class ModelController extends Controller
      */
     public function store (Request $request)
     {
-        $class = $request->model_class;
+        $class = $this->setClass($request->model_class);
         $input = $request->all();
-        $model = new $class($input);
+        $model = $this->setData('model',new $class($input));
 
         $validator = $model->validate($input);
 
         if ($validator->fails()) {
-            return CMSResponse::failed($validator->errors()->all());
+            return CMSResponse::failed($validator->messages()->all());
         }
 
         if ($model->save()) {
@@ -216,6 +195,6 @@ class ModelController extends Controller
      */
     public function destroy (Model $model)
     {
-        //
+        //TODO
     }
 }

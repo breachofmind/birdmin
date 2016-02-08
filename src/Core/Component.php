@@ -71,7 +71,7 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
      */
     public static function create()
     {
-        return App::make(static::class);
+        return App::make(static::class, func_get_args());
     }
 
     /**
@@ -167,6 +167,21 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
     public function __toString()
     {
         return $this->render();
+    }
+
+    /**
+     * Quickly return array of protected variable values.
+     * @param $args array|string
+     * @return array
+     */
+    protected function compact($args)
+    {
+        $args = is_array($args) ?: func_get_args();
+        $out = [];
+        foreach($args as $key) {
+            $out[$key] = $this->$key;
+        }
+        return $out;
     }
 
     /**

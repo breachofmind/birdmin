@@ -1,6 +1,33 @@
 (function(birdmin){
 
     var editors = {};
+
+    var dropzoneHandlers = {
+        default: function(dz)
+        {
+            dz.on('success',function(file) {
+                var response = JSON.parse(file.xhr.responseText);
+                console.log(response);
+            });
+        },
+        relate: function(dz,element)
+        {
+            var elementId = element.getAttribute('id');
+            var template = Handlebars.compile( $("#"+elementId+"Template").html() );
+            var list = $("#"+elementId+"List");
+
+            dz.on('success', function(file) {
+                var response = JSON.parse(file.xhr.responseText);
+
+                for (var index in response) {
+                    list.append(template(response[index]));
+                }
+            });
+        }
+    };
+
+
+
     var ui = new UserInterface;
 
     function UserInterface()
@@ -14,12 +41,6 @@
             ui.getEditorElements().each(function() {
                 ui.createEditor( $(this) );
             });
-            if (document.getElementById('MediaDropzone')) {
-                Dropzone.options.MediaDropzone = {
-                    createImageThumbnails: false,
-                    previewTemplate: document.getElementById('MediaDropzoneTemplate').innerHTML
-                };
-            }
 
             return ui;
         };
@@ -40,6 +61,24 @@
         this.getEditorElements = function()
         {
             return $('.html-editor');
+        };
+
+        /**
+         * Register a new dropzone.
+         * @param elementId string
+         */
+        this.createDropzone = function(elementId)
+        {
+            var element = document.getElementById(elementId);
+            if (!element) {
+                throw (elementId+" Dropzone does not exist");
+            }
+            var handler = dropzoneHandlers[element.getAttribute('data-handler')];
+            var dz = new Dropzone("#"+elementId, {
+                previewTemplate: document.getElementById('DropzonePreviewTemplate').innerHTML,
+                createImageThumbnails: false
+            });
+            handler(dz,element);
         };
 
         /**

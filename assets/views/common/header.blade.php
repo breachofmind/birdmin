@@ -1,7 +1,6 @@
 <header id="Header" class="flex-row">
     <div id="Brand">
-        <img class="branding-logo" src="/cms/public/images/birdmin-logo-white.svg" alt="Birdmin"/>
-        @{{state.url.pathname}}
+        <img class="branding-logo" src="{{config('app.cms_logo')}}" alt="Birdmin"/>
     </div>
 
     <div id="SessionUser">

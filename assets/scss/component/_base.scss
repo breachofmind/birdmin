@@ -1,0 +1,20 @@
+
+.component {
+	margin-top:20px;
+
+	h1 {
+		display:block;
+		border-top:30px solid $matte-color;
+		margin:0 -20px; padding:10px 20px;
+	}
+	h1 i {font-size:32px;}
+}
+
+.action-row {
+	background:lighten($matte-color,5%);
+	a {padding:10px 15px; margin:0; margin-right:5px;}
+}
+
+.media-list-item {
+	display:block; float:left;
+}

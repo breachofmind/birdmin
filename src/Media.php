@@ -45,7 +45,8 @@ class Media extends Model
      * Register the mimetypes in this object.
      * Set the default base path.
      */
-    public static function boot () {
+    public static function boot ()
+    {
         parent::boot();
 
         $map    = config('media.map');
@@ -68,7 +69,8 @@ class Media extends Model
      * Get the primary url to the original uploaded file.
      * @return string
      */
-    public function getUrlAttribute () {
+    public function getUrlAttribute ()
+    {
         return $this->url();
     }
 
@@ -76,7 +78,8 @@ class Media extends Model
      * Return an array urls to available image sizes, if they exist.
      * @return array|null
      */
-    public function getSizesAttribute () {
+    public function getSizesAttribute ()
+    {
         $sizes = array();
         if (!$this->isImage()) {
             return null;
@@ -94,7 +97,8 @@ class Media extends Model
      * @param null|string $path
      * @return string
      */
-    public static function basePath ($path=null) {
+    public static function basePath ($path=null)
+    {
         return config('media.upload_path').($path?"/{$path}/":"/");
     }
 
@@ -104,7 +108,8 @@ class Media extends Model
      * @param bool|true $relative
      * @return string
      */
-    public static function baseUrl ($path=null, $relative=true) {
+    public static function baseUrl ($path=null, $relative=true)
+    {
         $path = config('media.upload_url').($path?"/{$path}/":"/");
         $url = config('app.url');
         return $relative ? $path : $url.$path;
@@ -115,7 +120,8 @@ class Media extends Model
      * @param null $path
      * @return string
      */
-    public function path ($path=null) {
+    public function path ($path=null)
+    {
         if ($this->isDocument() && !$path) {
             $path = "documents";
         }
@@ -128,7 +134,8 @@ class Media extends Model
      * @param bool|true $relative path
      * @return string
      */
-    public function url ($path=null, $relative=false) {
+    public function url ($path=null, $relative=false)
+    {
         if ($this->isDocument() && !$path) {
             $path = "documents";
         }
@@ -140,7 +147,8 @@ class Media extends Model
      * @param null|string $path
      * @return string
      */
-    public function href ($path=null) {
+    public function href ($path=null)
+    {
         return $this->url($path,true);
     }
 
@@ -149,7 +157,8 @@ class Media extends Model
      * @param null|string $directory
      * @return bool
      */
-    public function exists ($directory=null) {
+    public function exists ($directory=null)
+    {
         return file_exists( $this->path($directory) );
     }
 
@@ -158,7 +167,8 @@ class Media extends Model
      * @param string $name
      * @return bool
      */
-    public function isType ($name) {
+    public function isType ($name)
+    {
         return in_array($this->file_type, static::$MIMETYPES[$name]);
     }
 
@@ -166,7 +176,8 @@ class Media extends Model
      * Check if this is an image type.
      * @return bool
      */
-    public function isImage () {
+    public function isImage ()
+    {
         return $this->isType('image');
     }
 
@@ -174,7 +185,8 @@ class Media extends Model
      * Check if this is a document type.
      * @return bool
      */
-    public function isDocument () {
+    public function isDocument ()
+    {
         return $this->isType('document');
     }
 
@@ -183,7 +195,8 @@ class Media extends Model
      * Returns the first matching object or null.
      * @return Media|null
      */
-    public function isDuplicate () {
+    public function isDuplicate ()
+    {
         return Media::where('etag',$this->etag)
             ->where('id','!=',$this->id)->get()->first();
     }
@@ -193,7 +206,8 @@ class Media extends Model
      * Return the human-readable native type, such as 'image' or 'document'.
      * @return int|string
      */
-    public function nativeType() {
+    public function nativeType()
+    {
         foreach (static::$MIMETYPES as $name=>$types) {
             if (in_array($this->file_type,$types)) {
                 return $name;
@@ -207,7 +221,8 @@ class Media extends Model
      * Return the image html tag for this object in the given size/crop.
      * Images naturally return the file, other file types may return defaults.
      */
-    public function img ($size=null, $classes=null) {
+    public function img ($size=null, $classes=null)
+    {
         $attr = [
             'src' => $this->urlByType($size),
             'class' => is_array($classes) ? join(" ",$classes) : $classes,
@@ -221,7 +236,8 @@ class Media extends Model
      * @param null|string $size
      * @return string
      */
-    public function urlByType ($size=null) {
+    public function urlByType ($size=null)
+    {
         // Images always return the actual request.
         if ($this->isImage()) {
             return $this->href($size);
@@ -236,7 +252,8 @@ class Media extends Model
      * @param null|string $classes
      * @return string
      */
-    public function anchor ($size=null, $classes=null) {
+    public function anchor ($size=null, $classes=null)
+    {
         $fileUrl = $this->url(null);
         return "<a href=\"$fileUrl\">".$this->img($size,$classes)."</a>";
     }
@@ -246,7 +263,8 @@ class Media extends Model
      * @param $file string path to file
      * @return boolean
      */
-    public static function import ($file) {
+    public static function import ($file)
+    {
         $explode = explode(".",$file);
         $ext = array_pop($explode);
         $mimetype = lookup_mimetype($ext);
@@ -261,7 +279,8 @@ class Media extends Model
      * @param UploadedFile $file
      * @return \Exception|FileException|Media
      */
-    public static function upload (UploadedFile $file) {
+    public static function upload (UploadedFile $file)
+    {
         Media::unguard();
         $media = new Media([
             'file_type' => $file->getClientMimeType(),
@@ -297,7 +316,8 @@ class Media extends Model
      * @param $path string
      * @return string
      */
-    public static function getUniqueName ($path) {
+    public static function getUniqueName ($path)
+    {
         $n=0;
         $dirname = dirname($path);
         $exploded = explode(".",basename($path));
@@ -317,7 +337,8 @@ class Media extends Model
      * @param callable $callable  ($image)
      * @return \Exception|null|int
      */
-    public function generate ($name, callable $callable) {
+    public function generate ($name, callable $callable)
+    {
         if (!$this->isImage()) {
             return null;
         }
@@ -341,7 +362,8 @@ class Media extends Model
      * @return bool
      * @throws \Exception
      */
-    public function delete () {
+    public function delete ()
+    {
         if (!parent::delete()) {
             return false;
         }
@@ -362,7 +384,8 @@ class Media extends Model
      * @param array $models
      * @return MediaCollection
      */
-    public function newCollection (array $models=[]) {
+    public function newCollection (array $models=[])
+    {
         return new MediaCollection($models);
     }
 }

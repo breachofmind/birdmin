@@ -212,6 +212,11 @@ class Model extends BaseModel
         return $this->searchable;
     }
 
+    public function getObjectNameAttribute()
+    {
+        return $this->getClass()."\\".$this->id;
+    }
+
     /**
      * Return the title field of this model.
      * @return mixed
@@ -301,6 +306,16 @@ class Model extends BaseModel
             return null;
         }
         return Relationship::relate($this,$child);
+    }
+
+    /**
+     * Find related child objects of this model.
+     * @param $child string|Model
+     * @return Collection
+     */
+    public function related($child)
+    {
+        return Relationship::collection($this, $child);
     }
 
     /**
@@ -494,6 +509,24 @@ class Model extends BaseModel
     }
 
     /**
+     * Returns the array of module component objects.
+     * @return array
+     */
+    public function getComponents()
+    {
+        $out = [];
+        $components = static::getConfig('components');
+        if (empty($components)) {
+            return $out;
+        }
+        foreach($components as $item) {
+            list ($class,$args) = $item;
+            $out[] = $class::create($this,$args);
+        }
+        return $out;
+    }
+
+    /**
      * Look up a model given the signature.
      * Example: Birdmin\User\1 -> User with id #1
      * @param $string
@@ -501,12 +534,12 @@ class Model extends BaseModel
      */
     public static function str($string)
     {
-        $parts = explode($string,'\\');
-        $id = intval(array_pop($parts));
+        $parts = explode('\\',$string);
+        $id = array_pop($parts);
         $class = implode("\\",$parts);
         if (!class_exists($class)) {
             return null;
         }
-        return $class::find($id);
+        return $class::find(intval($id));
     }
 }

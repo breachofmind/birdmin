@@ -29,6 +29,8 @@
         {
             var self = this;
 
+            this.state = state;
+
             /**
              * Send an http request.
              * @param url string
@@ -66,7 +68,6 @@
             /**
              * Successful POST requests should notify user of what happened.
              * The server needs to generate the proper JSON response.
-             * @param response
              */
             this.notify = function()
             {
@@ -93,7 +94,6 @@
             this.link = function(push)
             {
                 state.processing = true;
-                //state.clearDeck();
 
                 return function(response) {
                     state.setResponse(response);

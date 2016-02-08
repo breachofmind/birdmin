@@ -8,7 +8,7 @@
     </a>
     `;
 
-    var group:string = `<button-action ng-repeat="button in buttons" params="button"/>`;
+    var group:string = `<b-action ng-repeat="button in buttons" params="button"/>`;
 
     function buttonActionGroup()
     {
@@ -39,7 +39,7 @@
         }
     }
 
-    app.directive('buttonActionGroup', buttonActionGroup);
-    app.directive('buttonAction', ['ajax','$compile', buttonAction]);
+    app.directive('bGroup', buttonActionGroup);
+    app.directive('bAction', ['ajax','$compile', buttonAction]);
 
 })(birdmin);

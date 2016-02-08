@@ -6,19 +6,35 @@
      */
     function brdLink (ajax)
     {
+
         return {
             restrict:"A",
-            priority:1000,
             link: function(scope,element,attrs)
             {
                 element.on('click', function(event) {
                     event.preventDefault();
+                    if (! ajax.state.url.isDifferent(attrs.href)) return;
                     ajax.get(attrs.href).then(ajax.link(true), ajax.error);
                 });
             }
         }
     }
 
+    function brdTab (state)
+    {
+        return {
+            restrict:"A",
+            link: function(scope,element,attrs)
+            {
+                var hash = attrs.brdTab;
+                element.on('click', function(event) {
+                    state.url = new birdmin.URL(attrs.href);
+                    scope.$apply();
+                    console.log(scope);
+                });
+            }
+        }
+    }
 
     /**
      * Handles a form submission.
@@ -65,7 +81,7 @@
      * Adds attributes dynamically to an element.
      * @returns {Function}
      */
-    function addAttributes ($compile,$timeout)
+    function addAttributes ()
     {
         return {
             restrict:"A",
@@ -73,7 +89,6 @@
                 ngAttrs: '='
             },
             link:function(scope,element,attrs) {
-
                 var attributes = scope.ngAttrs;
                 for (var attr in attributes)
                 {
@@ -84,14 +99,17 @@
                     }
                     element.attr(attr,value);
                 }
+                element.removeAttr('ng-attrs');
+
             }
         }
     }
 
     // Create the directives.
     app.directive('brdLink', ['ajax', brdLink]);
+    app.directive('brdTab', ['state', brdTab]);
     app.directive('brdSubmit', ['ajax', 'state', brdSubmit]);
     app.directive('bindUnsafeHtml', ['$compile', bindUnsafeHtml]);
-    app.directive('ngAttrs', ['$compile','$timeout', addAttributes]);
+    app.directive('ngAttrs', addAttributes);
 
 })(birdmin.app);

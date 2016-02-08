@@ -4,7 +4,7 @@ namespace Birdmin;
 
 use Birdmin\Contracts\Sluggable;
 use Birdmin\Core\Model;
-
+use Birdmin\Collections\MediaCollection;
 
 class Product extends Model
     implements Sluggable
@@ -53,5 +53,14 @@ class Product extends Model
     public function category()
     {
         return $this->hasOne(Category::class, 'id','category_id');
+    }
+
+    /**
+     * Return a collection of media items, ordered by priority.
+     * @return MediaCollection
+     */
+    public function media()
+    {
+        return $this->related(Media::class);
     }
 }

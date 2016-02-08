@@ -3,14 +3,13 @@
 namespace Birdmin\Http\Controllers;
 
 use Birdmin\Collections\MediaCollection;
+use Birdmin\Components\Dropzone;
 use Birdmin\Core\Controller;
 use Birdmin\Core\Template;
 use Birdmin\Media;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Birdmin\Support\Table;
-use Birdmin\Components\ButtonComponent;
-use Birdmin\Components\ButtonGroupComponent;
+use Birdmin\Components\Button;
+use Birdmin\Core\Model;
 
 class MediaController extends Controller
 {
@@ -27,25 +26,23 @@ class MediaController extends Controller
      */
     public function index (Request $request)
     {
-        $class = $request->model_class;
+        $class = $this->setClass($request->model_class);
 
         if ($request->ajax()) {
             $models = $class::request($request, $this->user);
-            $table = Table::create($models,$class)->toJson();
+            $this->setTable($models,$class);
 
-            $actions = ButtonGroupComponent::build([
-                ButtonComponent::create()->parent($class)->link('home'),
-                ButtonComponent::create()->parent($class)->link('view')->active(),
-                ButtonComponent::create()->parent($class)->link('upload'),
+            $this->setActions([
+                Button::create()->parent($class)->link('home'),
+                Button::create()->parent($class)->link('view')->active(),
+                Button::create()->parent($class)->link('upload'),
             ]);
 
-            $views = ButtonGroupComponent::build([
-                ButtonComponent::create()->parent($class)->link('list')->active(),
-                ButtonComponent::create()->parent($class)->link('grid'),
+            $this->setViews([
+                Button::create()->parent($class)->tab('list')->active(),
+                Button::create()->parent($class)->tab('grid'),
             ]);
         }
-
-        $this->data = compact('class','table','actions','views');
 
         return $this->birdmin('cms::manage.all');
     }
@@ -57,8 +54,14 @@ class MediaController extends Controller
      */
     public function create(Request $request)
     {
-        $class = Media::class;
-        $this->data = compact('class');
+        $class = $this->setClass(Media::class);
+
+        $this->setActions([
+            Button::create()->parent($class)->link('home'),
+            Button::create()->parent($class)->link('view'),
+            Button::create()->parent($class)->link('upload')->active(),
+        ]);
+        $this->setData('dropzone', Dropzone::create()->handler('default',cms_url('media/upload')));
 
         return $this->birdmin('cms::media.upload');
     }
@@ -73,6 +76,9 @@ class MediaController extends Controller
         $objects = new MediaCollection();
         foreach ($request->files->all() as $uploadedFile) {
             $objects[] = Media::upload($uploadedFile);
+        }
+        foreach ((array)$request->input('relate') as $parentObjectName) {
+            $objects->attach($parentObjectName);
         }
         return $objects;
     }

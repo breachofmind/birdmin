@@ -2,16 +2,15 @@
 
 
 <section id="{{ $class::plural()."Tree" }}">
-<ul>
-    <li ng-repeat="object in state.data.roots">
-        @{{ object.title }}
-        <tree model="object"></tree>
+    <ul>
+        <li ng-repeat="object in state.data.roots">
+            @{{ object.title }}
+            <tree model="object"></tree>
 
-    </li>
-</ul>
-
-
+        </li>
+    </ul>
 </section>
+
 
 <script type="text/x-handlebars-template" id="treeTemplate">
     <ul ng-if="model.children.length">

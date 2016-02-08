@@ -22,62 +22,99 @@
         var URL = birdmin.URL;
         var log = [];
 
-        return new function ApplicationState() {
+        function ApplicationState()
+        {
+            this.url = new URL(window.location.href);
+            this.notifications = new Notifier();
 
-            this.view = false;
-            this.views = "";
-            this.data = {};
-            this.actions = "";
+            var defaults = {
+                view:     null,
+                class:    null,
+                model:    null,
+                data:     {},
+                actions:  [],
+                views:    [],
+                table:    null,
+                user:     null
+            };
+
+            // Toggles
             this.processing = false;
-            this.loading = false;
-            this.collapse = false;
-            this.response = {};
+            this.loading    = false;
+            this.collapse   = false;
 
-            this.notifications = {
-                messageBag: [],
-                errorBag: []
-            };
 
-            this.clearDeck = function()
-            {
-                this.actions = [];
-                this.views = [];
-            };
-
+            /**
+             * Updates the application state with the response from the server.
+             * @param response
+             */
             this.setResponse = function(response)
             {
                 this.url = new URL(response.config.url);
-                this.view = response.data.view;
-                this.response = response;
-                this.data = response.data;
-                this.user = response.data.user;
-                this.actions = response.data.actions || [];
-                this.views = response.data.views || "";
+
+                for (var key in defaults) {
+                    this[key] = response.data[key] || defaults[key] || null;
+                }
             };
 
+            /**
+             * Notify the user with some messages.
+             * @param response
+             */
             this.notify = function (response)
             {
-                this.notifications = response;
+                this.notifications.set(response);
 
                 $timeout(function(){
-                    this.clearMessages();
+                    this.notifications.set();
                 }.bind(this), config.alertTimeout);
             };
 
-            this.hasMessages = function()
+            /**
+             * Check if the URL hash equals the given name.
+             * @param name
+             * @returns {boolean}
+             */
+            this.hash = function(name)
             {
-                return (this.notifications.messageBag.length > 0
-                || this.notifications.errorBag.length > 0);
+                return this.url.hash==="#"+name;
+            };
+        }
+
+        function Notifier()
+        {
+            var defaults = {
+                errors:[],
+                messages:[],
+                success:true
             };
 
-            this.clearMessages = function()
+            this.set = function(response)
             {
-                log.push($.extend(true,{},this.notifications));
-                this.notifications.messageBag = [];
-                this.notifications.errorBag = [];
+                if (! arguments.length) {
+                    response = defaults;
+                }
+                for (var key in response) {
+                    this[key] = response[key] || defaults[key];
+                }
             };
 
-        };
+            this.log = function()
+            {
+                for (var key in defaults) {
+                    log.push(defaults[key]);
+                }
+            };
+
+            this.empty = function()
+            {
+                return this.errors.length == 0 && this.messages.length == 0;
+            };
+
+            this.set();
+        }
+
+        return new ApplicationState();
     }
 
     app.service('state', ['$timeout', ApplicationStateService]);

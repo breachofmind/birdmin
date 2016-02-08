@@ -5,7 +5,7 @@ use Birdmin\Contracts\Hierarchical;
 use Birdmin\Core\Model;
 use Birdmin\Core\Component;
 
-class ButtonComponent extends Component
+class Button extends Component
 {
     protected $name = "Button";
 
@@ -60,8 +60,8 @@ class ButtonComponent extends Component
         'delete'     => ['Delete {S}',     '{p}/destroy/{id}','trash2'],
         'edit'       => ['Edit {S}',       '{p}/edit/{id}',   'pencil3'],
 
-        'list'       => [null,             '{p}',             'list'],
-        'grid'       => [null,             '{p}?grid=true',   'grid'],
+        'list'       => [null,             '{p}#list',        'list'],
+        'grid'       => [null,             '{p}#grid',        'grid'],
         'tree'       => [null,             '{p}/tree',        'site-map'],
         'media'      => [null,             '{p}/media/{id}',  'picture2'],
         'assigned'   => [null,             '{p}/assigned',    'paperclip'],
@@ -156,6 +156,12 @@ class ButtonComponent extends Component
         return $this->attribute('brd-link');
     }
 
+    public function tab($action=null)
+    {
+        $this->setupAction($action);
+        return $this->attribute('brd-tab',$action);
+    }
+
     /**
      * Create a brd-submit action out of this button.
      * @param null $action
@@ -201,7 +207,7 @@ class ButtonComponent extends Component
      * @param ButtonGroupComponent $component
      * @return $this
      */
-    public function addTo(ButtonGroupComponent $component)
+    public function addTo(ButtonGroup $component)
     {
         $component->add($this);
         return $this;
