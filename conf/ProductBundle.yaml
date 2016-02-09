@@ -1,0 +1,39 @@
+model: Birdmin\ProductBundle
+permissions: [view,create,edit,delete]
+title: name
+icon: bag
+no_image: /public/images/no-image.svg
+components: [
+  [Birdmin\Components\RelatedMedia, []]
+]
+labels:
+  navigation: Product Bundles
+  singular: bundle
+  plural: bundles
+
+
+in_table : [name,brand,status,slug]
+required : [name,status]
+unique   : [slug]
+
+fields:
+  name|text           : [Name,   "A name for this bundle"]
+  slug|slug:
+    label :             [Slug,    "A unique URL slug for this bundle"]
+    options:
+      reference: name
+  brand|text          : [Brand,   "The brand of the bundle"]
+  excerpt|html        : [Excerpt, "A short description of this bundle"]
+  description|html    : [Description, "A description of the bundle"]
+  status|radio :
+    label             : [Status, "The visibility or status of the bundle"]
+    options:
+      values:
+        draft: Draft
+        publish: Publish
+
+table:
+  bulk: false
+  formatters:
+  columns:
+    preview: [Preview, -1, Birdmin\Formatters\preview]

@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         'Birdmin\Console\Commands\LaunchCommand',
         'Birdmin\Console\Commands\RefuelCommand',
+        'Birdmin\Console\Commands\ImportCommand',
     ];
 
     /**

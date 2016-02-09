@@ -103,6 +103,17 @@ class Relationship extends BaseModel {
         ]);
     }
 
+    /**
+     * Removes any relationships for a given model.
+     * @param Model $model
+     * @return array
+     */
+    public static function clear(Model $model)
+    {
+        $parents  = DB::table('relationships')->where('parent_id',$model->id)->where('parent_object',$model->getClass())->delete();
+        $children = DB::table('relationships')->where('child_id',$model->id)->where('child_object',$model->getClass())->delete();
+        return ['parents'=>$parents, 'children'=>$children];
+    }
 
     /**
      * Get the last priority number for a relationship.

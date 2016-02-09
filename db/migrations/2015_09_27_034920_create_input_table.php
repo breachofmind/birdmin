@@ -17,7 +17,7 @@ class CreateInputTable extends Migration
             $table->string('uid',32);
             $table->integer('active')->unsigned()->default(1);
             $table->integer('priority')->default(1);
-            $table->string('object',200);
+            $table->string('object',200)->index();
             $table->string('name',100);
             $table->string('label',200);
             $table->text('options');

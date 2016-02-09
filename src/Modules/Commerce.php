@@ -12,6 +12,7 @@ class Commerce extends Module {
     public $models = [
         'Birdmin\Product',
         'Birdmin\ProductVariation',
+        'Birdmin\ProductBundle'
     ];
 
     public function setup ()

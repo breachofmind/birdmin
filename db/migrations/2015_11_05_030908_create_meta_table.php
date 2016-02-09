@@ -13,8 +13,8 @@ class CreateMetaTable extends Migration
     {
         Schema::create('meta', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('object', 300);
-            $table->string('key', 300);
+            $table->string('object', 300)->index();
+            $table->string('key', 300)->index();
             $table->text('value');
         });
     }

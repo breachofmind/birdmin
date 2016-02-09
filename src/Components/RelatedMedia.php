@@ -40,6 +40,9 @@ class RelatedMedia extends Component implements ModuleComponent
      */
     public function __construct(Model $model, $args=null)
     {
+        if (! $model instanceof \Birdmin\Contracts\RelatedMedia) {
+            return $this->canRender = false;
+        }
         $this->parent($model);
         $this->dropzone = Dropzone::create()
             ->handler('relate', cms_url('media/upload'))

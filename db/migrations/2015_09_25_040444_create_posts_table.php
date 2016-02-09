@@ -20,7 +20,7 @@ class CreatePostsTable extends Migration
             $table->string('status', 100);
             $table->string('type', 100);
             $table->text('excerpt');
-            $table->string('slug',250);
+            $table->string('slug',250)->index();
             $table->text('content');
             $table->integer('user_id')->unsigned();
             $table->integer('location_id')->unsigned();

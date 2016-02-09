@@ -2,18 +2,20 @@
 
 namespace Birdmin;
 
+use Birdmin\Contracts\RelatedMedia;
 use Birdmin\Contracts\Sluggable;
 use Birdmin\Core\Model;
 use Birdmin\Collections\MediaCollection;
 
 class Product extends Model
-    implements Sluggable
+    implements Sluggable, RelatedMedia
 {
     protected $table = "products";
 
     protected $fillable = [
         'name',
         'category_id',
+        'bundle_id',
         'brand',
         'excerpt',
         'description',
@@ -53,6 +55,15 @@ class Product extends Model
     public function category()
     {
         return $this->hasOne(Category::class, 'id','category_id');
+    }
+
+    /**
+     * Return the product bundle object.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function bundle()
+    {
+        return $this->hasOne(ProductBundle::class, 'id','bundle_id');
     }
 
     /**

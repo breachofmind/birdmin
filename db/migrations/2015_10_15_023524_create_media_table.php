@@ -22,7 +22,7 @@ class CreateMediaTable extends Migration
             $table->text('caption');
             $table->string('category',250);
             $table->text('metadata');
-            $table->string('etag',100);
+            $table->string('etag',100)->index();
             $table->timestamps();
         });
     }

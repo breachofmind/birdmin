@@ -15,7 +15,7 @@ class CreateCategoryTable extends Migration
             $table->increments('id');
             $table->string('uid',32);
             $table->string('name', 200);
-            $table->string('slug', 255);
+            $table->string('slug', 255)->index();
             $table->text('description');
             $table->string('excerpt',500);
             $table->string('object', 300);

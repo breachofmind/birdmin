@@ -22,6 +22,7 @@ class Model extends BaseModel
 {
     public static $map = [];
     public static $config = [];
+    public static $components = [];
 
     /**
      * Collection of inputs.
@@ -48,6 +49,8 @@ class Model extends BaseModel
      */
     protected $searchable = [];
 
+    protected $_components = [];
+
     /**
      * Called on system boot.
      */
@@ -70,11 +73,19 @@ class Model extends BaseModel
      */
     public function __construct(array $attributes = [])
     {
+        // TODO - Find a better way to do this
         $this->configureModel (Event::fire(new ModelConstruct($this)));
 
         parent::__construct($attributes);
 
         $this->appends[] = "titleField";
+
+        // Create component objects if registered.
+        if (array_key_exists(static::class, Model::$components)) {
+            foreach (Model::$components[static::class] as $componentClass) {
+                $this->_components[] = $componentClass::create($this);
+            }
+        }
     }
 
 
@@ -160,6 +171,7 @@ class Model extends BaseModel
             'value'  => $value
         ]);
     }
+
 
     /**
      * Save a global key value pair for a Model class.
@@ -509,10 +521,15 @@ class Model extends BaseModel
     }
 
     /**
-     * Returns the array of module component objects.
+     * Returns the array of component objects.
      * @return array
      */
     public function getComponents()
+    {
+        return $this->_components;
+    }
+
+    public function getModuleComponents()
     {
         $out = [];
         $components = static::getConfig('components');
@@ -524,6 +541,19 @@ class Model extends BaseModel
             $out[] = $class::create($this,$args);
         }
         return $out;
+    }
+
+    /**
+     * Register a component.
+     * @param $class string
+     * @return mixed
+     */
+    public static function useComponent($componentClass)
+    {
+        if (! isset(Model::$components[static::class])) {
+            Model::$components[static::class] = [];
+        }
+        return Model::$components[static::class][] = $componentClass;
     }
 
     /**

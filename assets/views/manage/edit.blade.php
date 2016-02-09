@@ -14,7 +14,7 @@
 </form>
 
 
-@foreach($model->getComponents() as $component)
+@foreach($model->getModuleComponents() as $component)
 
     {!! $component->render() !!}
 

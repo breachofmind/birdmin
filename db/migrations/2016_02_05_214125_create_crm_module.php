@@ -18,7 +18,7 @@ class CreateCrmModule extends Migration
             $table->string('uid',32);
             $table->string('first_name',300);
             $table->string('last_name',300);
-            $table->string('email',250);
+            $table->string('email',250)->index();
             $table->string('affiliation',500);
             $table->string('phone', 100);
             $table->string('source',200);

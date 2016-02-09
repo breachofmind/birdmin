@@ -32,6 +32,11 @@ fields:
     options:
       model: Birdmin\Category
       nullable: true
+  bundle_id|model :
+    label               : [Bundle, "The product's bundled item"]
+    options:
+      model: Birdmin\ProductBundle
+      nullable: true
   type|text             : [Type, "The product type"]
   attributes|textarea   : [Attributes, "Product attributes, such as dimensions or weight"]
   status|radio :
@@ -46,4 +51,4 @@ table:
   formatters:
   columns:
     url: [URL, 10, Birdmin\Formatters\url]
-    updated_at: [Modified, 2, Birdmin\Formatters\date]
+    preview: [Preview, -1, Birdmin\Formatters\preview]

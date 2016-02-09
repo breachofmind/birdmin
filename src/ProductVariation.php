@@ -2,10 +2,12 @@
 
 namespace Birdmin;
 
+use Birdmin\Contracts\RelatedMedia;
 use Birdmin\Core\Model;
 
 
 class ProductVariation extends Model
+    implements RelatedMedia
 {
     protected $table = "product_variations";
 

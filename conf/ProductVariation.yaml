@@ -2,6 +2,7 @@ model: Birdmin\ProductVariation
 permissions: [view,create,edit,delete]
 title: name
 icon: bag
+no_image: /public/images/no-image.svg
 components: [
   [Birdmin\Components\RelatedMedia, []]
 ]

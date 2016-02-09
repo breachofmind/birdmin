@@ -15,14 +15,15 @@ class CreateCommerceModule extends Migration
         Schema::create('products', function(Blueprint $table)
         {
             $table->increments('id');
-            $table->integer('category_id')->default(0);
+            $table->integer('category_id')->unsigned()->references('id')->on('categories')->default(0);
+            $table->integer('bundle_id')->unsigned()->references('id')->on('product_bundles')->default(0);
             $table->string('uid',32);
             $table->string('name',500);
             $table->string('brand',500);
             $table->string('sku',200);
             $table->string('status', 100);
             $table->string('type', 100);
-            $table->string('slug',250);
+            $table->string('slug',250)->index();
             $table->string('excerpt',250);
             $table->text('description');
             $table->text('attributes');
@@ -45,6 +46,20 @@ class CreateCommerceModule extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+
+        Schema::create('product_bundles', function(Blueprint $table)
+        {
+            $table->increments('id');
+            $table->string('uid',32);
+            $table->string('name',500);
+            $table->string('brand',400);
+            $table->string('slug',200);
+            $table->string('status', 100);
+            $table->string('excerpt',500);
+            $table->text('description');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -54,6 +69,7 @@ class CreateCommerceModule extends Migration
      */
     public function down()
     {
+        Schema::drop('product_bundles');
         Schema::drop('product_variations');
         Schema::drop('products');
     }

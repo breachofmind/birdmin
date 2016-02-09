@@ -263,7 +263,7 @@ class Media extends Model
      * @param $file string path to file
      * @return boolean
      */
-    public static function import ($file)
+    public static function import ($file, $move=true)
     {
         $explode = explode(".",$file);
         $ext = array_pop($explode);
@@ -271,15 +271,16 @@ class Media extends Model
 
         // Note - 'test' is true so the file is not treated like uploaded file.
         $upload = new UploadedFile($file, basename($file), $mimetype, filesize($file),UPLOAD_ERR_OK,true);
-        return Media::upload($upload);
+        return Media::upload($upload,$move);
     }
 
     /**
      * Perform a file upload.
      * @param UploadedFile $file
+     * @param $move boolean - move or copy the file?
      * @return \Exception|FileException|Media
      */
-    public static function upload (UploadedFile $file)
+    public static function upload (UploadedFile $file, $move=true)
     {
         Media::unguard();
         $media = new Media([
@@ -294,7 +295,8 @@ class Media extends Model
         $media->file_name = Media::getUniqueName( $media->path() );
 
         try {
-            $file->move(dirname($media->path()), $media->file_name);
+            if ($move) $file->move(dirname($media->path()), $media->file_name);
+            else copy($file->getPathname(), $media->path());
 
         } catch (FileException $error) {
             return $error;
@@ -374,7 +376,8 @@ class Media extends Model
             }
         }
         unlink($this->path());
-        // TODO - destroy relationships
+
+        Relationship::clear($this);
 
         return true;
     }
