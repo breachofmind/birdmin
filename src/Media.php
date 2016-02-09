@@ -366,20 +366,22 @@ class Media extends Model
      */
     public function delete ()
     {
-        if (!parent::delete()) {
-            return false;
-        }
         // Delete any files, including sizes.
-        if ($this->sizes) {
-            foreach ($this->sizes as $key=>$url) {
-                unlink($this->path($key));
+        try {
+            if ($this->sizes) {
+                foreach ($this->sizes as $key=>$url) {
+                    unlink($this->path($key));
+                }
             }
+            unlink($this->path());
+        } catch(\ErrorException $e) {
+            // File probably doesn't exist, so delete anyway.
         }
-        unlink($this->path());
+
 
         Relationship::clear($this);
 
-        return true;
+        return parent::delete();
     }
 
     /**

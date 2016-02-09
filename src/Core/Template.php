@@ -3,6 +3,7 @@ namespace Birdmin\Core;
 
 use Birdmin\Support\TemplateFile;
 use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Support\Facades\Request;
 
 class Template implements Jsonable {
 
@@ -15,7 +16,7 @@ class Template implements Jsonable {
     public $title;
     public $description;
     public $bodyClass;
-
+    public $session_id;
 
     protected $metas = [];
     protected $styles = [];
@@ -33,10 +34,17 @@ class Template implements Jsonable {
         $this->app = $app;
     }
 
+    public function init()
+    {
+        //dd(Request::session());
+        $this->session_id = Request::session()->getId();
+    }
+
     /**
      * Magic method for setting attributes.
      * @param $name string
      * @param $value mixed
+     * @return mixed|null
      */
     public function __set($name,$value)
     {
@@ -154,7 +162,8 @@ class Template implements Jsonable {
      * Return the section view array.
      * @return array
      */
-    public function getSections () {
+    public function getSections ()
+    {
         return $this->sections;
     }
 
@@ -182,7 +191,8 @@ class Template implements Jsonable {
      * @param bool|false $encode
      * @return array|string
      */
-    public function toJson ($encode=false) {
+    public function toJson ($encode=false)
+    {
         $out = [
             'title' => $this->title,
             'description' => $this->description,
@@ -195,7 +205,8 @@ class Template implements Jsonable {
      * To string method.
      * @return array|string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->toJson(true);
     }
 }

@@ -34,9 +34,11 @@ class LaunchCommand extends Command
      */
     public function handle()
     {
-
         $this->call('migrate', [
             "--path" => 'cms/db/migrations'
+        ]);
+        $this->call('migrate', [
+            "--path" => 'app/db/migrations'
         ]);
         $this->call('db:seed', [
             "--class" => 'Birdmin\Core\Seeder'

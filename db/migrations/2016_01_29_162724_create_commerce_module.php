@@ -43,6 +43,7 @@ class CreateCommerceModule extends Migration
             $table->text('description');
             $table->text('attributes');
             $table->string('color',10);
+            $table->string('color_name',200);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -57,6 +58,7 @@ class CreateCommerceModule extends Migration
             $table->string('slug',200);
             $table->string('status', 100);
             $table->string('excerpt',500);
+            $table->string('website',255);
             $table->text('description');
             $table->timestamps();
         });

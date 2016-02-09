@@ -3,6 +3,7 @@
 namespace Birdmin\Core;
 
 use Birdmin\Events\ModelConstruct;
+use Birdmin\Media;
 use Birdmin\Permission;
 use Birdmin\User;
 use Illuminate\Database\Eloquent\Model as BaseModel;
@@ -331,22 +332,29 @@ class Model extends BaseModel
     }
 
     /**
-     * Return an image of this object, if any.
+     * Return an image html element of this object, if any.
      * Will look for an assigned image file type.
      * @param null|string $size
      * @param null|string|array $classes
      * @return string|void
      */
-    public function img ($size=null,$classes=null)
+    public function img($size=null,$classes=null)
     {
-        if (!method_exists($this,'media')) {
-            return $this->noImage($classes);
+        $image = $this->getImage();
+        return $image ? $image->img($size,$classes) : $this->noImage($classes);
+    }
+
+    /**
+     * Get the first image object.
+     * @return null|Media
+     */
+    public function getImage()
+    {
+        if (! method_exists($this,'media')) {
+            return null;
         }
         $images = $this->media()->byType('image');
-        if (!$images->first()) {
-            return $this->noImage($classes);
-        }
-        return $images->first()->img($size,$classes);
+        return $images->first();
     }
 
     /**
@@ -354,7 +362,7 @@ class Model extends BaseModel
      * @param null|string|array $classes
      * @return string|void
      */
-    public function thumb ($classes=null)
+    public function thumb($classes=null)
     {
         return $this->img('sm',$classes);
     }
@@ -365,7 +373,7 @@ class Model extends BaseModel
      * @param null|string|array $classes
      * @return string
      */
-    public function noImage ($classes=null)
+    public function noImage($classes=null)
     {
         $missing_image_src = static::getConfig('no_image');
         if (!$missing_image_src) {
@@ -379,7 +387,7 @@ class Model extends BaseModel
      * Returns a link to edit this object in the CMS.
      * @return string
      */
-    public function editUrl ()
+    public function editUrl()
     {
         return cms_url(static::plural()."/edit/".$this->id);
     }
@@ -424,7 +432,7 @@ class Model extends BaseModel
      * @param $user User|null - optional
      * @return Collection|LengthAwarePaginator
      */
-    public static function request (Request $request, $user=null)
+    public static function request(Request $request, $user=null)
     {
         $class = get_called_class();
         $static = new $class;

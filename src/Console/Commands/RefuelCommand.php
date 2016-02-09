@@ -3,6 +3,9 @@
 namespace Birdmin\Console\Commands;
 
 use Illuminate\Console\Command;
+use Birdmin\Media;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class RefuelCommand extends Command
 {
@@ -34,6 +37,14 @@ class RefuelCommand extends Command
      */
     public function handle()
     {
+        // Delete media from the database and from the uploads directory.
+        if (Schema::hasTable('media')) {
+            $media = Media::all();
+            $media->each(function($item) {
+                $item->delete();
+            });
+        }
+
         $this->call('migrate:reset');
         $this->call('birdmin:launch');
     }
