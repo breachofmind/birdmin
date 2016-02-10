@@ -17,6 +17,7 @@ class FieldBlueprint
     const STATUS    = 6;
     const SLUG      = 7;
     const INTEGER   = 8;
+    const TITLE     = 9;
 
 
     /**
@@ -70,6 +71,9 @@ class FieldBlueprint
         static::$fieldSetup[static::INTEGER] = function(Blueprint $table, FieldBlueprint $field) {
             $table->integer($field->name);
         };
+        static::$fieldSetup[static::TITLE] = function(Blueprint $table, FieldBlueprint $field) {
+            $table->string($field->name, 300);
+        };
     }
 
     public function __construct($name,$type,$args)
@@ -80,6 +84,17 @@ class FieldBlueprint
         $this->name = $name;
         $this->type = $type;
         $this->args = $args;
+    }
+
+    /**
+     * Check if this field should be fillable.
+     * @return bool
+     */
+    public function isLocked()
+    {
+        $locked = [static::PRIMARY, static::UID];
+
+        return in_array($this->type, $locked);
     }
 
     /**

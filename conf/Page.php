@@ -4,37 +4,38 @@ use Birdmin\Support\FieldBlueprint;
 use Birdmin\Input;
 use Birdmin\Page;
 
-
-
-$status = [
-    'publish' => 'Publish',
-    'draft' => 'Draft'
+$pageTypes = [
+    'normal'  => 'Normal',
+    'landing' => 'Landing Page'
 ];
 
-$blueprint = ModelBlueprint::create(Page::class)
+ModelBlueprint::create(Page::class)
     ->table('pages')
-    ->labels([
-        'singular'   => 'page',
-        'plural'     => 'pages',
-        'navigation' => 'Pages'
+    ->icon('file-empty')
+    ->fields([
+        'title'     => FieldBlueprint::TITLE,
+        'content'   => FieldBlueprint::TEXT,
+        'status'    => FieldBlueprint::STATUS,
+        'type'      => FieldBlueprint::STRING,
+        'parent_id' => [FieldBlueprint::REFERENCE, ['pages','id']],
     ])
+    ->fillable      ('*')
+    ->timestamps    (true)
+    ->softDeletes   (true)
+    ->in_table      ('title','status','slug')
+    ->unique        ('slug')
+    ->required      ('slug','status')
 
-    ->field('title',    FieldBlueprint::STRING, 50)
-    ->field('content',  FieldBlueprint::TEXT)
-    ->field('status',   FieldBlueprint::STATUS)
-    ->field('parent_id',FieldBlueprint::REFERENCE, ['pages','id'])
-    ->title('title')
-
-    ->fillable('title','content','parent_id')
-    ->guarded('status')
-    ->timestamps(true)
-
-    ->permissions('create','edit','delete','view')
-
-    ->in_table  ('title','status','slug')
-    ->unique    ('slug')
-    ->required  ('slug','status')
-
-    ->input('title',    Input::TEXT,    'The title of the Page')
-    ->input('content',  Input::HTML,    'The content of the page')
-    ->input('status',   Input::RADIO,   'The publish status of the page', ['values'=>$status]);
+    ->inputs([
+        'title'     => [Input::TEXT,    'The page title'],
+        'slug'      => [Input::SLUG,    'A unique URL slug for this page', ['reference'=>'title']],
+        'content'   => [Input::HTML,    'The page body or content'],
+        'status'    => [Input::RADIO,   'The publish status of the page', ['values'=>Input::$statusFields]],
+        'type'      => [Input::RADIO,   'The special type or grouping of this page', ['values'=>$pageTypes]],
+        'parent_id' => [Input::MODEL,   'The parent page to whom this page is related', ['model'=> Page::class, 'nullable'=>true]],
+    ])
+    ->indexTable()
+        ->columns([
+            'url'           => ["URL",      10, 'Birdmin\Formatters\url'],
+            'updated_at'    => ["Modified", 2,  'Birdmin\Formatters\date']
+        ]);

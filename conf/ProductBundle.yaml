@@ -8,9 +8,9 @@ components: [
 ]
 labels:
   navigation: Product Bundles
-  singular: bundle
-  plural: bundles
-
+  singular: product bundle
+  plural: product bundles
+  slug: bundles
 
 in_table : [name,brand,status,slug]
 required : [name,status]

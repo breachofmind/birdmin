@@ -11,7 +11,7 @@ labels:
   navigation: Products
   singular: product
   plural: products
-
+  slug: products
 
 in_table : [name,brand,type,sku,status]
 required : [name,slug,status]

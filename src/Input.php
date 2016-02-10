@@ -32,6 +32,15 @@ class Input extends Model
     const TOGGLE    = "toggle";
     const URL       = "url";
 
+    /**
+     * Typical status fields.
+     * @var array
+     */
+    static $statusFields = [
+        'publish'   => 'Published',
+        'draft'     => 'Draft'
+    ];
+
     protected $model;
 
     protected $fillable = [

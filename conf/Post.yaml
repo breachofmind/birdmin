@@ -6,7 +6,7 @@ labels:
   navigation: Posts
   singular: post
   plural: posts
-
+  slug: posts
 
 in_table : [title,user_id,published_at,status]
 required : [title,slug,user_id]

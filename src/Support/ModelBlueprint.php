@@ -2,13 +2,13 @@
 namespace Birdmin\Support;
 
 
-use Birdmin\Contracts\RelatedMedia;
 use Birdmin\Contracts\Sluggable;
 use Birdmin\Core\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Collection;
 use Birdmin\Input;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class ModelBlueprint {
 
@@ -27,6 +27,12 @@ class ModelBlueprint {
     public $table;
 
     /**
+     * The icon class name.
+     * @var string
+     */
+    public $icon = "file-empty";
+
+    /**
      * Collection of fields.
      * @var Collection
      */
@@ -34,6 +40,7 @@ class ModelBlueprint {
 
     /**
      * Permissions available for the model.
+     * These are the defaults.
      * @var array
      */
     public $permissions = ['view','create','edit','delete'];
@@ -67,11 +74,13 @@ class ModelBlueprint {
      * The model labels.
      * @var array
      */
-    protected $labels = [
-        'singular'   => 'model',
-        'plural'     => 'models',
-        'navigation' => 'Model',
-    ];
+    protected $labels = [];
+
+    /**
+     * A reference to this models index table.
+     * @var IndexTableBlueprint
+     */
+    protected $indexTable;
 
     /**
      * Named constructor.
@@ -84,16 +93,39 @@ class ModelBlueprint {
     }
 
     /**
+     * Return a blueprint from the static array.
+     * @param $modelClass string
+     * @return null|ModelBlueprint
+     */
+    public static function get($modelClass)
+    {
+        return isset(ModelBlueprint::$blueprints[$modelClass]) ? ModelBlueprint::$blueprints[$modelClass] : null;
+    }
+
+    /**
      * ModelBlueprint constructor.
      * @param $modelClass string
      */
     public function __construct($modelClass)
     {
+        $this->fields = collect([]);
+
         $this->class = $modelClass;
 
         $this->typicalSetup();
 
+        $this->indexTable = new IndexTableBlueprint($this);
+
         ModelBlueprint::$blueprints[$modelClass] = $this;
+    }
+
+    /**
+     * Get the index table object.
+     * @return IndexTableBlueprint
+     */
+    public function indexTable()
+    {
+        return $this->indexTable;
     }
 
     /**
@@ -104,11 +136,35 @@ class ModelBlueprint {
      */
     public function field($name, $type=null, $args=null)
     {
-        if (empty($this->fields)) $this->fields = collect([]);
         if (func_num_args() == 1) {
             return $this->fields->get($name);
         }
         $this->fields[$name] = new FieldBlueprint($name, $type, $args);
+
+        return $this;
+    }
+
+    /**
+     * Set multiple fields.
+     * @param array $array
+     * @return $this
+     */
+    public function fields($array=[])
+    {
+        $i=0;
+        foreach($array as $name=>$args)
+        {
+            $type    = is_array($args) ? $args[0] : $args;
+            $options = is_array($args) && isset($args[1]) ? $args[1] : null;
+
+            $this->field($name, $type, $options);
+
+            // By default, make the first field the title.
+            if ($i==0) {
+                $this->title = $this->field($name);
+            }
+            $i++;
+        }
         return $this;
     }
 
@@ -120,6 +176,21 @@ class ModelBlueprint {
     public function table($name)
     {
         $this->table = $name;
+
+        if (empty($this->labels)) {
+            $this->guessLabels($name);
+        }
+        return $this;
+    }
+
+    /**
+     * Set the icon name.
+     * @param $name string
+     * @return $this
+     */
+    public function icon($name)
+    {
+        $this->icon = $name;
         return $this;
     }
 
@@ -165,6 +236,17 @@ class ModelBlueprint {
     public function timestamps($bool=true)
     {
         $this->timestamps = $bool;
+        return $this;
+    }
+
+    /**
+     * Set the timestamps attribute.
+     * @param bool $bool
+     * @return $this
+     */
+    public function softDeletes($bool=true)
+    {
+        $this->softDeletes = $bool;
         return $this;
     }
 
@@ -217,7 +299,17 @@ class ModelBlueprint {
         if (count($fields) === 0 ) {
             return $this->fields->filter(function($field) use($method) {
                 return $field->$method === true;
-            })->map(function($field){ return $field->getName(); })->values();
+            })->map(function($field){
+                return $field->getName();
+            })->values();
+        }
+        // Mark all fields.
+        if (count($fields) === 1 && $fields[0] === "*") {
+            $fields = $this->fields->filter(function($field) {
+                return $field->isLocked() === false;
+            })->map(function($field){
+                return $field->getName();
+            })->values();
         }
         foreach ($fields as $field)
         {
@@ -249,11 +341,42 @@ class ModelBlueprint {
         try {
             $this->field($field)
                 ->input($type,$description,$options);
-        } catch(\ErrorException $e) {
+        } catch(\Exception $e) {
             // Field not defined
         }
 
         return $this;
+    }
+
+    /**
+     * Define multiple inputs.
+     * @param array $array
+     * @return $this
+     */
+    public function inputs($array=[])
+    {
+        foreach ($array as $name=>$args)
+        {
+            $type = is_array($args) ? $args[0] :  $args;
+            $description = is_array($args) ? array_get($args,1) : null;
+            $options = is_array($args) ? array_get($args,2) : null;
+            $this->input($name, $type, $description, $options);
+        }
+        return $this;
+    }
+
+    /**
+     * Take a guess at what the basic labels will be, based on the given name.
+     * @return $this
+     */
+    public function guessLabels($name=null)
+    {
+        return $this->labels([
+            'singular' => str_replace("_"," ",Str::singular($name)),
+            'plural' => str_replace("_"," ",Str::plural($name)),
+            'navigation' => Str::upper($name),
+            'slug' => Str::slug(Str::plural($name))
+        ]);
     }
 
     /**
@@ -264,6 +387,7 @@ class ModelBlueprint {
     {
         $class = $this->class;
         $static = new $class;
+
         if ($static instanceof Model) {
             $this->field('id', FieldBlueprint::PRIMARY);
             $this->field('uid', FieldBlueprint::UID);
@@ -275,11 +399,11 @@ class ModelBlueprint {
 
     /**
      * Create the table schema for all the columns.
+     * @return void
      */
     public function createSchema()
     {
-        $modelBlueprint = $this;
-        $schema = Schema::create($this->table, function(Blueprint $table) {
+        Schema::create($this->table, function(Blueprint $table) {
             foreach ($this->fields as $field)
             {
                 $field->schema($table);
@@ -287,6 +411,14 @@ class ModelBlueprint {
             if ($this->timestamps) $table->timestamps();
             if ($this->softDeletes) $table->softDeletes();
         });
-        dd($schema);
+    }
+
+    /**
+     * Drop the table schema.
+     * @return void
+     */
+    public function dropSchema()
+    {
+        Schema::drop($this->table);
     }
 }

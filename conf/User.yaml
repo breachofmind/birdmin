@@ -7,7 +7,7 @@ labels:
   navigation: Users
   singular: user
   plural: users
-
+  slug: users
 
 in_table : [email,first_name,last_name,phone]
 required : [email,first_name,last_name]

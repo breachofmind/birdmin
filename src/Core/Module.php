@@ -28,7 +28,7 @@ class Module {
 
     /**
      * Main navigation links.
-     * @var ButtonGroupComponent
+     * @var ButtonGroup
      */
     public $navigation;
 
@@ -89,8 +89,8 @@ class Module {
         $this->extender->route('cms', function($router) use ($class)
         {
             $static = new $class;
-            $p = $class::plural();
-            $s = $class::singular();
+            $p = $class::getLabel('slug');
+            $s = $static->getTable();
             $router->model("{$s}_id", $class);
 
             // These routes define the basic CRUD structure.
@@ -119,8 +119,9 @@ class Module {
     {
         $this->extender->route('api', function($router) use ($class)
         {
-            $p = $class::plural();
-            $s = $class::singular();
+            $static = new $class;
+            $p = $class::getLabel('slug');
+            $s = $static->getTable();
 
             $router->get("$p",           $this->determineController($class,"getAll", "REST\\")); //models
             $router->get("$p/{{$s}_id}", $this->determineController($class,"get", "REST\\"));

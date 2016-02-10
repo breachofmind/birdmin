@@ -6,6 +6,7 @@ labels:
   navigation: Categories
   singular: category
   plural: categories
+  slug: categories
 
 
 in_table : [name,slug,excerpt]

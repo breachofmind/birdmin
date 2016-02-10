@@ -51,20 +51,20 @@ class Button extends Component
     protected $actions = [
         //Handle     => Label               URL               Icon
         'home'       => [null,             '',                'home3'],
-        'navigation' => ['{navigation}',   '{p}',             '{icon}'],
-        'view'       => ['View {P}',       '{p}',             '{icon}'],
-        'create'     => ['Create New {S}', '{p}/create',      'plus-circle'],
-        'save'       => ['Save {S}',       '{p}/create',      'checkmark-circle'],
-        'update'     => ['Update {S}',     '{p}/edit/{id}',   'checkmark-circle'],
-        'upload'     => ['Upload {P}',     '{p}/create',      'upload'],
-        'delete'     => ['Delete {S}',     '{p}/destroy/{id}','trash2'],
-        'edit'       => ['Edit {S}',       '{p}/edit/{id}',   'pencil3'],
+        'navigation' => ['{navigation}',   '{slug}',             '{icon}'],
+        'view'       => ['View {P}',       '{slug}',             '{icon}'],
+        'create'     => ['Create New {S}', '{slug}/create',      'plus-circle'],
+        'save'       => ['Save {S}',       '{slug}/create',      'checkmark-circle'],
+        'update'     => ['Update {S}',     '{slug}/edit/{id}',   'checkmark-circle'],
+        'upload'     => ['Upload {P}',     '{slug}/create',      'upload'],
+        'delete'     => ['Delete {S}',     '{slug}/destroy/{id}','trash2'],
+        'edit'       => ['Edit {S}',       '{slug}/edit/{id}',   'pencil3'],
 
-        'list'       => [null,             '{p}#list',        'list'],
-        'grid'       => [null,             '{p}#grid',        'grid'],
-        'tree'       => [null,             '{p}/tree',        'site-map'],
-        'media'      => [null,             '{p}/media/{id}',  'picture2'],
-        'assigned'   => [null,             '{p}/assigned',    'paperclip'],
+        'list'       => [null,             '{slug}#list',        'list'],
+        'grid'       => [null,             '{slug}#grid',        'grid'],
+        'tree'       => [null,             '{slug}/tree',        'site-map'],
+        'media'      => [null,             '{slug}/media/{id}',  'picture2'],
+        'assigned'   => [null,             '{slug}/assigned',    'paperclip'],
     ];
 
     /**
@@ -136,6 +136,7 @@ class Button extends Component
             'p' => $object::plural(),
             'S' => $object::singular(true),
             'P' => $object::plural(true),
+            'slug' => $object::getLabel('slug'),
             'id' => $object instanceof Model ? $object->id : null,
             'title' => $object instanceof Model ? $object->titleField : null,
             'icon' => $object::getIcon(),

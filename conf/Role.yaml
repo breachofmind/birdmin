@@ -6,6 +6,7 @@ labels:
   navigation: User Roles
   singular: role
   plural: roles
+  slug: roles
 
 in_table : [name,description]
 required : [name]

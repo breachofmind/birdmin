@@ -6,6 +6,7 @@ labels:
   navigation: Input Register
   singular: input
   plural: inputs
+  slug: inputs
 
 in_table : [label,object,name,type,priority]
 required : [label,object,name,type]

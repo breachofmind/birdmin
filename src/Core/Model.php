@@ -60,7 +60,7 @@ class Model extends BaseModel
         parent::boot();
 
         // Use the model label for URL routing.
-        Model::$map[static::plural()] = static::class;
+        Model::$map[static::getLabel('slug')] = static::class;
 
         // Add the uid field.
         static::creating(function($model) {
@@ -389,7 +389,7 @@ class Model extends BaseModel
      */
     public function editUrl()
     {
-        return cms_url(static::plural()."/edit/".$this->id);
+        return cms_url(static::getLabel('slug')."/edit/".$this->id);
     }
 
 

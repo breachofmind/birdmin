@@ -8,9 +8,9 @@ components: [
 ]
 labels:
   navigation: Product Variations
-  singular: variation
-  plural: variations
-
+  singular: product variation
+  plural: product variations
+  slug: product-variations
 
 in_table : [name,color,product_id,sku,status]
 required : [product_id,name,status]

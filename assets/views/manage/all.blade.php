@@ -1,7 +1,6 @@
-<section id="{{ $class::plural()."Table" }}" class="brd-table"
+<section id="{{ $class::getLabel('slug')."Table" }}" class="brd-table"
          ng-controller="TableController as table"
-         ng-class="{grid:state.hash('grid'), list:state.hash('list')}"
-         data-endpoint="{{ cms_url($class::plural()) }}">
+         data-endpoint="{{ cms_url($class::getLabel('slug')) }}">
 
     <header class="brd-table-header">
         <div class="brd-table-row brd-table-meta">

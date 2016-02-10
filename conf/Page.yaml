@@ -6,7 +6,7 @@ labels:
   navigation: Pages
   singular: page
   plural: pages
-
+  slug: pages
 
 in_table : [title,slug,status]
 required : [title,slug]

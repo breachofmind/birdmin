@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Birdmin\Support\ModelBlueprint;
 
 class CreatePagesTable extends Migration
 {

@@ -6,6 +6,7 @@ labels:
   navigation: Media
   singular: media
   plural: media
+  slug: media
 
 in_table : [file_name,file_type,file_size,title]
 required : [file_name,file_type,title]

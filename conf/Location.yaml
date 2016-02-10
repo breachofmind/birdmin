@@ -6,7 +6,7 @@ labels:
   navigation: Locations
   singular: location
   plural: locations
-
+  slug: locations
 
 in_table : [name,address,city,state]
 required : [name]
