@@ -1,5 +1,7 @@
 (function(birdmin){
 
+    var onDomReady = [];
+
     var services = [
         'ngSanitize',
         'ngAnimate',
@@ -117,7 +119,28 @@
         return new ApplicationState();
     }
 
+    /**
+     * Runs all the init callbacks.
+     */
+    function runInits()
+    {
+        onDomReady.forEach(function(callback) {
+            callback();
+        })
+    }
+
     app.service('state', ['$timeout', ApplicationStateService]);
+
+    /**
+     * Register a callback to fire when the DOM loads.
+     * @param callback
+     */
+    birdmin.init = function(callback)
+    {
+        onDomReady.push(callback);
+    };
+
+    $(document).ready(runInits);
 
     birdmin.app = app;
     window.birdmin = birdmin;

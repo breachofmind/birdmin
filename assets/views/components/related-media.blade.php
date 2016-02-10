@@ -2,7 +2,7 @@
     <h1><i class="lnr-{{$icon}}"></i> Media</h1>
 
     <div class="action-row">
-        <a href="javascript:;" class="button success">Add Existing Media</a>
+        <a href="{{$listMediaHref}}" class="button success" data-ajax-dialog><i class="lnr-plus-circle"></i> Add Existing Media</a>
     </div>
 
     {!! $dropzone !!}

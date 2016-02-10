@@ -98,11 +98,16 @@ class MediaController extends Controller
 
     /**
      * Displays the media selection tool dialog.
+     * GET /media/list?parent=Birdmin\Page\1
      * @param Request $request
+     * @return \Illuminate\Http\Response
      */
     public function select(Request $request)
     {
+        $media = Media::request($request, $this->user,30);
+        $parent = Model::str($request->input('parent'));
 
+        return view('cms::media.select', compact('media','parent'));
     }
 
     /**

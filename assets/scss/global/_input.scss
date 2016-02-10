@@ -38,6 +38,8 @@
 	label {margin-right:15px;}
 }
 
-.html-editor {
+.html-editor, .fr-view, .fr-box {
 	width:100%;
 }
+
+.fr-wrapper+div {display:none !important;}

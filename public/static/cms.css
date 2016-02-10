@@ -23,30 +23,16 @@ body.login {
 
 /* line 8, ../../assets/scss/global/_layout.scss */
 .flex-row {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-flow: row;
-      -ms-flex-flow: row;
-          flex-flow: row;
-  -webkit-flex-wrap: nowrap;
-      -ms-flex-wrap: nowrap;
-          flex-wrap: nowrap;
+  flex-flow: row;
+  flex-wrap: nowrap;
 }
 
 /* line 13, ../../assets/scss/global/_layout.scss */
 .flex-col {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-flex-flow: column;
-      -ms-flex-flow: column;
-          flex-flow: column;
-  -webkit-flex-wrap: nowrap;
-      -ms-flex-wrap: nowrap;
-          flex-wrap: nowrap;
+  flex-flow: column;
+  flex-wrap: nowrap;
 }
 
 /* line 19, ../../assets/scss/global/_layout.scss */
@@ -65,32 +51,18 @@ body.login {
 /* line 29, ../../assets/scss/global/_layout.scss */
 #Brand {
   width: 100%;
-  -webkit-flex-flow: column;
-      -ms-flex-flow: column;
-          flex-flow: column;
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 1 auto;
-      -ms-flex: 0 1 auto;
-          flex: 0 1 auto;
-  -webkit-box-align: start;
-  -webkit-align-items: flex-start;
-      -ms-flex-align: start;
-          align-items: flex-start;
+  flex-flow: column;
+  flex: 0 1 auto;
+  align-items: flex-start;
 }
 
 /* line 36, ../../assets/scss/global/_layout.scss */
 #SessionUser {
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 300px;
-      -ms-flex: 0 0 300px;
-          flex: 0 0 300px;
+  flex: 0 0 300px;
 }
 /* line 38, ../../assets/scss/global/_layout.scss */
 #SessionUser .session-user-image {
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 60px;
-      -ms-flex: 0 0 60px;
-          flex: 0 0 60px;
+  flex: 0 0 60px;
 }
 /* line 40, ../../assets/scss/global/_layout.scss */
 #SessionUser .session-user-image img {
@@ -117,19 +89,13 @@ body.login {
 
 /* line 54, ../../assets/scss/global/_layout.scss */
 #Side {
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 220px;
-      -ms-flex: 0 0 220px;
-          flex: 0 0 220px;
+  flex: 0 0 220px;
   overflow-y: auto;
   background: #B24242;
 }
 /* line 58, ../../assets/scss/global/_layout.scss */
 #Side.collapse {
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 50px;
-      -ms-flex: 0 0 50px;
-          flex: 0 0 50px;
+  flex: 0 0 50px;
 }
 /* line 60, ../../assets/scss/global/_layout.scss */
 #Side.collapse .navigation-list a {
@@ -143,10 +109,7 @@ body.login {
 @media screen and (max-width: 40em) {
   /* line 67, ../../assets/scss/global/_layout.scss */
   #Side {
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 0 50px;
-        -ms-flex: 0 0 50px;
-            flex: 0 0 50px;
+    flex: 0 0 50px;
   }
   /* line 69, ../../assets/scss/global/_layout.scss */
   #Side .navigation-list span {
@@ -167,10 +130,7 @@ body.login {
 #PageTypeNavigation {
   padding-top: 50px;
   background: #e6e3f2;
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 50px;
-      -ms-flex: 0 0 50px;
-          flex: 0 0 50px;
+  flex: 0 0 50px;
 }
 
 /* line 83, ../../assets/scss/global/_layout.scss */
@@ -192,7 +152,6 @@ body.login {
   right: 0;
   z-index: 2;
   height: 15px;
-  background: -webkit-linear-gradient(top, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
   background: linear-gradient(to bottom, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
 }
 
@@ -221,22 +180,10 @@ body.login {
 
 /* line 7, ../../assets/scss/global/_input.scss */
 .input-row {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-flex-wrap: nowrap;
-      -ms-flex-wrap: nowrap;
-          flex-wrap: nowrap;
-  -webkit-box-pack: justify;
-  -webkit-justify-content: space-between;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
   border: 1px solid lightgray;
   border-left: none;
   margin-top: -1px;
@@ -264,25 +211,17 @@ body.login {
 
 /* line 23, ../../assets/scss/global/_input.scss */
 .input-column {
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
 }
 /* line 25, ../../assets/scss/global/_input.scss */
 .input-column.input-label {
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 200px;
-      -ms-flex: 0 0 200px;
-          flex: 0 0 200px;
+  flex: 0 0 200px;
   padding: 8px;
   border-right: 1px solid lightgray;
 }
 /* line 27, ../../assets/scss/global/_input.scss */
 .input-column.input-label label {
-  -webkit-align-self: center;
-      -ms-flex-item-align: center;
-          align-self: center;
+  align-self: center;
   color: #222222;
   font-weight: 700;
 }
@@ -308,8 +247,13 @@ body.login {
 }
 
 /* line 41, ../../assets/scss/global/_input.scss */
-.html-editor {
+.html-editor, .fr-view, .fr-box {
   width: 100%;
+}
+
+/* line 45, ../../assets/scss/global/_input.scss */
+.fr-wrapper + div {
+  display: none !important;
 }
 
 @font-face {
@@ -5350,8 +5294,7 @@ body.login {
   background: transparent;
   min-height: 30px;
   padding: 20px;
-  -webkit-transition: all 150ms;
-          transition: all 150ms;
+  transition: all 150ms;
   margin: 15px 0;
   border-radius: 5px;
   cursor: pointer;
@@ -5452,38 +5395,18 @@ body.login {
 /* line 9, ../../assets/scss/global/_tables.scss */
 .brd-table-row {
   width: 100%;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -webkit-flex-wrap: nowrap;
-      -ms-flex-wrap: nowrap;
-          flex-wrap: nowrap;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-      -ms-flex-align: center;
-          align-items: center;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
   border-bottom: 1px solid lightgray;
 }
 /* line 18, ../../assets/scss/global/_tables.scss */
 .brd-table-row > * {
-  -webkit-box-flex: 1;
-  -webkit-flex-grow: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
-  -webkit-flex-basis: 0;
-      -ms-flex-preferred-size: 0;
-          flex-basis: 0;
+  flex-grow: 1;
+  flex-basis: 0;
   padding: 0.5em;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-      -ms-flex-pack: center;
-          justify-content: center;
+  justify-content: center;
 }
 /* line 26, ../../assets/scss/global/_tables.scss */
 .brd-table > .brd-table-header .brd-table-headers {
@@ -5524,8 +5447,7 @@ body.login {
 .brd-table .overlay {
   visibility: hidden;
   opacity: 0;
-  -webkit-transition: all 200ms;
-          transition: all 200ms;
+  transition: all 200ms;
 }
 /* line 58, ../../assets/scss/global/_tables.scss */
 .brd-table.processing .overlay, .brd-table.loading .overlay {
@@ -5564,8 +5486,7 @@ body.login {
   font-style: normal;
   speak: none;
   margin-left: 5px;
-  -webkit-transition: all 200ms;
-          transition: all 200ms;
+  transition: all 200ms;
   color: black;
 }
 /* line 79, ../../assets/scss/global/_tables.scss */
@@ -5591,58 +5512,36 @@ body.login {
   font-family: "Linearicons";
   font-style: normal;
   speak: none;
-  -webkit-transform: rotate(180deg);
-          transform: rotate(180deg);
+  transform: rotate(180deg);
 }
 
 /* line 2, ../../assets/scss/_mixins.scss */
 .brd-table-row > [data-column="url"] {
-  -webkit-box-flex: 0.25;
-  -webkit-flex-grow: 0.25;
-      -ms-flex-positive: 0.25;
-          flex-grow: 0.25;
+  flex-grow: 0.25;
 }
 /* line 2, ../../assets/scss/_mixins.scss */
 .brd-table-row > [data-column="status"] {
-  -webkit-box-flex: 0.5;
-  -webkit-flex-grow: 0.5;
-      -ms-flex-positive: 0.5;
-          flex-grow: 0.5;
+  flex-grow: 0.5;
 }
 /* line 2, ../../assets/scss/_mixins.scss */
 .brd-table-row > [data-column="name"] {
-  -webkit-box-flex: 1.25;
-  -webkit-flex-grow: 1.25;
-      -ms-flex-positive: 1.25;
-          flex-grow: 1.25;
+  flex-grow: 1.25;
 }
 /* line 2, ../../assets/scss/_mixins.scss */
 .brd-table-row > [data-column="title"] {
-  -webkit-box-flex: 1.25;
-  -webkit-flex-grow: 1.25;
-      -ms-flex-positive: 1.25;
-          flex-grow: 1.25;
+  flex-grow: 1.25;
 }
 /* line 2, ../../assets/scss/_mixins.scss */
 .brd-table-row > [data-column="type"] {
-  -webkit-box-flex: 0.5;
-  -webkit-flex-grow: 0.5;
-      -ms-flex-positive: 0.5;
-          flex-grow: 0.5;
+  flex-grow: 0.5;
 }
 /* line 7, ../../assets/scss/_mixins.scss */
 .brd-table-row > [data-column="_bulk"] {
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 30px;
-      -ms-flex: 0 0 30px;
-          flex: 0 0 30px;
+  flex: 0 0 30px;
 }
 /* line 7, ../../assets/scss/_mixins.scss */
 .brd-table-row > [data-column="preview"] {
-  -webkit-box-flex: 0;
-  -webkit-flex: 0 0 100px;
-      -ms-flex: 0 0 100px;
-          flex: 0 0 100px;
+  flex: 0 0 100px;
 }
 /* line 96, ../../assets/scss/global/_tables.scss */
 .brd-table-row input[name="_bulk"] {
@@ -5652,32 +5551,23 @@ body.login {
 
 /* line 2, ../../assets/scss/_mixins.scss */
 #inputsTable .brd-table-row > [data-column="type"] {
-  -webkit-box-flex: 1;
-  -webkit-flex-grow: 1;
-      -ms-flex-positive: 1;
-          flex-grow: 1;
+  flex-grow: 1;
 }
 /* line 2, ../../assets/scss/_mixins.scss */
 #inputsTable .brd-table-row > [data-column="priority"] {
-  -webkit-box-flex: 0.5;
-  -webkit-flex-grow: 0.5;
-      -ms-flex-positive: 0.5;
-          flex-grow: 0.5;
+  flex-grow: 0.5;
 }
 
 /* line 1, ../../assets/scss/global/_ui.scss */
 #Content #View {
   opacity: 1;
-  -webkit-transform: translateY(0px);
-          transform: translateY(0px);
-  -webkit-transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
-          transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
+  transform: translateY(0px);
+  transition: all 800ms cubic-bezier(0.19, 1, 0.22, 1);
 }
 
 /* line 11, ../../assets/scss/global/_ui.scss */
 #Content.processing #View {
-  -webkit-transform: translateY(20px);
-          transform: translateY(20px);
+  transform: translateY(20px);
   opacity: 0;
 }
 
@@ -5701,8 +5591,7 @@ body.login {
   top: 0;
   left: 25%;
   right: 25%;
-  -webkit-transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
-          transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
+  transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
   opacity: 0;
 }
 /* line 30, ../../assets/scss/global/_ui.scss */
@@ -5719,15 +5608,9 @@ body.login {
   opacity: 1;
 }
 
-@-webkit-keyframes fade-in {
-  0% {
-    opacity: 0;
-    padding-top: 20px;
-  }
-  100% {
-    opacity: 1;
-    padding-top: 0px;
-  }
+/* line 40, ../../assets/scss/global/_ui.scss */
+.vex-wide .vex-content {
+  width: 90% !important;
 }
 
 @keyframes fade-in {
@@ -5740,105 +5623,79 @@ body.login {
     padding-top: 0px;
   }
 }
-/* line 92, ../../assets/scss/global/_ui.scss */
+/* line 99, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic {
   box-sizing: border-box;
   display: inline-block;
   vertical-align: middle;
   overflow: visible;
 }
-/* line 97, ../../assets/scss/global/_ui.scss */
+/* line 104, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg {
   display: block;
   overflow: visible;
 }
-/* line 100, ../../assets/scss/global/_ui.scss */
+/* line 107, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > * {
-  -webkit-transform: translate3d(0, 0, 0);
-          transform: translate3d(0, 0, 0);
-  -webkit-transform-origin: center;
-          transform-origin: center;
-  -webkit-animation-iteration-count: infinite;
-          animation-iteration-count: infinite;
+  transform: translate3d(0, 0, 0);
+  transform-origin: center;
+  animation-iteration-count: infinite;
 }
 
-/* line 108, ../../assets/scss/global/_ui.scss */
+/* line 115, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic {
   margin: 12px;
   width: 100px;
   height: 100px;
 }
-@-webkit-keyframes spin-cycle {
-  from {
-    fill: #B24242;
-    -webkit-transform: scale(1);
-            transform: scale(1);
-  }
-  to {
-    fill: rgba(178, 66, 66, 0.1);
-    -webkit-transform: scale(0.5);
-            transform: scale(0.5);
-  }
-}
 @keyframes spin-cycle {
   from {
     fill: #B24242;
-    -webkit-transform: scale(1);
-            transform: scale(1);
+    transform: scale(1);
   }
   to {
     fill: rgba(178, 66, 66, 0.1);
-    -webkit-transform: scale(0.5);
-            transform: scale(0.5);
+    transform: scale(0.5);
   }
 }
-/* line 77, ../../assets/scss/global/_ui.scss */
+/* line 84, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg {
   width: 100px;
   height: 100px;
 }
-/* line 79, ../../assets/scss/global/_ui.scss */
+/* line 86, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > * {
   fill: rgba(178, 66, 66, 0.1);
-  -webkit-animation-name: spin-cycle;
-          animation-name: spin-cycle;
-  -webkit-animation-duration: 400ms;
-          animation-duration: 400ms;
+  animation-name: spin-cycle;
+  animation-duration: 400ms;
 }
-/* line 84, ../../assets/scss/global/_ui.scss */
+/* line 91, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > *:nth-of-type(1) {
-  -webkit-animation-delay: 50ms;
-          animation-delay: 50ms;
+  animation-delay: 50ms;
 }
-/* line 84, ../../assets/scss/global/_ui.scss */
+/* line 91, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > *:nth-of-type(2) {
-  -webkit-animation-delay: 100ms;
-          animation-delay: 100ms;
+  animation-delay: 100ms;
 }
-/* line 84, ../../assets/scss/global/_ui.scss */
+/* line 91, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > *:nth-of-type(3) {
-  -webkit-animation-delay: 150ms;
-          animation-delay: 150ms;
+  animation-delay: 150ms;
 }
-/* line 84, ../../assets/scss/global/_ui.scss */
+/* line 91, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > *:nth-of-type(4) {
-  -webkit-animation-delay: 200ms;
-          animation-delay: 200ms;
+  animation-delay: 200ms;
 }
-/* line 84, ../../assets/scss/global/_ui.scss */
+/* line 91, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > *:nth-of-type(5) {
-  -webkit-animation-delay: 250ms;
-          animation-delay: 250ms;
+  animation-delay: 250ms;
 }
-/* line 84, ../../assets/scss/global/_ui.scss */
+/* line 91, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > *:nth-of-type(6) {
-  -webkit-animation-delay: 300ms;
-          animation-delay: 300ms;
+  animation-delay: 300ms;
 }
-/* line 84, ../../assets/scss/global/_ui.scss */
+/* line 91, ../../assets/scss/global/_ui.scss */
 .ic-Spin-cycle--classic > svg > *:nth-of-type(7) {
-  -webkit-animation-delay: 350ms;
-          animation-delay: 350ms;
+  animation-delay: 350ms;
 }
 
 /* line 2, ../../assets/scss/global/_menu.scss */
@@ -5855,8 +5712,7 @@ body.login {
   display: block;
   font-size: 18px;
   border-bottom: 1px solid #be5050;
-  -webkit-transition: all 200ms;
-          transition: all 200ms;
+  transition: all 200ms;
   color: #cc7575;
 }
 /* line 6, ../../assets/scss/global/_menu.scss */
@@ -5914,8 +5770,7 @@ body.login {
   font-size: 14px;
   color: #222222;
   display: inline-block;
-  -webkit-transition: all 250ms;
-          transition: all 250ms;
+  transition: all 250ms;
 }
 /* line 46, ../../assets/scss/global/_menu.scss */
 #ActionNavigation a.active {

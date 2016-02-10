@@ -1,4 +1,6 @@
-(function(birdmin){
+(function(birdmin, vex){
+
+    vex.defaultOptions.className = 'vex-theme-plain vex-wide';
 
     var editors = {};
 
@@ -96,8 +98,25 @@
         };
     }
 
+    function openAjaxDialog(event)
+    {
+        var $this = $(this);
+        event.preventDefault();
+
+        $.get($this.attr('href'), null, function(response) {
+            vex.dialog.open({
+                message:"Select",
+                input:response
+            });
+        })
+    }
+
+    birdmin.init(function(){
+        $('body').on('click','a[data-ajax-dialog]', openAjaxDialog);
+    });
+
     ui.register();
 
     birdmin.ui = ui;
 
-})(birdmin);
+})(birdmin, vex);

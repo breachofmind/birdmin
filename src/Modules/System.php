@@ -34,7 +34,8 @@ class System extends Module {
 
         // Media uploading routes and controller.
         $this->route('cms', function($router) {
-            $router->post(Media::plural().'/upload', 'MediaController@upload');
+            $router->post(Media::getLabel('slug').'/upload', ['as'=>'mediaUpload', 'uses'=>'MediaController@upload']);
+            $router->get(Media::getLabel('slug').'/list',    ['as'=>'mediaList',   'uses'=> 'MediaController@select'] );
         });
 
         $this->basicSetup();

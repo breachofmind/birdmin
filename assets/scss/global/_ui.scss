@@ -34,6 +34,13 @@
 	opacity:1;
 }
 
+
+
+.vex-wide {
+	.vex-content {width:90% !important;}
+}
+
+
 @keyframes fade-in {
 	0% {opacity:0; padding-top:20px;}
 	100% {opacity:1; padding-top:0px;}

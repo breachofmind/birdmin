@@ -91,6 +91,8 @@ var keycodes = {
 };;
 (function(birdmin){
 
+    var onDomReady = [];
+
     var services = [
         'ngSanitize',
         'ngAnimate',
@@ -208,7 +210,28 @@ var keycodes = {
         return new ApplicationState();
     }
 
+    /**
+     * Runs all the init callbacks.
+     */
+    function runInits()
+    {
+        onDomReady.forEach(function(callback) {
+            callback();
+        })
+    }
+
     app.service('state', ['$timeout', ApplicationStateService]);
+
+    /**
+     * Register a callback to fire when the DOM loads.
+     * @param callback
+     */
+    birdmin.init = function(callback)
+    {
+        onDomReady.push(callback);
+    };
+
+    $(document).ready(runInits);
 
     birdmin.app = app;
     window.birdmin = birdmin;
@@ -2546,7 +2569,9 @@ return jsc.jscolor;
     birdmin.history = new HistoryController();
 
 })(birdmin);;
-(function(birdmin){
+(function(birdmin, vex){
+
+    vex.defaultOptions.className = 'vex-theme-plain vex-wide';
 
     var editors = {};
 
@@ -2644,11 +2669,28 @@ return jsc.jscolor;
         };
     }
 
+    function openAjaxDialog(event)
+    {
+        var $this = $(this);
+        event.preventDefault();
+
+        $.get($this.attr('href'), null, function(response) {
+            vex.dialog.open({
+                message:"Select",
+                input:response
+            });
+        })
+    }
+
+    birdmin.init(function(){
+        $('body').on('click','a[data-ajax-dialog]', openAjaxDialog);
+    });
+
     ui.register();
 
     birdmin.ui = ui;
 
-})(birdmin);;
+})(birdmin, vex);;
 (function(birdmin){
 
     var app = birdmin.app;

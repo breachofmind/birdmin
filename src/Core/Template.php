@@ -34,12 +34,6 @@ class Template implements Jsonable {
         $this->app = $app;
     }
 
-    public function init()
-    {
-        //dd(Request::session());
-        $this->session_id = Request::session()->getId();
-    }
-
     /**
      * Magic method for setting attributes.
      * @param $name string

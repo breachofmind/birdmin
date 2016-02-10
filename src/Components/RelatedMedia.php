@@ -6,6 +6,7 @@ use Birdmin\Contracts\Hierarchical;
 use Birdmin\Core\Model;
 use Birdmin\Core\Component;
 use Birdmin\Contracts\ModuleComponent;
+use Birdmin\Media;
 use Illuminate\Http\Request;
 
 class RelatedMedia extends Component implements ModuleComponent
@@ -40,6 +41,7 @@ class RelatedMedia extends Component implements ModuleComponent
      */
     public function __construct(Model $model, $args=null)
     {
+        // The RelatedMedia contract is required by the model.
         if (! $model instanceof \Birdmin\Contracts\RelatedMedia) {
             return $this->canRender = false;
         }
@@ -55,7 +57,9 @@ class RelatedMedia extends Component implements ModuleComponent
      */
     public function toArray()
     {
-        return $this->compact('model','media','dropzone','icon');
+        $arr = $this->compact('model','media','dropzone','icon');
+        $arr['listMediaHref'] = route('mediaList', ['parent' => $this->model->objectName]);
+        return $arr;
     }
 
     public function prepare()

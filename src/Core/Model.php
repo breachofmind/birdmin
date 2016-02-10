@@ -432,8 +432,11 @@ class Model extends BaseModel
      * @param $user User|null - optional
      * @return Collection|LengthAwarePaginator
      */
-    public static function request(Request $request, $user=null)
+    public static function request(Request $request, $user=null, $paginate=null)
     {
+        if (is_null($paginate)) {
+            $paginate = config('app.pagination');
+        }
         $class = get_called_class();
         $static = new $class;
         $query = $class::select(DB::raw($static->table.".*"));
@@ -468,7 +471,7 @@ class Model extends BaseModel
             $query->orderBy($request->input('orderby'), $request->input('dir'));
         }
 
-        return $query->paginate(config('app.pagination'), ['*'], 'p', $request->input('p'));
+        return $query->paginate($paginate, ['*'], 'p', $request->input('p'));
     }
 
     /**
@@ -572,6 +575,9 @@ class Model extends BaseModel
      */
     public static function str($string)
     {
+        if (! $string) {
+            return null;
+        }
         $parts = explode('\\',$string);
         $id = array_pop($parts);
         $class = implode("\\",$parts);

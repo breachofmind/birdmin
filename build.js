@@ -23,6 +23,8 @@ $.register('cms')
         'js/lib/froala-wysiwyg-editor/css/froala_editor.min.css',
         'js/lib/froala-wysiwyg-editor/css/froala_style.min.css',
         'js/lib/froala-wysiwyg-editor/css/plugins/code_view.min.css',
+        'js/lib/vex/css/vex.css',
+        'js/lib/vex/css/vex-theme-plain.css',
     ],{
         dir:"{asset}",
         build:"{static}/cms.lib.css"
@@ -39,7 +41,9 @@ $.register('cms')
         "angular/angular.js",
         "angular-sanitize/angular-sanitize.js",
         "angular-animate/angular-animate.js",
-        "handlebars/handlebars.js"
+        "handlebars/handlebars.js",
+        'vex/js/vex.js',
+        'vex/js/vex.dialog.js',
     ], {
         dir:"{js}/lib",
         build:"{static}/cms.lib.js"
