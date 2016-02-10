@@ -2500,7 +2500,6 @@ return jsc.jscolor;
                         appHistory.push(state.url);
                     }
                     state.processing = false;
-                    birdmin.ui.register();
                 }
             }
         }
@@ -2587,6 +2586,7 @@ return jsc.jscolor;
          */
         this.register = function()
         {
+            editors = {};
             ui.getEditorElements().each(function() {
                 ui.createEditor( $(this) );
             });
@@ -2637,7 +2637,9 @@ return jsc.jscolor;
          */
         this.createEditor = function($element)
         {
-            editors[$element.attr('id')] = $element;
+            editors[$element.attr('id')] = $element.froalaEditor({
+                toolbarButtons: ['undo', 'redo' , '|', 'bold', 'italic', 'underline', 'strikethrough', 'clearFormatting','formatUL','formatOL','paragraphFormat','insertImage', 'html'],
+            });
             return this;
         };
     }
@@ -3263,7 +3265,9 @@ return jsc.jscolor;
 
         $scope.slugify = function() {
             $scope.slugField = Slug.slugify($scope.titleField);
-        }
+        };
+
+        birdmin.ui.register();
     }
 
     app.controller('FormController', [

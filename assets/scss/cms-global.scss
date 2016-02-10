@@ -1,0 +1,10 @@
+@import 'compass';
+@import 'mixins';
+@import 'settings';
+
+$fa-font-path: "/cms/public/fonts";
+
+@import 'normalize';
+@import 'foundation';
+@import "../js/lib/font-awesome/scss/font-awesome.scss";
+

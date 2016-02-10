@@ -101,7 +101,6 @@
                         appHistory.push(state.url);
                     }
                     state.processing = false;
-                    birdmin.ui.register();
                 }
             }
         }

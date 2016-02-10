@@ -9,7 +9,9 @@
 
         $scope.slugify = function() {
             $scope.slugField = Slug.slugify($scope.titleField);
-        }
+        };
+
+        birdmin.ui.register();
     }
 
     app.controller('FormController', [

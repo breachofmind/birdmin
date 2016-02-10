@@ -38,6 +38,7 @@
          */
         this.register = function()
         {
+            editors = {};
             ui.getEditorElements().each(function() {
                 ui.createEditor( $(this) );
             });
@@ -88,7 +89,9 @@
          */
         this.createEditor = function($element)
         {
-            editors[$element.attr('id')] = $element;
+            editors[$element.attr('id')] = $element.froalaEditor({
+                toolbarButtons: ['undo', 'redo' , '|', 'bold', 'italic', 'underline', 'strikethrough', 'clearFormatting','formatUL','formatOL','paragraphFormat','insertImage', 'html'],
+            });
             return this;
         };
     }

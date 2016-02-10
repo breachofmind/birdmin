@@ -15,8 +15,17 @@ $.register('cms')
     .path('import', '{js}/lib/foundation/scss')
     .path('static', 'cms/public/static')
 
-    .collection('css', ['cms.css'], {
+    .collection('css', ['cms-global.css','cms.css'], {
         dir:"{static}"
+    })
+
+    .collection('css-lib', [
+        'js/lib/froala-wysiwyg-editor/css/froala_editor.min.css',
+        'js/lib/froala-wysiwyg-editor/css/froala_style.min.css',
+        'js/lib/froala-wysiwyg-editor/css/plugins/code_view.min.css',
+    ],{
+        dir:"{asset}",
+        build:"{static}/cms.lib.css"
     })
 
     .collection('js-lib', [
@@ -36,6 +45,16 @@ $.register('cms')
         build:"{static}/cms.lib.js"
     })
 
+    .collection('js-froala', [
+        "froala_editor.min.js",
+        "plugins/code_view.min.js",
+        "plugins/paragraph_format.min.js",
+        "plugins/lists.min.js",
+        "plugins/image.min.js"
+    ], {
+        dir:"{js}/lib/froala-wysiwyg-editor/js",
+        addTo:'js-lib'
+    })
 
     .collection('js-src', [
         "utils.js",

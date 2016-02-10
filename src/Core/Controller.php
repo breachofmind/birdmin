@@ -51,7 +51,13 @@ abstract class Controller extends BaseController
 
         $template->title = 'Birdmin';
         $template->meta  ('viewport', 'width=device-width, initial-scale=1.0');
-        $template->style ('cms',      '/cms/public/static/cms.css');
+
+
+        $template->style ('cms_global',     '/cms/public/static/cms-global.css');
+        $template->style ('cms_lib',        '/cms/public/static/cms.lib.css');
+        $template->style ('cms',            '/cms/public/static/cms.css');
+
+
         $template->script('cms_lib',  '/cms/public/static/cms.lib.js');
         $template->script('cms_src',  '/cms/public/static/cms.src.js')->dependsOn('cms_lib');
 
