@@ -5,11 +5,11 @@ namespace Birdmin\Providers;
 use Birdmin\Core\Application;
 use Birdmin\Core\Extender;
 use Birdmin\Core\Model;
-use Birdmin\Permission;
 use Illuminate\Support\ServiceProvider;
 use Birdmin\Core\Template;
 use Illuminate\Support\Facades\View;
 use Illuminate\Http\Request;
+use Birdmin\Support\FieldBlueprint;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,6 +34,8 @@ class AppServiceProvider extends ServiceProvider
             $url = $livereload === true ? "localhost" : $livereload;
             $template->script('livereload', "http://$url:35729/livereload.js");
         }
+
+        FieldBlueprint::boot();
     }
 
     /**

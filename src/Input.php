@@ -8,6 +8,30 @@ use Illuminate\Contracts\Support\Renderable;
 
 class Input extends Model
 {
+    /**
+     * Input types.
+     * Corresponds to the name of the view, also.
+     */
+    const CHECKBOX  = "checkbox";
+    const CODE      = "code";
+    const COLOR     = "color";
+    const DATE      = "date";
+    const EMAIL     = "email";
+    const FILE      = "file";
+    const HASH      = "hash";
+    const HTML      = "html";
+    const MODEL     = "model";
+    const NUMBER    = "number";
+    const PASSWORD  = "password";
+    const RADIO     = "radio";
+    const SELECT    = "select";
+    const SLUG      = "slug";
+    const NONE      = "static";
+    const TEXT      = "text";
+    const TEXTAREA  = "textarea";
+    const TOGGLE    = "toggle";
+    const URL       = "url";
+
     protected $model;
 
     protected $fillable = [
