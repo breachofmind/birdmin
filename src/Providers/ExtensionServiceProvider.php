@@ -2,8 +2,10 @@
 
 namespace Birdmin\Providers;
 
+use Birdmin\Page;
 use Illuminate\Support\ServiceProvider;
 use Birdmin\Core\Extender;
+use Sunra\PhpSimple\HtmlDomParser;
 
 class ExtensionServiceProvider extends ServiceProvider {
 

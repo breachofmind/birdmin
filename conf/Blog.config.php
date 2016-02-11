@@ -83,5 +83,3 @@ $category->indexTable()
     ->columns([
         'url' => ["URL",      10, 'Birdmin\Formatters\url'],
     ]);
-
-dd($category->getInputsArray());

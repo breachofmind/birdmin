@@ -10,13 +10,15 @@
 @import 'settings';
 
 // Birdmin Stylesheets.
-@import 'global/typography';
-@import 'global/layout';
-@import 'global/input';
-@import 'global/linearicons';
-@import 'global/dropzone';
-@import 'global/tables';
-@import 'global/ui';
-@import 'global/menu';
+@import 'base/typography';
+@import 'base/layout';
+@import 'base/input';
+@import 'base/linearicons';
+@import 'base/dropzone';
+@import 'base/tables';
+@import 'base/ui';
+@import 'base/menu';
+
+@import 'page/login';
 
 @import 'component/base';

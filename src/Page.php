@@ -5,8 +5,10 @@ namespace Birdmin;
 use Birdmin\Contracts\Sluggable;
 use Birdmin\Core\Model;
 use Birdmin\Contracts\Hierarchical;
+use Birdmin\Support\HTMLProcesser;
 use Birdmin\Support\Traits\Tree;
 use Illuminate\Http\Request;
+use Sunra\PhpSimple\HtmlDomParser;
 
 
 class Page extends Model
@@ -15,6 +17,12 @@ class Page extends Model
     use Tree;
 
     protected $appends = ['children'];
+
+    /**
+     * The processed HTML content.
+     * @var HTMLProcesser
+     */
+    private $processed;
 
     public static $repository;
 
@@ -32,9 +40,17 @@ class Page extends Model
      * Return the content for the page, or blocks of content.
      * @return array|string
      */
-    public function getContent($block=null)
+    public function getContent($id=null)
     {
-        $content = $this->getAttribute('content');
-        return $content;
+        if (! $this->processed) {
+            try {
+                $this->processed = HTMLProcesser::parse($this->content)->uses($this);
+
+            } catch(\Exception $e) {
+                return $this->content;
+            }
+        }
+
+        return is_string($id) ? $this->processed->getId($id) : $this->processed->render();
     }
 }

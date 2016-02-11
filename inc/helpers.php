@@ -222,7 +222,7 @@ if (!function_exists('birdmin_path')) {
 
     /**
      * Check if an object adheres to a contract.
-     * @param $object object
+     * @param $object object|string
      * @param $interface string interface name
      * @return bool
      */

@@ -12,6 +12,10 @@ use Illuminate\Support\Str;
 
 class ModelBlueprint {
 
+    /**
+     * The array of blueprints.
+     * @var array
+     */
     static $blueprints = [];
 
     /**
@@ -108,6 +112,11 @@ class ModelBlueprint {
         return ModelBlueprint::exists($modelClass) ? ModelBlueprint::$blueprints[$modelClass] : null;
     }
 
+    /**
+     * Check if a blueprint exists.
+     * @param $modelClass string
+     * @return bool
+     */
     public static function exists($modelClass)
     {
         return isset(ModelBlueprint::$blueprints[$modelClass]);
@@ -224,7 +233,7 @@ class ModelBlueprint {
         if (! $name) return $this;
         $this->table = $name;
 
-        if (empty($this->labels)) {
+        if ($this->labels->isEmpty()) {
             $this->guessLabels($name);
         }
         return $this;
@@ -449,7 +458,7 @@ class ModelBlueprint {
      */
     public function guessLabels($name=null)
     {
-        return $this->labels([
+        return $this->labels = $this->labels->merge([
             'singular' => str_replace("_"," ",Str::singular($name)),
             'plural' => str_replace("_"," ",Str::plural($name)),
             'navigation' => Str::ucfirst($name),

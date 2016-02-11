@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Config;
 
 class Application extends LaravelApplication {
 
+    const VERSION = "0.0.2";
+
     // Context or channels.
     const CXT_SITE = 1;
     const CXT_CMS  = 2;

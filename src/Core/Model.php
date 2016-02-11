@@ -61,6 +61,7 @@ class Model extends BaseModel
 
     /**
      * Called on system boot.
+     * @return void
      */
     protected static function boot()
     {
@@ -70,7 +71,8 @@ class Model extends BaseModel
         Model::$map[static::getLabel('slug')] = static::class;
 
         // Add the uid field.
-        static::creating(function($model) {
+        static::creating(function($model)
+        {
             $model->uid = "b".sha1(uniqid().time());
         });
     }
@@ -81,11 +83,9 @@ class Model extends BaseModel
      */
     public function __construct(array $attributes = [])
     {
-        $this->configureModel ( ModelBlueprint::get(static::class) );
+        $this->configureModel ( $this::blueprint() );
 
         parent::__construct($attributes);
-
-        $this->appends[] = "titleField";
 
         // Create component objects if registered.
         if (array_key_exists(static::class, Model::$components)) {
@@ -108,10 +108,30 @@ class Model extends BaseModel
             return null;
         }
         $this->blueprint = $blueprint;
+        $this->appends[] = "titleField";
 
+        $this->table = $blueprint->table;
         $this->fillable = $blueprint->fillable()->toArray();
         $this->guarded  = $blueprint->guarded()->toArray();
         $this->timestamps = $blueprint->timestamps;
+    }
+
+    /**
+     * Return the currently set model blueprint object.
+     * @return ModelBlueprint
+     */
+    public function getBlueprint()
+    {
+        return $this->blueprint;
+    }
+
+    /**
+     * Return the blueprint object from the collection.
+     * @return ModelBlueprint|null
+     */
+    public static function blueprint()
+    {
+        return ModelBlueprint::get(static::class);
     }
 
     /**

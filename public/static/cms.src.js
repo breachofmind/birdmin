@@ -2575,6 +2575,19 @@ return jsc.jscolor;
 
     var editors = {};
 
+    var allowedTags = 	['a', 'abbr', 'address', 'area', 'article', 'aside', 'audio', 'b', 'base',
+        'bdi', 'bdo', 'blockquote', 'br', 'button', 'canvas', 'caption', 'cite', 'code', 'col',
+        'colgroup', 'datalist', 'dd', 'del', 'details', 'dfn', 'dialog', 'div', 'dl', 'dt', 'em',
+        'embed', 'fieldset', 'figcaption', 'figure', 'footer', 'form', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+        'header', 'hgroup', 'hr', 'i', 'iframe', 'img', 'input', 'ins', 'kbd', 'keygen', 'label', 'legend',
+        'li', 'link', 'main', 'map', 'mark', 'menu', 'menuitem', 'meter', 'nav', 'noscript', 'object', 'ol',
+        'optgroup', 'option', 'output', 'p', 'param', 'pre', 'progress', 'queue', 'rp', 'rt', 'ruby', 's', 'samp',
+        'script', 'style', 'section', 'select', 'small', 'source', 'span', 'strike', 'strong', 'sub',
+        'summary', 'sup', 'table', 'tbody', 'td', 'textarea', 'tfoot', 'th', 'thead', 'time', 'title',
+        'tr', 'track', 'u', 'ul', 'var', 'video', 'wbr','component'];
+
+    var allowedEmptyTags = ['textarea', 'a', 'iframe', 'object', 'video', 'style', 'script', '.fa','component'];
+
     var dropzoneHandlers = {
         default: function(dz)
         {
@@ -2664,6 +2677,8 @@ return jsc.jscolor;
         {
             editors[$element.attr('id')] = $element.froalaEditor({
                 toolbarButtons: ['undo', 'redo' , '|', 'bold', 'italic', 'underline', 'strikethrough', 'clearFormatting','formatUL','formatOL','paragraphFormat','insertImage', 'html'],
+                htmlAllowedTags: allowedTags,
+                htmlAllowedEmptyTags: allowedEmptyTags
             });
             return this;
         };

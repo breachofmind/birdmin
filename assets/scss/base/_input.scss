@@ -43,3 +43,8 @@
 }
 
 .fr-wrapper+div {display:none !important;}
+
+component {
+	padding:15px; display:block;
+	background:url(/cms/public/images/bg-stripe.png) repeat; width:100%;
+}

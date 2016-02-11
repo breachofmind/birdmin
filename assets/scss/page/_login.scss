@@ -1,0 +1,27 @@
+#LoginBlock {
+	margin-top:50px;
+	padding:30px;
+
+	.branding-logo {
+		margin-bottom:30px;
+	}
+
+	.version {
+		margin-top:10px; color:lightgray;
+		span {font-weight:700; color:white;}
+	}
+}
+
+#LoginForm {
+	background:rgba(255,255,255,0.9);
+	border-radius:4px;
+	padding:30px;
+	label.bold {font-size:18px; font-weight:700;}
+	input[type="text"],
+	input[type="email"],
+	input[type="password"] {
+		border:1px solid gray;
+		padding:15px;
+		font-size:18px;
+	}
+}

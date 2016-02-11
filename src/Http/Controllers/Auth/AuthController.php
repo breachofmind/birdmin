@@ -52,11 +52,13 @@ class AuthController extends Controller
      */
     public function authenticate(Request $request)
     {
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+        if ($errors = Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             // Authentication passed...
             return redirect()->intended(cms_url());
         }
-        return $this->index();
+        return $this->index()->withErrors([
+            'User name or password was not correct. Please try again.'
+        ]);
     }
 
 
