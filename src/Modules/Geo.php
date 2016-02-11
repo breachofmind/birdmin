@@ -6,6 +6,8 @@ use Illuminate\Routing\Router;
 
 class Geo extends Module {
 
+    public $name = "Geo";
+
     protected $dependencies = [];
 
     public $models = [

@@ -7,6 +7,8 @@ use Illuminate\Routing\Router;
 
 class CRM extends Module {
 
+    public $name = "CRM";
+
     public $models = [
         'Birdmin\Lead',
     ];

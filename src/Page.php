@@ -14,23 +14,9 @@ class Page extends Model
 {
     use Tree;
 
-    protected $table = "pages";
-
-    protected $fillable = [
-        'title',
-        'content',
-        'slug',
-        'status',
-        'type',
-        'parent_id'
-    ];
-
-    protected $searchable = ['title', 'slug', 'status', 'type'];
     protected $appends = ['children'];
 
     public static $repository;
-
-    public $timestamps = true;
 
     /**
      * Return a URL for this model on the frontend.

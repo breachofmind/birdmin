@@ -15,10 +15,16 @@ class ModelBlueprint {
     static $blueprints = [];
 
     /**
-     * The model class.
-     * @var string
+     * Uses timestamps.
+     * @var bool
      */
-    protected $class;
+    public $timestamps = true;
+
+    /**
+     * Uses Soft Deletes.
+     * @var bool
+     */
+    public $softDeletes = true;
 
     /**
      * The table name.
@@ -33,12 +39,6 @@ class ModelBlueprint {
     public $icon = "file-empty";
 
     /**
-     * Collection of fields.
-     * @var Collection
-     */
-    protected $fields = [];
-
-    /**
      * Permissions available for the model.
      * These are the defaults.
      * @var array
@@ -51,6 +51,23 @@ class ModelBlueprint {
      */
     public $title = "id";
 
+    /**
+     * The model class.
+     * @var string
+     */
+    protected $class;
+
+    /**
+     * If replacing with a new blueprint, this flag will be checked.
+     * @var bool
+     */
+    protected $override = false;
+
+    /**
+     * Collection of fields.
+     * @var Collection
+     */
+    protected $fields = [];
 
     /**
      * Attached module components.
@@ -59,22 +76,10 @@ class ModelBlueprint {
     protected $modules = [];
 
     /**
-     * Uses timestamps.
-     * @var bool
-     */
-    public $timestamps = true;
-
-    /**
-     * uses Soft Deletes.
-     * @var bool
-     */
-    public $softDeletes = false;
-
-    /**
      * The model labels.
-     * @var array
+     * @var Collection
      */
-    protected $labels = [];
+    protected $labels;
 
     /**
      * A reference to this models index table.
@@ -82,14 +87,15 @@ class ModelBlueprint {
      */
     protected $indexTable;
 
+
     /**
      * Named constructor.
      * @param $modelClass string
      * @return static
      */
-    public static function create($modelClass)
+    public static function create($modelClass, $table=null)
     {
-        return new static($modelClass);
+        return new static($modelClass, $table);
     }
 
     /**
@@ -99,24 +105,64 @@ class ModelBlueprint {
      */
     public static function get($modelClass)
     {
-        return isset(ModelBlueprint::$blueprints[$modelClass]) ? ModelBlueprint::$blueprints[$modelClass] : null;
+        return ModelBlueprint::exists($modelClass) ? ModelBlueprint::$blueprints[$modelClass] : null;
+    }
+
+    public static function exists($modelClass)
+    {
+        return isset(ModelBlueprint::$blueprints[$modelClass]);
     }
 
     /**
      * ModelBlueprint constructor.
      * @param $modelClass string
      */
-    public function __construct($modelClass)
+    public function __construct($modelClass,$table=null)
     {
         $this->fields = collect([]);
+        $this->labels = collect([]);
 
         $this->class = $modelClass;
+        $this->table($table);
 
         $this->typicalSetup();
 
         $this->indexTable = new IndexTableBlueprint($this);
 
-        ModelBlueprint::$blueprints[$modelClass] = $this;
+        if (static::exists($modelClass)) {
+            $this->override = true;
+        }
+        static::$blueprints[$modelClass] = $this;
+    }
+
+    /**
+     * A shorthand way to add fields and inputs.
+     * @param $name string
+     * @param $arguments array
+     * @return $this
+     */
+    public function __call($name,$arguments)
+    {
+        if (! Str::startsWith($name,"_")) {
+            return null;
+        }
+        $fieldName = ltrim($name,"_");
+        list ($label,$fieldType,$inputType) = $arguments;
+        $type = is_array($fieldType) ? array_shift($fieldType) : $fieldType;
+        $args = is_array($fieldType) ? $fieldType : null;
+
+        // Just return the field object. ie. $this->_fieldName()
+        if (count($arguments) == 0) {
+            return $this->field($fieldName);
+        }
+
+        // Create a new field.
+        $this->field($fieldName, $type, $args);
+
+        if ($inputType) {
+            $this->fields->get($fieldName)->input($label, $inputType, $this->fields->count());
+        }
+        return $this;
     }
 
     /**
@@ -139,7 +185,7 @@ class ModelBlueprint {
         if (func_num_args() == 1) {
             return $this->fields->get($name);
         }
-        $this->fields[$name] = new FieldBlueprint($name, $type, $args);
+        $this->fields[$name] = new FieldBlueprint($name, $type, $args, $this);
 
         return $this;
     }
@@ -175,6 +221,7 @@ class ModelBlueprint {
      */
     public function table($name)
     {
+        if (! $name) return $this;
         $this->table = $name;
 
         if (empty($this->labels)) {
@@ -195,36 +242,39 @@ class ModelBlueprint {
     }
 
     /**
-     * Set the title field.
+     * Set the title field, or get the title field.
      * @param $field string
-     * @return $this
+     * @return $this|FieldBlueprint
      */
     public function title($field)
     {
+        if (func_num_args() == 0) return $this->title;
         $this->title = $this->field($field);
         return $this;
     }
 
     /**
-     * Set a label name.
+     * Set a label name, or get a label by key.
      * @param $name string
      * @param $value
-     * @return $this
+     * @return $this|string
      */
-    public function label($name,$value)
+    public function label($name,$value=null)
     {
+        if (func_num_args() == 1) return $this->labels[$name];
         $this->labels[$name] = $value;
         return $this;
     }
 
     /**
-     * Set all the labels.
+     * Set all the labels, or get the label collection.
      * @param $array
-     * @return $this
+     * @return $this|Collection
      */
-    public function labels($array)
+    public function labels($array=null)
     {
-        $this->labels = $array;
+        if (func_num_args() == 0) return $this->labels;
+        $this->labels->merge($array);
         return $this;
     }
 
@@ -274,7 +324,10 @@ class ModelBlueprint {
     {
         return $this->fillFieldsAttribute(func_get_args(), 'in_table');
     }
-
+    public function searchable()
+    {
+        return $this->fillFieldsAttribute(func_get_args(), 'searchable');
+    }
 
     /**
      * Add a component class.
@@ -292,7 +345,7 @@ class ModelBlueprint {
      * @param $fields array
      * @param $method string
      * @param bool $bool
-     * @return $this|array
+     * @return $this|Collection
      */
     protected function fillFieldsAttribute($fields, $method, $bool=true)
     {
@@ -319,11 +372,12 @@ class ModelBlueprint {
     }
 
     /**
-     * Set the permissions array.
-     * @return $this
+     * Set the permissions array, or return the array.
+     * @return $this|array
      */
     public function permissions()
     {
+        if (func_num_args() == 0) return $this->permissions;
         $this->permissions = func_get_args();
         return $this;
     }
@@ -331,21 +385,30 @@ class ModelBlueprint {
     /**
      * Create an input reference.
      * @param string $field
+     * @param string $label
      * @param string $type
-     * @param null|string $description
-     * @param null|array $options
+     * @param int $priority
      * @return $this
      */
-    public function input($field, $type, $description=null, $options=null)
+    public function input($field, $label, $type, $priority=0)
     {
         try {
-            $this->field($field)
-                ->input($type,$description,$options);
+            $this->field($field)->input($label,$type,$priority);
+
         } catch(\Exception $e) {
             // Field not defined
         }
 
         return $this;
+    }
+
+    /**
+     * Get the model class.
+     * @return string
+     */
+    public function getClass()
+    {
+        return $this->class;
     }
 
     /**
@@ -357,12 +420,27 @@ class ModelBlueprint {
     {
         foreach ($array as $name=>$args)
         {
-            $type = is_array($args) ? $args[0] :  $args;
-            $description = is_array($args) ? array_get($args,1) : null;
-            $options = is_array($args) ? array_get($args,2) : null;
-            $this->input($name, $type, $description, $options);
+            $label = array_get($args,0);
+            $type  = array_get($args,1);
+            $pri   = array_get($args,2,0);
+
+            $this->input($name, $label, $type, $pri);
         }
         return $this;
+    }
+
+    /**
+     * Return an array of inputs.
+     * @return array
+     */
+    public function getInputsArray()
+    {
+        $inputs = $this->fields->filter(function($field){
+            return $field->input;
+        });
+        return $inputs->map(function($field) {
+            return $field->toInputArray();
+        });
     }
 
     /**
@@ -374,7 +452,7 @@ class ModelBlueprint {
         return $this->labels([
             'singular' => str_replace("_"," ",Str::singular($name)),
             'plural' => str_replace("_"," ",Str::plural($name)),
-            'navigation' => Str::upper($name),
+            'navigation' => Str::ucfirst($name),
             'slug' => Str::slug(Str::plural($name))
         ]);
     }
@@ -392,9 +470,20 @@ class ModelBlueprint {
             $this->field('id', FieldBlueprint::PRIMARY);
             $this->field('uid', FieldBlueprint::UID);
         }
-        if ($static instanceof Sluggable) {
-            $this->field('slug',FieldBlueprint::SLUG);
+    }
+
+    /**
+     * Mass-assign the field input options.
+     * @param $array
+     * @return $this
+     */
+    public function inputOptions($array)
+    {
+        foreach ($array as $field=>$options)
+        {
+            $this->field($field)->options($options);
         }
+        return $this;
     }
 
     /**

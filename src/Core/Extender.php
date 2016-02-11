@@ -157,6 +157,14 @@ class Extender {
         return $this->models;
     }
 
+    /**
+     * Return array of module classes.
+     * @return array
+     */
+    public function getModules()
+    {
+        return $this->modules;
+    }
 
     /**
      * Return the defined navigation for each module.

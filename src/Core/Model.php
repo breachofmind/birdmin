@@ -5,6 +5,7 @@ namespace Birdmin\Core;
 use Birdmin\Events\ModelConstruct;
 use Birdmin\Media;
 use Birdmin\Permission;
+use Birdmin\Support\ModelBlueprint;
 use Birdmin\User;
 use Illuminate\Database\Eloquent\Model as BaseModel;
 use Illuminate\Database\Eloquent\Collection;
@@ -45,6 +46,12 @@ class Model extends BaseModel
     protected $joins = [];
 
     /**
+     * The blueprint for this model.
+     * @var ModelBlueprint
+     */
+    protected $blueprint;
+
+    /**
      * Columns that are mass-searchable.
      * @var array
      */
@@ -74,8 +81,7 @@ class Model extends BaseModel
      */
     public function __construct(array $attributes = [])
     {
-        // TODO - Find a better way to do this
-        $this->configureModel (Event::fire(new ModelConstruct($this)));
+        $this->configureModel ( ModelBlueprint::get(static::class) );
 
         parent::__construct($attributes);
 
@@ -93,18 +99,19 @@ class Model extends BaseModel
     /**
      * Modify protected attributes at runtime.
      * This is a way to override a models defaults on a client by client basis.
-     * @param array $args
+     * @param ModelBlueprint $blueprint|null
+     * @return void
      */
-    protected function configureModel ($args=[])
+    protected function configureModel (ModelBlueprint $blueprint=null)
     {
-        if (empty($args)) {
-            return;
+        if (empty($blueprint)) {
+            return null;
         }
-        // Always use the last listener response.
-        foreach($args[count($args)-1] as $property=>$values)
-        {
-            $this->$property = $values;
-        }
+        $this->blueprint = $blueprint;
+
+        $this->fillable = $blueprint->fillable()->toArray();
+        $this->guarded  = $blueprint->guarded()->toArray();
+        $this->timestamps = $blueprint->timestamps;
     }
 
     /**

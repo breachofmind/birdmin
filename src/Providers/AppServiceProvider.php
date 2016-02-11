@@ -18,24 +18,14 @@ class AppServiceProvider extends ServiceProvider
      * Bootstrap any application services.
      * @return void
      */
-    public function boot(Template $template, Extender $extender, Request $request)
+    public function boot()
     {
         $this->app->call([$this,'boot_environment']);
 
-        $this->loadViewsFrom( base_path('cms/assets/views'), 'cms' );
+        $this->app->call([$this,'boot_views']);
 
-        View::share('template', $template);
-        View::share('modules',  $extender);
-        View::share('request',  $request);
+        $this->app->call([$this,'boot_models']);
 
-        // Check for development environment and inject services.
-        $livereload = config('view.livereload');
-        if (env('APP_ENV') !== Application::ENV_PROD && $livereload) {
-            $url = $livereload === true ? "localhost" : $livereload;
-            $template->script('livereload', "http://$url:35729/livereload.js");
-        }
-
-        FieldBlueprint::boot();
     }
 
     /**
@@ -54,6 +44,49 @@ class AppServiceProvider extends ServiceProvider
             default:
                 $request->context = Application::CXT_SITE;
                 break;
+        }
+    }
+
+    /**
+     * Setup the views and template.
+     * @param Template $template
+     * @param Extender $extender
+     * @param Request $request
+     */
+    public function boot_views(Template $template, Extender $extender, Request $request)
+    {
+        $this->loadViewsFrom( base_path('cms/assets/views'), 'cms' );
+
+        View::share('template', $template);
+        View::share('modules',  $extender);
+        View::share('request',  $request);
+
+        // Check for development environment and inject services.
+        $livereload = config('view.livereload');
+
+        // Use livereload on local or development?
+        if (env('APP_ENV') !== Application::ENV_PROD && $livereload)
+        {
+            $url = $livereload === true ? "localhost" : $livereload;
+            $template->script('livereload', "http://$url:35729/livereload.js");
+        }
+    }
+
+    /**
+     * Install the model blueprints.
+     * @return void
+     */
+    public function boot_models(Extender $extender)
+    {
+        FieldBlueprint::boot();
+
+        foreach ($extender->getModules() as $class=>$module)
+        {
+            $name = "{$module->name}.config.php";
+
+            if (file_exists(base_path("cms/conf/$name"))) {
+                include base_path("cms/conf/$name");
+            }
         }
     }
 

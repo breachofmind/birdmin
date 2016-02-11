@@ -8,6 +8,8 @@ use Illuminate\Routing\Router;
 
 class System extends Module {
 
+    public $name = "System";
+
     protected $dependencies = [];
 
     public $models = [

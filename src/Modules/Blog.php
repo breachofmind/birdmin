@@ -7,6 +7,8 @@ use Illuminate\Routing\Router;
 
 class Blog extends Module {
 
+    public $name = "Blog";
+
     protected $dependencies = ['Birdmin\Modules\Geo'];
 
     public $models = [

@@ -25,19 +25,21 @@ class FieldBlueprint
      * @var string
      */
     protected $name;
+    protected $blueprint;
 
+    public $fillable    = false;
+    public $guarded     = false;
+    public $unique      = false;
+    public $required    = false;
+    public $in_table    = false;
+    public $searchable  = false;
 
-    public $fillable = false;
-    public $guarded = false;
-    public $unique = false;
-    public $required = false;
-    public $in_table = false;
-
-    public $input = null;
+    public $label;
+    public $input       = null;
     public $description = null;
-    public $options = null;
-
-    private $booleans = ['fillable','guarded','unique','required','in_table'];
+    public $options     = null;
+    public $priority    = 0;
+    public $value       = null;
 
     public static $fieldSetup = [];
 
@@ -76,7 +78,7 @@ class FieldBlueprint
         };
     }
 
-    public function __construct($name,$type,$args)
+    public function __construct($name,$type,$args, ModelBlueprint $parent=null)
     {
         if (empty(FieldBlueprint::$fieldSetup)) {
             FieldBlueprint::boot();
@@ -84,6 +86,11 @@ class FieldBlueprint
         $this->name = $name;
         $this->type = $type;
         $this->args = $args;
+        if ($parent)
+        {
+            $this->blueprint = $parent;
+            $this->description = trans("{$parent->table}.$name", $parent->labels()->toArray());
+        }
     }
 
     /**
@@ -98,16 +105,6 @@ class FieldBlueprint
     }
 
     /**
-     * Setup the field type.
-     * @return void
-     */
-    protected function setType()
-    {
-        $callbacks = static::$fieldSetup;
-        $this->setup = array_key_exists($this->type, $callbacks) ? $callbacks[$this->type] : null;
-    }
-
-    /**
      * Calls magic boolean properties.
      * @param $name string
      * @param $arguments array
@@ -115,7 +112,10 @@ class FieldBlueprint
      */
     public function __call($name, $arguments)
     {
-        if (in_array($name,$this->booleans)) {
+        $booleans = ['fillable','guarded','unique','required','in_table','searchable'];
+
+        if (in_array($name,$booleans))
+        {
             $this->$name = is_bool($arguments[0]) ? $arguments[0] : true;
             return $this;
         }
@@ -131,6 +131,7 @@ class FieldBlueprint
     {
         $callbacks = static::$fieldSetup;
         $callback = array_key_exists($this->type, $callbacks) ? $callbacks[$this->type] : null;
+
         if (! is_callable($callback)) {
             return null;
         }
@@ -148,17 +149,50 @@ class FieldBlueprint
 
     /**
      * Create a reference to an input field.
+     * @param string $label
      * @param string $type
-     * @param null $description string
-     * @param null|array $options
+     * @param int $priority
      * @return $this
      */
-    public function input($type, $description=null, $options=null)
+    public function input($label,$type,$priority=0)
     {
+        $this->label = $label;
         $this->input = $type;
-        $this->description = $description;
-        $this->options = $options;
+        $this->priority = $priority;
 
+        return $this;
+    }
+
+    /**
+     * Create a array, for Input::create().
+     * @return array
+     */
+    public function toInputArray()
+    {
+        return [
+            'object'        => $this->blueprint->getClass(),
+            'field'         => $this->name,
+            'label'         => $this->label,
+            'priority'      => $this->priority,
+            'description'   => $this->description,
+            'type'          => $this->input,
+            'options'       => json_encode($this->options),
+            'required'      => $this->required ? 1:0,
+            'unique'        => $this->unique ? 1:0,
+            'in_table'      => $this->in_table ? 1:0,
+            'value'         => $this->value,
+            'active'        => 1,
+        ];
+    }
+
+    /**
+     * Set the options array.
+     * @param array $array
+     * @return $this
+     */
+    public function options($array=[])
+    {
+        $this->options = $array;
         return $this;
     }
 

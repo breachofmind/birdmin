@@ -7,6 +7,8 @@ use Illuminate\Routing\Router;
 
 class Commerce extends Module {
 
+    public $name = "Commerce";
+
     protected $dependencies = [];
 
     public $models = [
