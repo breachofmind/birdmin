@@ -1,20 +1,26 @@
 <?php
 namespace Birdmin\Support;
 
-
-use Birdmin\Contracts\Sluggable;
 use Birdmin\Core\Model;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Collection;
-use Birdmin\Input;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 use Sunra\PhpSimple\HtmlDomParser;
 use Birdmin\Contracts\HTMLComponent;
 
-class HTMLProcesser implements Renderable
+/**
+ * Class HTMLProcesser
+ *
+ * Breaks up an HTML string into a DOM tree.
+ * Can process custom HTML tags.
+ * @package Birdmin\Support
+ */
+class HTMLProcessor implements Renderable
 {
+    /**
+     * Array of tags to process.
+     * @var array
+     */
+    protected static $tags = [];
+
     /**
      * The DOM object.
      * @var \simple_html_dom
@@ -49,14 +55,19 @@ class HTMLProcesser implements Renderable
         return new static($string);
     }
 
+    static public function register($tag, \Closure $callable)
+    {
+        static::$tags[$tag] = $callable;
+    }
+
     /**
      * HTMLProcesser constructor.
      * @param null|string $string
      */
     public function __construct($string=null)
     {
-
         $this->dom = HtmlDomParser::str_get_html($string);
+
         $this->html = $this->dom->root;
     }
 
@@ -112,9 +123,29 @@ class HTMLProcesser implements Renderable
         if (! $rootNode instanceof \simple_html_dom_node) {
             return "";
         }
-        $this->processComponents($rootNode);
+        //$this->processComponents($rootNode);
+        foreach (array_keys(static::$tags) as $tag)
+        {
+            $this->processTag($tag, $rootNode);
+        }
 
         return $rootNode->parent == null ? $rootNode->innertext : $rootNode->outertext;
+    }
+
+    /**
+     * Process a tag.
+     * @param $tag string
+     * @param \simple_html_dom_node $rootNode
+     * @return void
+     */
+    protected function processTag($tag, \simple_html_dom_node $rootNode)
+    {
+        $closure = static::$tags[$tag];
+
+        foreach ((array) $rootNode->find($tag) as $node)
+        {
+            $closure($node, $this);
+        }
     }
 
     /**
@@ -122,28 +153,35 @@ class HTMLProcesser implements Renderable
      * @param \simple_html_dom_node $rootNode
      * @throws \Exception
      */
-    protected function processComponents(\simple_html_dom_node $rootNode)
+//    protected function processComponents(\simple_html_dom_node $rootNode)
+//    {
+//        foreach((array) $rootNode->find('component') as $node)
+//        {
+//            $class = $node->name;
+//
+//            if (! class_exists($class)) {
+//                throw new \Exception("Component class '$class' does not exist.");
+//            }
+//            if (! has_contract($class, HTMLComponent::class)) {
+//                throw new \Exception("Component class '$class' does not implement the HTMLComponent contract.");
+//            }
+//
+//            $component = $class::create($this->model,$node);
+//
+//            $this->components[] = $component;
+//
+//            // Replace the contents of the node with the component view.
+//            $node->innertext = $component->render();
+//        }
+//    }
+
+    /**
+     * Get the model object.
+     * @return Model
+     */
+    public function getModel()
     {
-        foreach((array) $rootNode->find('component') as $node)
-        {
-            $class = $node->name;
-
-            if (! class_exists($class)) {
-                throw new \Exception("Component class '$class' does not exist.");
-            }
-            if (! has_contract($class, HTMLComponent::class)) {
-                throw new \Exception("Component class '$class' does not implement the HTMLComponent contract.");
-            }
-
-            $component = $class::create($this->model,$node);
-
-            $this->components[] = $component;
-
-            // Replace the contents of the node with the component view.
-            $node->innertext = $component->render();
-
-        }
-
+        return $this->model;
     }
 
     /**

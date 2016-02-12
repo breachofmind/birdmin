@@ -5,10 +5,8 @@ namespace Birdmin;
 use Birdmin\Contracts\Sluggable;
 use Birdmin\Core\Model;
 use Birdmin\Contracts\Hierarchical;
-use Birdmin\Support\HTMLProcesser;
+use Birdmin\Support\HTMLProcessor;
 use Birdmin\Support\Traits\Tree;
-use Illuminate\Http\Request;
-use Sunra\PhpSimple\HtmlDomParser;
 
 
 class Page extends Model
@@ -44,7 +42,7 @@ class Page extends Model
     {
         if (! $this->processed) {
             try {
-                $this->processed = HTMLProcesser::parse($this->content)->uses($this);
+                $this->processed = HTMLProcessor::parse($this->content)->uses($this);
 
             } catch(\Exception $e) {
                 return $this->content;
