@@ -213,11 +213,12 @@ if (!function_exists('birdmin_path')) {
         $i=0;
         while ($i<count($str)) {
             if (array_key_exists($key[$i],$values)) {
-                $format = str_replace ($str[$i],$values[$key[$i]],$format);
+                $value = $values[$key[$i]];
+                $format = str_replace ($str[$i],$value,$format);
             }
             $i++;
         }
-        return $format; // Result with replacements.
+        return $format;
     }
 
     /**

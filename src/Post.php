@@ -2,12 +2,14 @@
 
 namespace Birdmin;
 
+use Birdmin\Collections\MediaCollection;
+use Birdmin\Contracts\RelatedMedia;
 use Birdmin\Contracts\Sluggable;
 use Birdmin\Core\Model;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Post extends Model implements Sluggable
+class Post extends Model implements Sluggable, RelatedMedia
 {
     use SoftDeletes;
 
@@ -96,11 +98,11 @@ class Post extends Model implements Sluggable
 
     /**
      * Return a collection of media items, ordered by priority.
-     * @return Collection
+     * @return MediaCollection
      */
     public function media()
     {
-        return Relationship::collection($this, Media::class);
+        return $this->related(Media::class);
     }
 
     /**

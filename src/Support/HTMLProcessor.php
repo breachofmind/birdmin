@@ -4,10 +4,9 @@ namespace Birdmin\Support;
 use Birdmin\Core\Model;
 use Illuminate\Contracts\Support\Renderable;
 use Sunra\PhpSimple\HtmlDomParser;
-use Birdmin\Contracts\HTMLComponent;
 
 /**
- * Class HTMLProcesser
+ * Class HTMLProcessor
  *
  * Breaks up an HTML string into a DOM tree.
  * Can process custom HTML tags.
@@ -55,13 +54,18 @@ class HTMLProcessor implements Renderable
         return new static($string);
     }
 
+    /**
+     * Register a new HTML tag.
+     * @param $tag
+     * @param \Closure $callable
+     */
     static public function register($tag, \Closure $callable)
     {
         static::$tags[$tag] = $callable;
     }
 
     /**
-     * HTMLProcesser constructor.
+     * HTMLProcessor constructor.
      * @param null|string $string
      */
     public function __construct($string=null)
@@ -147,33 +151,6 @@ class HTMLProcessor implements Renderable
             $closure($node, $this);
         }
     }
-
-    /**
-     * Process each <component> element in the node.
-     * @param \simple_html_dom_node $rootNode
-     * @throws \Exception
-     */
-//    protected function processComponents(\simple_html_dom_node $rootNode)
-//    {
-//        foreach((array) $rootNode->find('component') as $node)
-//        {
-//            $class = $node->name;
-//
-//            if (! class_exists($class)) {
-//                throw new \Exception("Component class '$class' does not exist.");
-//            }
-//            if (! has_contract($class, HTMLComponent::class)) {
-//                throw new \Exception("Component class '$class' does not implement the HTMLComponent contract.");
-//            }
-//
-//            $component = $class::create($this->model,$node);
-//
-//            $this->components[] = $component;
-//
-//            // Replace the contents of the node with the component view.
-//            $node->innertext = $component->render();
-//        }
-//    }
 
     /**
      * Get the model object.

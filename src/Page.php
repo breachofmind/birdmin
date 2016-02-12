@@ -7,18 +7,19 @@ use Birdmin\Core\Model;
 use Birdmin\Contracts\Hierarchical;
 use Birdmin\Support\HTMLProcessor;
 use Birdmin\Support\Traits\Tree;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 
-class Page extends Model
-    implements Hierarchical, Sluggable
+class Page extends Model implements Hierarchical, Sluggable
 {
     use Tree;
+    use SoftDeletes;
 
     protected $appends = ['children'];
 
     /**
      * The processed HTML content.
-     * @var HTMLProcesser
+     * @var HTMLProcessor
      */
     private $processed;
 
@@ -43,7 +44,6 @@ class Page extends Model
         if (! $this->processed) {
             try {
                 $this->processed = HTMLProcessor::parse($this->content)->uses($this);
-
             } catch(\Exception $e) {
                 return $this->content;
             }

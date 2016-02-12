@@ -31,6 +31,12 @@ class ModelBlueprint {
     public $softDeletes = true;
 
     /**
+     * URL composer.
+     * @var string
+     */
+    public $url = "{slug}";
+
+    /**
      * The table name.
      * @var string
      */
@@ -54,6 +60,12 @@ class ModelBlueprint {
      * @var string
      */
     public $title = "id";
+
+    /**
+     * The default no-image img src.
+     * @var string
+     */
+    public $no_image = "/cms/public/images/no-image.svg";
 
     /**
      * The model class.
@@ -263,6 +275,18 @@ class ModelBlueprint {
     }
 
     /**
+     * Set the no-image property.
+     * @param $src string
+     * @return $this|string
+     */
+    public function no_image($src)
+    {
+        if (func_num_args() == 0) return $this->no_image;
+        $this->no_image = $src;
+        return $this;
+    }
+
+    /**
      * Set a label name, or get a label by key.
      * @param $name string
      * @param $value
@@ -284,6 +308,18 @@ class ModelBlueprint {
     {
         if (func_num_args() == 0) return $this->labels;
         $this->labels->merge($array);
+        return $this;
+    }
+
+    /**
+     * Set the URL pattern.
+     * @param $pattern string
+     * @return $this|string
+     */
+    public function url($pattern)
+    {
+        if (func_num_args() == 0) return $this->url;
+        $this->url = $pattern;
         return $this;
     }
 

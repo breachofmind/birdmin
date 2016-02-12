@@ -7,42 +7,28 @@ use Birdmin\Contracts\Sluggable;
 use Birdmin\Core\Model;
 use Birdmin\Collections\MediaCollection;
 
-class Product extends Model
-    implements Sluggable, RelatedMedia
+class Product extends Model implements Sluggable, RelatedMedia
 {
-    protected $table = "products";
-
-    protected $fillable = [
-        'name',
-        'category_id',
-        'bundle_id',
-        'brand',
-        'excerpt',
-        'description',
-        'attributes',
-        'sku',
-        'type',
-        'status',
-        'slug'
-    ];
-
-    protected $searchable = ['name', 'slug', 'status', 'type','sku','brand'];
-
     public static $repository;
 
-    public $timestamps = true;
+    protected $appends = ['bundle','category'];
 
     /**
-     * Return a URL for this model on the frontend. TODO - dynamic
+     * Return a URL for this model on the frontend.
      * @param $relative bool
      * @return string
      */
     public function url($relative=false)
     {
-        $url = "products/".$this->slug;
-        return $relative ? "/".$url : url($url);
+        $path = $this->composeUrlString($this->blueprint->url);
+
+        return $relative ? "/$path" : url($path);
     }
 
+    /**
+     * Collection of Product Variations.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function variations()
     {
         return $this->hasMany(ProductVariation::class);
@@ -58,12 +44,30 @@ class Product extends Model
     }
 
     /**
+     * Returns the category.
+     * @return mixed
+     */
+    public function getCategoryAttribute()
+    {
+        return $this->category()->first();
+    }
+
+    /**
      * Return the product bundle object.
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function bundle()
     {
         return $this->hasOne(ProductBundle::class, 'id','bundle_id');
+    }
+
+    /**
+     * Returns the bundle.
+     * @return mixed
+     */
+    public function getBundleAttribute()
+    {
+        return $this->bundle()->first();
     }
 
     /**

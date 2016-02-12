@@ -2,6 +2,7 @@
 
 namespace Birdmin\Core;
 
+use Birdmin\Contracts\Sluggable;
 use Birdmin\Events\ModelConstruct;
 use Birdmin\Media;
 use Birdmin\Permission;
@@ -117,12 +118,12 @@ class Model extends BaseModel
     }
 
     /**
-     * Return the currently set model blueprint object.
+     * Return the currently set model blueprint object or property..
      * @return ModelBlueprint
      */
-    public function getBlueprint()
+    public function getBlueprint($property=null)
     {
-        return $this->blueprint;
+        return $property ? $this->blueprint->$property : $this->blueprint;
     }
 
     /**
@@ -436,6 +437,35 @@ class Model extends BaseModel
         $url = join("/",$segments);
 
         return $relative ? "/".$url : url($url);
+    }
+
+    /**
+     * Composes a string in the given format.
+     * @param $format string
+     * @return mixed
+     */
+    protected function composeUrlString($format)
+    {
+        $matches = [];
+
+        preg_match_all ("/\{([^}]+)\}/", $format, $matches);
+
+        list ($str,$keys) = $matches;
+        if (empty($str)) return $format;
+
+        foreach($keys as $i=>$key)
+        {
+            $value = $this->getAttribute($key);
+            if (! $value) {
+                continue;
+            }
+            if ($value instanceof Sluggable) {
+                $value = $value->slug;
+            }
+            $format = str_replace ($str[$i],$value,$format);
+        }
+
+        return $format;
     }
 
     /**

@@ -77,7 +77,8 @@ $category = ModelBlueprint::create(Category::class, 'categories')
     ->searchable('name','status','type')
     ->unique('slug')
     ->required('name','slug')
-    ->icon('tag');
+    ->icon('tag')
+    ->url(null);
 
 $category->indexTable()
     ->columns([
