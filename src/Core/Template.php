@@ -1,9 +1,11 @@
 <?php
 namespace Birdmin\Core;
 
+use Birdmin\Page;
 use Birdmin\Support\TemplateFile;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Str;
 
 class Template implements Jsonable {
 
@@ -16,7 +18,8 @@ class Template implements Jsonable {
     public $title;
     public $description;
     public $bodyClass;
-    public $session_id;
+    public $image;
+    public $url;
 
     protected $metas = [];
     protected $styles = [];
@@ -32,6 +35,7 @@ class Template implements Jsonable {
     public function __construct(Application $app)
     {
         $this->app = $app;
+        $this->url = Request::url();
     }
 
     /**
@@ -153,32 +157,36 @@ class Template implements Jsonable {
     }
 
     /**
-     * Return the section view array.
-     * @return array
+     * Create the meta og: tags.
+     * @return void
      */
-    public function getSections ()
+    public function openGraph()
     {
-        return $this->sections;
+        $this->meta('og:title', $this->title);
+        $this->meta('og:type', 'website');
+        $this->meta('og:image', $this->image);
+        $this->meta('og:url', $this->url);
     }
 
     /**
-     * Get/Set a template section.
-     * @param $name string
-     * @param null $view string
-     * @return null|View
-     * @throws \Exception
+     * Set the template title, description and image given the model.
+     * @param Model $model
      */
-    public function section ($name, $view=null)
+    public function model (Model $model)
     {
-        if (!is_null($view)) {
-            return $this->section[$name] = $view;
-        }
-        if (!array_key_exists($name,$this->sections)) {
-            throw new \Exception ("Template section '$name' is not set.");
-        }
-        return $this->section[$name];
-    }
+        $this->title = $model->getTitle()." - ".config('app.client_name');
 
+        if ($model instanceof Page) {
+            $this->description = Str::limit(strip_tags($model->content),160);
+        } else {
+            $this->description = $model->excerpt ?: Str::limit(strip_tags($model->description),160);
+        }
+        if ($image = $model->getImage()) {
+            $this->image = $image->url(null,false);
+        } else {
+            $this->image = url(config('app.client_logo'));
+        }
+    }
 
     /**
      * Output this object as a JSON array or string.

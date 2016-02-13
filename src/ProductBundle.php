@@ -18,7 +18,8 @@ class ProductBundle extends Model
         'description',
         'slug',
         'status',
-        'website'
+        'website',
+        'excerpt'
     ];
 
     protected $searchable = ['name','brand','status'];

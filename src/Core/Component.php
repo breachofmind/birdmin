@@ -78,15 +78,20 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
     /**
      * Add an html attribute to the button.
      * @param $name string attribute name
-     * @param bool|true $value - true will only display attribute name
+     * @param bool|string|array $value - true will only display attribute name, arrays are joined
      * @return $this
      */
     public function attribute($name,$value=true)
     {
-        $this->attributes[$name] = $value;
+        $this->attributes[$name] = is_array($value) ? join(" ",$value) : $value;
         return $this;
     }
 
+    /**
+     * Add multiple attributes.
+     * @param array $keyvalue
+     * @return $this
+     */
     public function attributes($keyvalue=[])
     {
         foreach ($keyvalue as $key=>$value)
@@ -112,7 +117,7 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
 
     /**
      * Shortcut for adding class names.
-     * @param $classes
+     * @param $classes string|array
      * @return Component
      */
     public function classes($classes)
@@ -153,6 +158,7 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
         return $this;
     }
 
+
     /**
      * Render the component.
      * @return View|string
@@ -161,14 +167,15 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
     public function render()
     {
         // Kill switch.
-        if (!$this->canRender) {
+        if (! $this->canRender) {
             return null;
         }
 
+        // Before rendering, prepare any data in $this->data for the view to use.
         $this->prepare();
 
-        if (!$this->view) {
-            throw new \ErrorException('Component view not set');
+        if (! $this->view || !view()->exists($this->view)) {
+            throw new \ErrorException('Component view not set or does not exist '.$this->view);
         }
 
         return view($this->view)->with($this->data)->render();

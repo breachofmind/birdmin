@@ -4,6 +4,7 @@ namespace Birdmin\Exceptions;
 
 use Exception;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -52,7 +53,18 @@ class Handler extends ExceptionHandler
             $e = new NotFoundHttpException($e->getMessage(), $e);
         }
 
+        if (config('app.debug')) {
+            return $this->renderDebugException($e);
+        }
+
         return parent::render($request, $e);
+    }
+
+    protected function renderDebugException(Exception $e)
+    {
+        $whoops = new \Whoops\Run;
+        $whoops->pushHandler(new \Whoops\Handler\PrettyPageHandler());
+        return new Response($whoops->handleException($e), $e->getStatusCode(), $e->getHeaders());
     }
 
     /**

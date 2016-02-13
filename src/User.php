@@ -130,9 +130,10 @@ class User extends Model
      * Return an image tag of this user.
      * @param null|string $size
      * @param null|string|array $classes
+     * @param array $attrs
      * @return string
      */
-    public function img($size=null,$classes=null)
+    public function img($size=null,$classes=null,$attrs=[])
     {
         switch ($size) {
             case "sm" : $size = 80; break;
@@ -142,7 +143,13 @@ class User extends Model
             default :   $size = 800; break;
         }
         $src = $this->gravatar($size);
-        return attributize(['src'=>$src, 'class'=>$classes, 'alt'=>$this->fullName()." Image"], 'img');
+        $attr = [
+            'src'=>$src,
+            'class'=>$classes,
+            'alt'=>$this->fullName()." Image"
+        ];
+
+        return attributize(array_merge($attr,$attrs), 'img');
     }
 
     /**

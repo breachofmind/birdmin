@@ -364,12 +364,13 @@ class Model extends BaseModel
      * Will look for an assigned image file type.
      * @param null|string $size
      * @param null|string|array $classes
+     * @param array $attrs
      * @return string|void
      */
-    public function img($size=null,$classes=null)
+    public function img($size=null,$classes=null,$attrs=[])
     {
         $image = $this->getImage();
-        return $image ? $image->img($size,$classes) : $this->noImage($classes);
+        return $image ? $image->img($size,$classes,$attrs) : $this->noImage($classes);
     }
 
     /**
@@ -399,16 +400,21 @@ class Model extends BaseModel
      * Return the 'Missing Image' Image.
      * Each model can have it's own 'Missing Image' static var (defined in config file).
      * @param null|string|array $classes
+     * @param array $attrs
      * @return string
      */
-    public function noImage($classes=null)
+    public function noImage($classes=null,$attrs=[])
     {
         $missing_image_src = static::getConfig('no_image');
         if (!$missing_image_src) {
             $missing_image_src = config('media.missing_image');
         }
-        return  attributize([
-            'alt'=>'Image not found', 'src' => $missing_image_src, 'class' => $classes],'img');
+        $attr = [
+            'alt'=>'Image not found',
+            'src' => $missing_image_src,
+            'class' => $classes
+        ];
+        return  attributize(array_merge($attr,$attrs),'img');
     }
 
     /**

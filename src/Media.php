@@ -220,15 +220,19 @@ class Media extends Model
     /**
      * Return the image html tag for this object in the given size/crop.
      * Images naturally return the file, other file types may return defaults.
+     * @param string $size
+     * @param string|array $classes
+     * @param array $attrs
+     * @return string
      */
-    public function img ($size=null, $classes=null)
+    public function img ($size=null, $classes=null, $attrs=[])
     {
         $attr = [
             'src' => $this->urlByType($size),
             'class' => is_array($classes) ? join(" ",$classes) : $classes,
             'alt' => empty($this->alt_text) ? $this->title : $this->alt_text,
         ];
-        return attributize($attr,'img');
+        return attributize(array_merge($attr,$attrs),'img');
     }
 
     /**

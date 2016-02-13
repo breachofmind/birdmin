@@ -26,11 +26,4 @@ interface HTMLComponent {
      */
     public function node(\simple_html_dom_node $node);
 
-    /**
-     * HTMLComponent constructor.
-     * @param Model $model
-     * @param \simple_html_dom_node $node
-     */
-    public function __construct(Model $model, \simple_html_dom_node $node);
-
 }
