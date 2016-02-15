@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\Collection;
  * Class Component
  * @package Birdmin\Core
  */
-class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
+class Component implements Renderable, Jsonable, JsonSerializable {
 
 
     /**
@@ -46,7 +46,7 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
 
     /**
      * Attributes for the parent element (typically)
-     * @var array
+     * @var \Illuminate\Support\Collection
      */
     protected $attributes = [];
 
@@ -55,7 +55,10 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
      * This should give you a little flexibility in building your component.
      * Component constructor.
      */
-    public function __construct() {}
+    public function __construct()
+    {
+        $this->attributes   = collect([]);
+    }
 
     /**
      * Fired just before render().
@@ -132,7 +135,7 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
      */
     public function getAttribute($name)
     {
-        return isset($this->attributes[$name]) ? $this->attributes[$name] : null;
+        return $this->attributes->get($name);
     }
 
 
@@ -178,7 +181,7 @@ class Component implements Renderable, Arrayable, Jsonable, JsonSerializable {
             throw new \ErrorException('Component view not set or does not exist '.$this->view);
         }
 
-        return view($this->view)->with($this->data)->render();
+        return view($this->view,$this->data)->render();
     }
 
     /**

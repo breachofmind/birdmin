@@ -19,7 +19,7 @@ class ButtonGroup extends Component
     /**
      * A handy starter for creating a button group with buttons.
      * @param array $buttons
-     * @return ButtonGroupComponent
+     * @return ButtonGroup
      */
     public static function build(array $buttons=[])
     {
@@ -43,7 +43,7 @@ class ButtonGroup extends Component
 
     /**
      * Add a button object.
-     * @param ButtonComponent $button
+     * @param Button $button
      * @return $this
      */
     public function add(Button $button)
@@ -91,7 +91,7 @@ class ButtonGroup extends Component
         return [
             'element' => $this->element,
             'buttons'=>$this->buttons,
-            'attributes' => $this->attributes,
+            'attributes' => $this->attributes->toArray(),
             'count' => $this->count()
         ];
     }

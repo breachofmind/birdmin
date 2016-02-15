@@ -12,32 +12,46 @@ class TestHtmlComponent extends Component implements HTMLComponent
 
     protected $view = "cms::components.test";
 
+    /**
+     * @var Model
+     */
     protected $model;
 
+    /**
+     * @var \simple_html_dom_node
+     */
     protected $node;
 
+    /**
+     * Contents of the node.
+     * @var string
+     */
     protected $contents;
 
+    /**
+     * TestHtmlComponent constructor.
+     * @param Model $model
+     * @param \simple_html_dom_node $node
+     */
     public function __construct(Model $model, \simple_html_dom_node $node)
     {
-        $this->parent($model);
-        $this->node($node);
+        parent::__construct();
+
+        $this->setup($model,$node);
     }
 
-    public function node(\simple_html_dom_node $node)
-    {
-        $this->node = $node;
-
-        $node->tag = "div";
-        $node->attr = [];
-        $node->id = "ComponentTest";
-        $this->contents = $node->innertext;
-
-    }
-
-    public function parent(Model $model)
+    /**
+     * Set up the component.
+     * @param Model $model
+     * @param \simple_html_dom_node $node
+     * @return void
+     */
+    public function setup(Model $model, \simple_html_dom_node $node)
     {
         $this->model = $model;
+        $this->node = $node;
+
+        $this->contents = $node->innertext;
     }
 
     public function toArray()

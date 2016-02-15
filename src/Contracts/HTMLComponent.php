@@ -13,17 +13,11 @@ use Birdmin\Core\Model;
 interface HTMLComponent {
 
     /**
-     * Set the parent model.
+     * Set up the node and model.
      * @param Model $model
-     * @return mixed
-     */
-    public function parent(Model $model);
-
-    /**
-     * Set the html node.
      * @param \simple_html_dom_node $node
      * @return mixed
      */
-    public function node(\simple_html_dom_node $node);
+    public function setup(Model $model, \simple_html_dom_node $node);
 
 }

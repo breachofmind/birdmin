@@ -46,6 +46,8 @@ class RelatedModels extends Component implements ModuleComponent
      */
     public function __construct(Model $model, $args=null)
     {
+        parent::__construct();
+
         $this->actions = ButtonGroup::create();
         $this->parent($model);
         if ($args) $this->child($args[0]);

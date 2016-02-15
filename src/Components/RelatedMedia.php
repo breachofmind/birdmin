@@ -41,6 +41,8 @@ class RelatedMedia extends Component implements ModuleComponent
      */
     public function __construct(Model $model, $args=null)
     {
+        parent::__construct();
+
         // The RelatedMedia contract is required by the model.
         if (! $model instanceof \Birdmin\Contracts\RelatedMedia) {
             return $this->canRender = false;

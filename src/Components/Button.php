@@ -90,6 +90,7 @@ class Button extends Component
         'tree' => Hierarchical::class
     ];
 
+
     /**
      * Set a label.
      * @param $name string label
@@ -114,7 +115,7 @@ class Button extends Component
 
     /**
      * Apply the active class to this button.
-     * @return ButtonComponent
+     * @return Button
      */
     public function active()
     {
@@ -149,7 +150,7 @@ class Button extends Component
     /**
      * Create a brd-link out of this button.
      * @param null $action
-     * @return ButtonComponent
+     * @return Button
      */
     public function link($action=null)
     {
@@ -166,7 +167,7 @@ class Button extends Component
     /**
      * Create a brd-submit action out of this button.
      * @param null $action
-     * @return ButtonComponent
+     * @return Button
      */
     public function action($action=null)
     {
@@ -205,7 +206,7 @@ class Button extends Component
 
     /**
      * Add this button to a button group.
-     * @param ButtonGroupComponent $component
+     * @param ButtonGroup $component
      * @return $this
      */
     public function addTo(ButtonGroup $component)
@@ -213,8 +214,6 @@ class Button extends Component
         $component->add($this);
         return $this;
     }
-
-
 
     /**
      * Get the button label.
@@ -241,10 +240,10 @@ class Button extends Component
     public function toArray()
     {
         return [
-            'attributes' => $this->attributes,
+            'attributes' => $this->attributes->toArray(),
             'label' => $this->label,
             'icon' => $this->icon,
-            'href' => $this->getAttribute('href'),
+            'href' => $this->attributes['href'],
         ];
     }
 

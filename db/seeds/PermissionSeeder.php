@@ -34,7 +34,7 @@ class PermissionSeeder extends Seeder
                 ]);
             }
         }
-        $this->grantAbilities();
+        //$this->grantAbilities();
 
 
         echo sizeof($created)." Permission objects created.\n";
