@@ -4,12 +4,20 @@ namespace Birdmin\Components;
 use Birdmin\Contracts\Hierarchical;
 use Birdmin\Core\Model;
 use Birdmin\Core\Component;
+use Illuminate\Auth\Guard;
+use Illuminate\Support\Facades\Auth;
 
 class Button extends Component
 {
     protected $name = "Button";
 
     protected $view = "cms::components.button";
+
+    /**
+     * The given action.
+     * @var string
+     */
+    protected $action;
 
     /**
      * The attributes of the button.
@@ -249,10 +257,14 @@ class Button extends Component
 
     /**
      * Prepare the button to be rendered.
-     * @return void
+     * @return void|boolean
      */
     public function prepare()
     {
+        $user = Auth::user();
+        if ($user->cannot('view', $this->parent)) {
+            return false;
+        }
         $data = $this->toArray();
         $data['attributes'] = attributize($data['attributes']);
 

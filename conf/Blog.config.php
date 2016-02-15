@@ -4,6 +4,7 @@ use Birdmin\Support\FieldBlueprint as Field;
 use Birdmin\Input;
 use Birdmin\Page;
 use Birdmin\Category;
+use Birdmin\User;
 
 /**
  * ------------------------------------------
@@ -20,6 +21,10 @@ $pageOptions = [
     'parent_id' => [
         'model' => Page::class,
         'nullable' => true
+    ],
+    'user_id' => [
+        'model' => User::class,
+        'nullable' => false
     ]
 ];
 
@@ -30,8 +35,9 @@ $pages = ModelBlueprint::create(Page::class, 'pages')
     ->_content      ("Content",     Field::TEXT,    Input::HTML)
     ->_status       ("Status",      Field::STATUS,  Input::RADIO)
     ->_type         ("Type",        Field::STRING,  Input::RADIO)
-
     ->_parent_id    ("Parent Page", [Field::REFERENCE, ['pages','id']], Input::MODEL)
+    ->_user_id      ("Author",      [Field::REFERENCE, ['users','id']], Input::MODEL)
+
     ->inputOptions  ($pageOptions)
     ->fillable      ('*')
     ->in_table      ('title','status','slug')
@@ -68,13 +74,13 @@ $category = ModelBlueprint::create(Category::class, 'categories')
     ->_description  ('Description',     Field::TEXT,       Input::HTML)
     ->_status       ('Status',          Field::STATUS,     Input::RADIO)
     ->_excerpt      ('Excerpt',         Field::STRING,     Input::TEXTAREA)
-    ->_type         ('Type',            Field::STRING,     Input::TEXT)
-
+    ->_object       ('Object Type',     Field::STRING,     Input::TEXT)
     ->_parent_id    ('Parent Category', [Field::REFERENCE, ['categories','id']], Input::MODEL)
+
     ->inputOptions($categoryOptions)
     ->fillable('*')
-    ->in_table('name','status','type','parent_id')
-    ->searchable('name','status','type')
+    ->in_table('name','status','object','parent_id')
+    ->searchable('name','status','object')
     ->unique('slug')
     ->required('name','slug')
     ->icon('tag')

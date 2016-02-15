@@ -175,7 +175,11 @@ class Component implements Renderable, Jsonable, JsonSerializable {
         }
 
         // Before rendering, prepare any data in $this->data for the view to use.
-        $this->prepare();
+        $continue = $this->prepare();
+
+        if ($continue === false) {
+            return null;
+        }
 
         if (! $this->view || !view()->exists($this->view)) {
             throw new \ErrorException('Component view not set or does not exist '.$this->view);

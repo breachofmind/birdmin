@@ -3,6 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 use Birdmin\Support\ModelBlueprint;
+use Birdmin\Page;
 
 class CreatePagesTable extends Migration
 {
@@ -13,19 +14,7 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
-        Schema::create('pages', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('uid',32);
-            $table->string('title',500);
-            $table->string('status', 100);
-            $table->string('type', 100);
-            $table->string('slug',250)->index();
-            $table->text('content');
-            $table->integer('user_id')->unsigned();
-            $table->integer('parent_id')->unsigned();
-            $table->timestamps();
-            $table->softDeletes();
-        });
+        ModelBlueprint::get(Page::class)->createSchema();
     }
 
     /**
@@ -35,6 +24,6 @@ class CreatePagesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('pages');
+        ModelBlueprint::get(Page::class)->dropSchema();
     }
 }
