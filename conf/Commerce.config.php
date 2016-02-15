@@ -46,7 +46,7 @@ $products = ModelBlueprint::create(Product::class, 'products')
     ->required      ('name','slug','status')
     ->icon          ('bag')
     ->no_image      ('/public/images/no-image.svg')
-    ->url('products/{slug}')
+    ->url           ('products/{slug}')
 
     ->module('Birdmin\Components\RelatedMedia')
     ->module('Birdmin\Components\RelatedModels', ['Birdmin\ProductVariation']);

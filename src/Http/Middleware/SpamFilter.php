@@ -3,6 +3,8 @@
 namespace Birdmin\Http\Middleware;
 
 use Closure;
+use Birdmin\Lead;
+use Illuminate\Http\Request;
 
 class SpamFilter
 {
@@ -13,27 +15,19 @@ class SpamFilter
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle(Request $request, Closure $next)
     {
-        $input = $request->input();
+        $request['valid'] = 1;
 
         if (!empty($request->input('hpv')) && !empty($request->input('hpt'))) {
-            return $this->hasSpam($request);
+            $request['valid'] = 0;
         }
 
         $email = $request->input('email');
         if ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            return $this->hasSpam($request);
+            $request['valid'] = 0;
         }
 
         return $next($request);
-    }
-
-    protected function hasSpam($request)
-    {
-        if ($request->ajax()) {
-            return response('Unauthorized.', 401);
-        }
-        redirect($request->input('redirect'));
     }
 }

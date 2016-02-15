@@ -111,6 +111,14 @@
             });
             return this;
         };
+
+        this.saveEditors = function()
+        {
+            for (var id in editors)
+            {
+                $(editors[id]).froalaEditor('events.trigger','save.before');
+            }
+        }
     }
 
     function openAjaxDialog(event)
@@ -130,8 +138,45 @@
         $('body').on('click','a[data-ajax-dialog]', openAjaxDialog);
     });
 
-    ui.register();
 
     birdmin.ui = ui;
 
 })(birdmin, vex);
+
+
+
+(function ($) {
+    // Add an option for your plugin.
+    $.FroalaEditor.DEFAULTS = $.extend($.FroalaEditor.DEFAULTS, {
+        myOption: false
+    });
+
+    // Define the plugin.
+    // The editor parameter is the current instance.
+    $.FroalaEditor.PLUGINS.component = function (editor) {
+
+        // The start point for your plugin.
+        function _init () {
+
+            editor.events.on('save.before', function () {
+                $('component').removeClass('fr-active');
+            });
+
+            editor.$el.on('click','component', function(evt) {
+                evt.stopPropagation();
+                $('component').removeClass('fr-active');
+                $(this).addClass('fr-active');
+            });
+            editor.$el.on('click', function(evt){
+                $('component').removeClass('fr-active');
+            })
+        }
+
+        // Expose public methods. If _init is not public then the plugin won't be initialized.
+        // Public method can be accessed through the editor API:
+        // $('.selector').froalaEditor('myPlugin.publicMethod');
+        return {
+            _init: _init,
+        }
+    }
+})(jQuery);

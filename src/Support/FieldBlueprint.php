@@ -171,16 +171,16 @@ class FieldBlueprint
     {
         return [
             'object'        => $this->blueprint->getClass(),
-            'field'         => $this->name,
+            'name'         => $this->name,
             'label'         => $this->label,
             'priority'      => $this->priority,
             'description'   => $this->description,
             'type'          => $this->input,
-            'options'       => json_encode($this->options),
+            'options'       => $this->options ? json_encode($this->options) : "",
             'required'      => $this->required ? 1:0,
             'unique'        => $this->unique ? 1:0,
             'in_table'      => $this->in_table ? 1:0,
-            'value'         => $this->value,
+            'value'         => $this->value?:"",
             'active'        => 1,
         ];
     }

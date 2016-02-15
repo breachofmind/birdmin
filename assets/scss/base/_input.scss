@@ -45,6 +45,9 @@
 .fr-wrapper+div {display:none !important;}
 
 component {
-	padding:15px; display:block;
+	padding:15px; min-height:60px; display:block;
 	background:url(/cms/public/images/bg-stripe.png) repeat; width:100%;
+}
+component.fr-active {
+	border:2px solid $primary-color;
 }

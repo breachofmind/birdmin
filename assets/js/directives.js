@@ -50,6 +50,7 @@
                     event.preventDefault();
                     var form = $("#"+attrs.brdSubmit);
                     if (form.length) {
+                        birdmin.ui.saveEditors();
                         var data = form.serializeObject();
                         return ajax.post(form.attr('action'), null, data).then(ajax.notify(), ajax.error);
                     }
