@@ -5,6 +5,7 @@ namespace Birdmin\Providers;
 use Birdmin\Core\Application;
 use Birdmin\Core\Extender;
 use Birdmin\Core\Model;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Birdmin\Core\Template;
 use Illuminate\Support\Facades\View;
@@ -70,6 +71,16 @@ class AppServiceProvider extends ServiceProvider
             $url = $livereload === true ? "localhost" : $livereload;
             $template->script('livereload', "http://$url:35729/livereload.js");
         }
+
+        // Allow component tags.
+        Blade::directive('component', function($expression)
+        {
+            $args = explode(",",trim($expression,"()"));
+            $componentClass = trim(array_shift($args));
+            $arguments = "[".implode(",",$args)."]";
+            return "<?php echo $componentClass::create($arguments)->render(); ?>";
+        });
+
     }
 
     /**
