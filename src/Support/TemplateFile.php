@@ -2,7 +2,9 @@
 namespace Birdmin\Support;
 
 
-class TemplateFile {
+use Illuminate\Contracts\Support\Renderable;
+
+class TemplateFile implements Renderable {
 
     private $templates = [
         'link'      => '<link %s/>',
@@ -10,9 +12,15 @@ class TemplateFile {
         'meta'      => '<meta %s/>'
     ];
 
+    private $fileSrc = [
+        'link' => 'href',
+        'script' => 'src'
+    ];
+
     protected $name;
     protected $dependencies = [];
     protected $attr = [];
+    protected $src;
 
     protected $rendered = false;
 
@@ -27,6 +35,7 @@ class TemplateFile {
         $this->name     = $name;
         $this->element  = strtolower($element);
         $this->attr     = $attr;
+        $this->src      = array_key_exists($element,$this->fileSrc) ? $attr[$this->fileSrc[$element]] : null;
     }
 
 
@@ -86,6 +95,10 @@ class TemplateFile {
         }
         if ($this->rendered) {
             return trim(join("\n",$output));
+        }
+        // Cache busting
+        if ($this->src && file_exists(base_path($this->src))) {
+            $this->attr[$this->fileSrc[$this->element]].="?t=".filemtime(base_path($this->src));
         }
         $this->rendered = true;
         $output[] = sprintf($this->templates[$this->element], attributize($this->attr));
