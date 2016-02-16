@@ -56,6 +56,7 @@ class ModelPolicy
         // Does the particular class have a management ability?
         $this->manager = $this->permissions->exists('manage', $this->class);
 
+
         // Does the permission exist in the index? If not, grant by default.
         if (! $this->permissions->exists($ability, $this->class)) {
             return true;

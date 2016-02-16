@@ -92,7 +92,7 @@ class ModelController extends Controller
         $class = $this->setClass($request->model_class);
 
         $this->setData('model',$model);
-        if (! $this->user->permissions()->exists('edit',$model)) {
+        if ($this->user->cannot('edit',$model)) {
             return $this->error("Sorry, you do not have permission to edit ".$class::plural().".");
         }
         $this->setActions([
