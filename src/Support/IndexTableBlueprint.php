@@ -36,6 +36,7 @@ class IndexTableBlueprint {
     /**
      * Add columns.
      * @param array $array
+     * @return $this
      */
     public function columns($array=[])
     {
@@ -45,20 +46,21 @@ class IndexTableBlueprint {
 
             $this->columns[$field] = $args;
         }
+        return $this;
     }
 
     /**
      * Add column formatters.
      * @param array $array
+     * @return $this
      */
     public function formatters($array=[])
     {
-        foreach ($array as $field=>$args)
+        foreach ($array as $field=>$formatter)
         {
-            list ($label,$priority,$formatter) = $args;
-
-            $this->formatters[$field] = $args;
+            $this->formatters[$field] = $formatter;
         }
+        return $this;
     }
 
     /**

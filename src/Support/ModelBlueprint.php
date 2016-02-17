@@ -526,7 +526,8 @@ class ModelBlueprint {
     {
         foreach ($array as $field=>$options)
         {
-            $this->field($field)->options($options);
+            if ($this->field($field)) $this->field($field)->options($options);
+
         }
         return $this;
     }

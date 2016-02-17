@@ -114,6 +114,10 @@ class AppServiceProvider extends ServiceProvider
             return new Template($app);
         });
 
+        $this->app->singleton('Parsedown', function($app) {
+            return new \Parsedown();
+        });
+
         // Attach Model configuration to base class.
         $files = glob(birdmin_path('conf/*.yaml'));
         foreach ($files as $file) {

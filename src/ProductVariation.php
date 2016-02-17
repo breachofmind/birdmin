@@ -6,27 +6,11 @@ use Birdmin\Contracts\RelatedMedia;
 use Birdmin\Core\Model;
 
 
-class ProductVariation extends Model
-    implements RelatedMedia
+class ProductVariation extends Model implements RelatedMedia
 {
-    protected $table = "product_variations";
-
-    protected $fillable = [
-        'product_id',
-        'name',
-        'sku',
-        'description',
-        'status',
-        'attributes',
-        'color',
-    ];
-
-    protected $searchable = ['name','product_id', 'sku', 'status'];
     protected $joins = [
         'product_id' => Product::class
     ];
-
-    public $timestamps = true;
 
     /**
      * Return the product for this variation.
