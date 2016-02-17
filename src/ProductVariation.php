@@ -37,6 +37,11 @@ class ProductVariation extends Model
         return $this->hasOne(Product::class, 'id', 'product_id');
     }
 
+    public function getProductAttribute()
+    {
+        return $this->product()->first();
+    }
+
     public function media()
     {
         return $this->related(Media::class);
