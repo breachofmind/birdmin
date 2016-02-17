@@ -57,6 +57,7 @@
                 for (var key in defaults) {
                     this[key] = response.data[key] || defaults[key] || null;
                 }
+
             };
 
             /**

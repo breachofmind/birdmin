@@ -72,7 +72,6 @@ class User extends Model
      */
     public function assignRole ($role)
     {
-
         if (is_string($role)) {
             $role = Role::getByName($role);
         }
@@ -97,9 +96,8 @@ class User extends Model
         }
         $permissions = new PermissionCollection();
 
-        foreach ($this->roles as $role) {
-            $permissions->addRole($role);
-        }
+        $permissions->addRoles($this->roles);
+
         return $this->permissions = $permissions;
     }
 

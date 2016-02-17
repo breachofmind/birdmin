@@ -53,6 +53,19 @@ class PermissionCollection extends Collection
     }
 
     /**
+     * Add multiple permissions from multiple roles.
+     * @param array $roles
+     * @return $this
+     */
+    public function addRoles($roles=[])
+    {
+        foreach ($roles as $role) {
+            $this->addRole($role);
+        }
+        return $this;
+    }
+
+    /**
      * Lookup a permission object in the array.
      * @param $ability string
      * @param $object Model|string
@@ -60,11 +73,10 @@ class PermissionCollection extends Collection
      */
     public function lookup ($ability, $object)
     {
-        if (is_object($object)) {
-            $object = get_class($object);
+        if ($object instanceof Model) {
+            $object = $object->getClass();
         }
-        $keys = "$object.$ability";
-        return array_get($this->index, $keys, null);
+        return array_get($this->index, "$object.$ability", null);
     }
 
     /**

@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
         'Birdmin\Console\Commands\LaunchCommand',
         'Birdmin\Console\Commands\RefuelCommand',
         'Birdmin\Console\Commands\ImportCommand',
+        'Birdmin\Console\Commands\SitemapCommand',
     ];
 
     /**
