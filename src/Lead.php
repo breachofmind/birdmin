@@ -23,4 +23,16 @@ class Lead extends Model
     protected $searchable = ['first_name','last_name','email','affiliation','interest','source'];
 
     protected $dates = ['updated_at','created_at'];
+
+
+    public function scopeRecent ($query)
+    {
+        return $query->orderBy('updated_at','desc');
+    }
+
+    public function scopeValid ($query)
+    {
+        return $query->where('valid',1);
+    }
+
 }

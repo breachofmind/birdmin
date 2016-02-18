@@ -199,6 +199,15 @@ class Component implements Renderable, Jsonable, JsonSerializable {
     }
 
     /**
+     * Get protected name attribute.
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Quickly return array of protected variable values.
      * @param $args array|string
      * @return array
