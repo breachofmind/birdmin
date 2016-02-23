@@ -57,18 +57,19 @@ class Relationship extends BaseModel {
     public static function collection (Model $model, $child_object)
     {
         if ($child_object instanceof Model) {
-            $child_object = $child_object->getClass();
+            $child_object = get_class($child_object);
         }
         $relationships = Relationship::children(get_class($model), $model->id, $child_object);
+
         if ($relationships->isEmpty()) {
-            $child_instance = new $child_object;
-            return $child_instance->newCollection();
+            return with($child_object)->newCollection();
         }
         $ids = $relationships->pluck('child_id')->toArray();
         return $child_object::whereIn('id', $ids)
             ->orderBy(DB::raw('FIELD(`id`, '.join(",",$ids).')'))
             ->get();
     }
+
 
     /**
      * Check if a relationship exists between two objects.

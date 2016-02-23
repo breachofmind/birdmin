@@ -142,10 +142,9 @@ class Template implements Jsonable {
      * Generate the <head> section of the template.
      * @return string
      */
-    public function head()
+    public function head($order=['metas','styles','scripts'])
     {
         $output = [];
-        $order = ['metas','styles','scripts'];
 
         foreach ($order as $var) {
             $elements = $this->$var;
