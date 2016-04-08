@@ -110,26 +110,6 @@ class Module {
         return $this;
     }
 
-    /**
-     * Add standard CMS routes for the given model class.
-     * @param $class string
-     * @return $this
-     */
-    public function route_api ($class)
-    {
-        $this->extender->route('api', function($router) use ($class)
-        {
-            $static = new $class;
-            $p = $class::getLabel('slug');
-            $s = $static->getTable();
-
-            $router->get("$p",           $this->determineController($class,"getAll", "REST\\")); //models
-            $router->get("$p/{{$s}_id}", $this->determineController($class,"get", "REST\\"));
-        });
-
-        return $this;
-    }
-
 
     /**
      * Add a route.
@@ -205,9 +185,7 @@ class Module {
     public function basicSetup()
     {
         foreach ($this->models as $class) {
-            $this->navigation($class)
-                ->route_cms($class)
-                ->route_api($class);
+            $this->navigation($class)->route_cms($class);
         }
     }
 }

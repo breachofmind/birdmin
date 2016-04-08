@@ -255,7 +255,7 @@ class Input extends Model
      * @param $model Model
      * @return mixed
      */
-    public static function retrieve ($model)
+    public static function retrieve (Model $model)
     {
         if (!empty($model->inputs)) {
             return $model->inputs;

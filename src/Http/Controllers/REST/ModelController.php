@@ -2,10 +2,11 @@
 
 namespace Birdmin\Http\Controllers\REST;
 
-use Birdmin\Http\Requests\ApiRequest;
+use Birdmin\Http\Responses\RESTResponse;
 use Illuminate\Http\Request;
 use Birdmin\Core\Controller;
 use Birdmin\Model;
+use Illuminate\Support\Facades\Session;
 
 class ModelController extends Controller
 {
@@ -19,33 +20,57 @@ class ModelController extends Controller
         return response("Birdmin API v1",200);
     }
 
+    public function session()
+    {
+        return response(Session::getId(),200);
+    }
+
     /**
      * Return all records for the given model.
      * GET /model
      *
-     * @param $model string
-     * @param ApiRequest $request
+     * @param $slug string
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function getAll ($model, ApiRequest $request)
+    public function fetchAll ($slug, Request $request)
     {
-        $class = $this->isValid ($model);
-        return $class::all();
+        $class = $request->Model->getClass();
+
+        // If the model does not allow public viewing, check credentials.
+        if (! $request->Model->getBlueprint('public')) {
+            if ($killed = $this->isNotAuthorized($request,'view')) {
+                return $killed;
+            }
+        }
+
+        $pagination = $class::request($request, $this->user, $request->input('limit'));
+
+        return RESTResponse::create($pagination);
     }
+
 
     /**
      * Return a single model object.
      * GET /model/id
      *
-     * @param $model string
+     * @param $slug string
      * @param $id int
-     * @param ApiRequest $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function get ($model,$id, ApiRequest $request)
+    public function fetch ($slug,$id,Request $request)
     {
-        $class = $this->isValid ($model);
-        return $class::find($id);
+        $class = $request->Model->getClass();
+
+        // If the model does not allow public viewing, check credentials.
+        if (! $request->Model->getBlueprint('public')) {
+            if ($killed = $this->isNotAuthorized($request,'view')) {
+                return $killed;
+            }
+        }
+
+        return RESTResponse::create($request->Model);
     }
 
 
@@ -53,51 +78,104 @@ class ModelController extends Controller
      * Create a new model.
      * POST /model
      *
+     * @param $slug string
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function create ($model, ApiRequest $request)
+    public function create ($slug, Request $request)
     {
-        $class = $this->isValid ($model);
+        $class = $request->Model->getClass();
 
-        return TRUE; //TODO
+        if ($killed = $this->isNotAuthorized($request,'create')) {
+            return $killed;
+        }
+
+        $input = $request->all();
+        $model = new $class($input);
+
+        $validator = $model->validate($input);
+
+        if ($validator->fails()) {
+            return RESTResponse::failedValidation($validator);
+        }
+        if ($model->save()) {
+            return RESTResponse::create($model, 200);
+        }
+
+        return RESTResponse::failed("Error saving ".$class::singular(), 500);
     }
 
     /**
      * Update an existing model.
      * PUT /model/id
      *
-     * @param $model string
+     * @param $slug string
      * @param $id int
-     * @param ApiRequest $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Contracts\Routing\ResponseFactory|\Symfony\Component\HttpFoundation\Response
      */
-    public function update ($model,$id, ApiRequest $request)
+    public function update ($slug,$id, Request $request)
     {
-        $class = $this->isValid ($model);
-        return TRUE; //TODO
+        if ($killed = $this->isNotAuthorized($request,'edit')) {
+            return $killed;
+        }
+
+        $input = $request->all();
+        $model = $request->Model;
+
+        $validator = $model->validate($input);
+
+        if ($validator->fails()) {
+            return RESTResponse::failedValidation($validator);
+        }
+        if ($model->update($input)) {
+            return RESTResponse::create($model, 200);
+        }
+
+        return RESTResponse::failed("Error updating {$model->objectName}", 500);
     }
+
+
     /**
      * Remove an existing object.
      * DELETE /model/id
      *
-     * @param $model string
+     * @param $slug string
      * @param $id int
-     * @param ApiRequest $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
-    public function destroy ($model, $id, ApiRequest $request)
+    public function destroy ($slug,$id, Request $request)
     {
-        $class = $this->isValid ($model);
-        return TRUE; //TODO
+        if ($killed = $this->isNotAuthorized($request,'delete')) {
+            return $killed;
+        }
+
+        $model = $request->Model;
+        if ($model->delete()) {
+            return RESTResponse::create($model,200);
+        }
+
+        return RESTResponse::failed("Error deleting {$model->objectName}", 500);
     }
 
-    protected function isValid ($model)
+
+    /**
+     * Does this model require a user to be logged in and have permission?
+     * @param Request $request
+     * @param string $ability
+     * @return mixed
+     */
+    protected function isNotAuthorized(Request $request, $ability='view')
     {
-        $class = is_model($model);
-        if (!$class) {
-            abort(400,"Bad Request.");
+        $class = $request->Model->getClass();
+
+        if (! $this->user || $this->user->cannot($ability, $class)) {
+            return RESTResponse::failed("You are not permitted to $ability ".$class::plural(), 401);
         }
-        return $class;
+
+        // Checked out.
+        return false;
     }
+
 }

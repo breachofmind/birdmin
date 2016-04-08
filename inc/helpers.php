@@ -21,8 +21,9 @@ if (!function_exists('birdmin_path')) {
     function cms_url ($path="")
     {
         $backend = config('app.cms_uri');
-        return empty($path) ? "/".$backend : "/".$backend."/".$path;
+        return url($backend."/".$path);
     }
+
 
     /**
      * Check if the given string is the name of a model class.

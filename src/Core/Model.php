@@ -109,11 +109,16 @@ class Model extends BaseModel
             return null;
         }
         $this->blueprint = $blueprint;
-        $this->appends[] = "titleField";
+        $this->appends[] = "objectTitle";
+        $this->appends[] = "objectUrl";
+        $this->appends[] = "objectEditUrl";
+        if (!($this instanceof Media)) {
+            $this->appends[] = "objectImage";
+        }
 
-        $this->table = $blueprint->table;
-        $this->fillable = $blueprint->fillable()->toArray();
-        $this->guarded  = $blueprint->guarded()->toArray();
+        $this->table = $blueprint->table();
+        $this->fillable = $blueprint->fillable()->keys()->toArray();
+        $this->guarded  = $blueprint->guarded()->keys()->toArray();
         $this->timestamps = $blueprint->timestamps;
     }
 
@@ -271,9 +276,36 @@ class Model extends BaseModel
      * Return the title field value.
      * @return string|null
      */
-    public function getTitleFieldAttribute()
+    public function getObjectTitleAttribute()
     {
         return $this->getTitle();
+    }
+
+    /**
+     * Return the object's REST url.
+     * @return string
+     */
+    public function getObjectUrlAttribute()
+    {
+        return url('api/v1/'.static::getLabel('slug').'/'.$this->id);
+    }
+
+    /**
+     * Return the first object image.
+     * @return Media|null
+     */
+    public function getObjectImageAttribute()
+    {
+        return $this->getImage();
+    }
+
+    /**
+     * Return the edit URL string.
+     * @return string
+     */
+    public function getObjectEditUrlAttribute()
+    {
+        return $this->editUrl();
     }
 
     /**
@@ -493,13 +525,18 @@ class Model extends BaseModel
      * Based on the request, return a collection of models (paginated)
      * @param $request Request
      * @param $user User|null - optional
+     * @param $paginate int|null - optional limit of results
      * @return Collection|LengthAwarePaginator
      */
     public static function request(Request $request, $user=null, $paginate=null)
     {
-        if (is_null($paginate)) {
+        // Use the max pagination if the requested pagination is over the limit.
+        if (! is_null($paginate) && intval($paginate) <= config('app.pagination') && intval($paginate) > 0) {
+            $paginate = intval($paginate);
+        } else {
             $paginate = config('app.pagination');
         }
+
         $class = get_called_class();
         $static = new $class;
         $query = $class::select(DB::raw($static->table.".*"));
@@ -534,7 +571,7 @@ class Model extends BaseModel
             $query->orderBy($request->input('orderby'), $request->input('dir'));
         }
 
-        return $query->paginate($paginate, ['*'], 'p', $request->input('p'));
+        return $query->paginate($paginate, ['*'], 'p', $request->input('p'))->appends($request->all());
     }
 
     /**
@@ -555,10 +592,11 @@ class Model extends BaseModel
      * @param $input array
      * @return Validator
      */
-    public function validate ($input=[])
+    public function validate ($attrs=[])
     {
+        $this->fill($attrs);
         $inputs = $this->inputs();
-        $validator = Validator::make($input, $inputs->rules());
+        $validator = Validator::make($this->toArray(), $inputs->rules());
         $validator->addCustomAttributes( $inputs->labels() );
 
         return $validator;

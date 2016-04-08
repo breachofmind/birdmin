@@ -14,6 +14,6 @@ class FrontendTest extends TestCase
     public function test_login()
     {
         $backend = config('app.cms_uri');
-        $this->visit("/$backend")->see('Flyer ID');
+        $this->visit("/$backend")->see('User name');
     }
 }

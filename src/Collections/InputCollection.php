@@ -20,7 +20,7 @@ class InputCollection extends Collection
      * The model class.
      * @var string
      */
-    protected $model;
+    protected $class;
 
     /**
      * Constructor.
@@ -31,7 +31,7 @@ class InputCollection extends Collection
         parent::__construct($items);
 
         foreach ($this->items as $input) {
-            if (!$this->model) $this->model = $input->object;
+            if (!$this->class) $this->class = $input->object;
             $this->fields[$input->name] = $input;
         }
     }
@@ -114,32 +114,38 @@ class InputCollection extends Collection
     public function setParent(Model $model)
     {
         $this->parent = $model;
+        $this->each(function(Input $input) {
+            $input->setModel($this->parent);
+        });
         return $this;
     }
 
     /**
      * Return an array of rules for the laravel validator.
-     * @param $class string
      * @return array
      */
     public function rules ()
     {
         $rules = array();
+
         if ($this->isEmpty()) {
             return $rules;
         }
-        $model = $this->model;
-        $table = $this->parent ? $this->parent->getTable() : with(new $model)->getTable();
+
+        $class = $this->class;
+        $table = $this->parent ? $this->parent->getTable() : with(new $class)->getTable();
         $types = [
-            'email'     => 'email',
-            'number'    => 'numeric',
-            'date'      => 'date',
-            'toggle'    => 'boolean',
-            'text'      => 'string',
-            'slug'      => 'alpha_dash',
-            'model'     => 'integer',
+            Input::EMAIL     => 'email',
+            Input::NUMBER    => 'numeric',
+            Input::DATE      => 'date',
+            Input::TOGGLE    => 'boolean',
+            Input::TEXT      => 'string',
+            Input::SLUG      => 'alpha_dash',
+            Input::MODEL     => 'integer',
         ];
-        foreach ($this->items as $input) {
+
+        foreach ($this->items as $input)
+        {
             $rule = array();
             if ($input->required) {
                 $rule[] = "required";
@@ -155,6 +161,7 @@ class InputCollection extends Collection
                 $rules[$input->name] = join("|",$rule);
             }
         }
+
         return $rules;
     }
 
@@ -166,7 +173,6 @@ class InputCollection extends Collection
     {
         $html = "";
         foreach($this->items as $input) {
-            $input->setModel($this->parent);
             $html.=$input->render();
         }
         return $html;

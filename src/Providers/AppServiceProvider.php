@@ -33,19 +33,9 @@ class AppServiceProvider extends ServiceProvider
      * Set up some early environment variables.
      * @param Request $request
      */
-    public function boot_environment (Request $request) {
-        // Determine the type of request.
-        switch ($request->segment(1)) {
-            case config('app.cms_uri') :
-                $request->context = Application::CXT_CMS;
-                break;
-            case "api" :
-                $request->context = Application::CXT_API;
-                break;
-            default:
-                $request->context = Application::CXT_SITE;
-                break;
-        }
+    public function boot_environment (Request $request)
+    {
+        $request->context = Application::context();
     }
 
     /**

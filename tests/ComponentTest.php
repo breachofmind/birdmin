@@ -3,8 +3,8 @@
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
-use \Birdmin\Components\ButtonComponent;
-use Birdmin\Components\ButtonGroupComponent;
+use \Birdmin\Components\Button;
+use Birdmin\Components\ButtonGroup;
 use Birdmin\Page;
 
 class ComponentTest extends TestCase
@@ -15,24 +15,24 @@ class ComponentTest extends TestCase
         $page = Page::find(1);
 
         // Check the create method.
-        $group = ButtonGroupComponent::create();
-        $this->assertInstanceOf(ButtonGroupComponent::class, $group);
+        $group = ButtonGroup::create();
+        $this->assertInstanceOf(ButtonGroup::class, $group);
         // Shouldn't have anything in it.
         $this->assertCount(0, $group->getButtons());
         // Should return a zero count.
         $this->assertEquals(0, $group->count());
 
         // Button groups
-        $button = ButtonComponent::create();
+        $button = Button::create();
         // Check default setting.
-        $this->assertEquals("#", $button->getAttribute('href'));
+        $this->assertNull($button->getAttribute('href'));
 
         // Adding to the group will increment the button count.
         $group->add($button);
         $this->assertEquals(1, $group->count());
 
         // Try adding the other way around.
-        $button2 = ButtonComponent::create();
+        $button2 = Button::create();
         $button2->addTo($group);
         $this->assertEquals(2, $group->count());
 

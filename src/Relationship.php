@@ -62,7 +62,7 @@ class Relationship extends BaseModel {
         $relationships = Relationship::children(get_class($model), $model->id, $child_object);
 
         if ($relationships->isEmpty()) {
-            return with($child_object)->newCollection();
+            return with(new $child_object)->newCollection();
         }
         $ids = $relationships->pluck('child_id')->toArray();
         return $child_object::whereIn('id', $ids)

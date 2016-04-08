@@ -9,8 +9,6 @@ use Birdmin\Lead;
  * LEAD MODEL
  * ------------------------------------------
  */
-
-
 $leads = ModelBlueprint::create(Lead::class, 'leads')
 
     ->_email        ('Email Address',   Field::TITLE,   Input::EMAIL)
@@ -25,18 +23,13 @@ $leads = ModelBlueprint::create(Lead::class, 'leads')
     ->_notes        ('Notes',           Field::TEXT,    Input::TEXTAREA)
     ->_session_id   ('Session ID',      Field::STRING,  Input::NONE)
     ->_valid        ('Valid',           Field::INTEGER, Input::NONE)
+    ->useTimestamps ()
 
-    ->softDeletes   (false)
     ->fillable      ('*')
-    ->in_table      ('email','first_name','last_name','affiliation','source')
-    ->searchable    ('email','affiliation','source')
-    ->required      ('email')
+    ->in_table      (['email','first_name','last_name','affiliation','source'])
+    ->searchable    (['email','affiliation','source'])
+    ->required      (['email'])
+
     ->icon          ('users2')
     ->no_image      ('/cms/public/images/no-user.svg')
     ->url           ('leads/{uid}');
-
-$leads->indexTable()
-    ->bulk(true)
-    ->columns([
-        'created_at' => ['Created', 0, 'Birdmin\Formatters\date']
-    ]);

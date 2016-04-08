@@ -31,7 +31,12 @@ class System extends Module {
 
         // API route to show that it's there.
         $this->route('api', function($router) {
-            $router->get('/', 'REST\ModelController@index');
+            $router->get    ('/',             'REST\ModelController@index');
+            $router->get    ('/{model}',      'REST\ModelController@fetchAll')->middleware(['model']);
+            $router->get    ('/{model}/{id}', 'REST\ModelController@fetch')->middleware(['model']);
+            $router->post   ('/{model}',      'REST\ModelController@create')->middleware(['auth','model']);
+            $router->put    ('/{model}/{id}', 'REST\ModelController@update')->middleware(['auth','model']);
+            $router->delete ('/{model}/{id}', 'REST\ModelController@destroy')->middleware(['auth','model']);
         });
 
         // Media uploading routes and controller.
