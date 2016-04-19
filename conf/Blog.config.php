@@ -5,6 +5,7 @@ use Birdmin\Input;
 use Birdmin\Page;
 use Birdmin\Category;
 use Birdmin\User;
+use Birdmin\Post;
 
 /**
  * ------------------------------------------
@@ -15,9 +16,9 @@ use Birdmin\User;
 $pages = ModelBlueprint::create(Page::class, 'pages')
 
     ->_title        ("Title",       Field::TITLE,   Input::TEXT)
-    ->_slug         ('Slug',        Field::SLUG,    Input::SLUG)
+    ->_slug         ('Slug',        Field::SLUG,    Input::SLUG, ['references' => 'title'])
     ->_content      ("Content",     Field::TEXT,    Input::HTML)
-    ->_status       ("Status",      Field::STATUS,  Input::RADIO)
+    ->_status       ("Status",      Field::STATUS,  Input::RADIO, ['values'=>Input::$statusFields])
     ->_type         ("Type",        Field::STRING,  Input::RADIO)
     ->_parent_id    ("Parent Page", [Field::REFERENCE, ['pages','id']], Input::MODEL)
     ->_user_id      ("Author",      [Field::REFERENCE, ['users','id']], Input::MODEL)
@@ -31,9 +32,6 @@ $pages = ModelBlueprint::create(Page::class, 'pages')
     ->icon          ('file-empty')
 
     ->setOptions ([
-        'status' => [
-            'values'=>Input::$statusFields
-        ],
         'type' => [
             'values'=>[
                 'normal'  => 'Normal',
@@ -47,7 +45,7 @@ $pages = ModelBlueprint::create(Page::class, 'pages')
         'user_id' => [
             'model' => User::class,
             'nullable' => false
-        ]
+        ],
     ]);
 
 
@@ -58,12 +56,12 @@ $pages = ModelBlueprint::create(Page::class, 'pages')
  * ------------------------------------------
  */
 
-$category = ModelBlueprint::create(Category::class, 'categories')
+$categories = ModelBlueprint::create(Category::class, 'categories')
 
     ->_name         ('Name',            Field::TITLE,      Input::TEXT)
-    ->_slug         ('Slug',            Field::SLUG,       Input::SLUG)
+    ->_slug         ('Slug',            Field::SLUG,       Input::SLUG, ['references' => 'name'])
     ->_description  ('Description',     Field::TEXT,       Input::HTML)
-    ->_status       ('Status',          Field::STATUS,     Input::RADIO)
+    ->_status       ('Status',          Field::STATUS,     Input::RADIO, ['values' => Input::$statusFields])
     ->_excerpt      ('Excerpt',         Field::STRING,     Input::TEXTAREA)
     ->_object       ('Object Type',     Field::STRING,     Input::TEXT)
     ->_parent_id    ('Parent Category', [Field::REFERENCE, ['categories','id']], Input::MODEL)
@@ -78,11 +76,46 @@ $category = ModelBlueprint::create(Category::class, 'categories')
     ->url           ('category/{slug}')
 
     ->setOptions([
-        'status' => [
-            'values'=>Input::$statusFields
-        ],
         'parent_id' => [
             'model' => Category::class,
             'nullable'=> true
+        ],
+    ]);
+
+
+/**
+ * ------------------------------------------
+ * POST MODEL
+ * ------------------------------------------
+ */
+$posts = ModelBlueprint::create(Post::class, "posts")
+
+    ->_title        ('Title',           Field::TITLE,   Input::TEXT)
+    ->_slug         ('Slug',            Field::SLUG,    Input::SLUG, ['references' => 'title'])
+    ->_user_id      ('Author',          [Field::REFERENCE, ['users','id']], Input::MODEL)
+    ->_excerpt      ('Excerpt',         Field::TEXT,    Input::TEXTAREA)
+    ->_content      ('Content',         Field::TEXT,    Input::HTML)
+    ->_published_at ('Publish Date',    Field::DATE,    Input::DATE)
+    ->_status       ('Status',          Field::STATUS,  Input::RADIO, ['values' => Input::$statusFields])
+    ->_type         ('Post Type',       Field::STRING,  Input::SELECT)
+    ->_location_id  ('Location',        [Field::REFERENCE, ['locations','id']])
+
+    ->in_table  (['title','user_id','published_at','status'])
+    ->unique    (['slug'])
+    ->required  (['title','slug','user_id'])
+    ->dates     (['published_at'])
+
+    ->icon ('files')
+
+    ->setOptions([
+        'type' => [
+            'values' => [
+                'post' => 'Post',
+                'revision' => 'Revision'
+            ]
+        ],
+        'user_id' => [
+            'model' => 'Birdmin\User',
+            'nullable' => false
         ]
     ]);

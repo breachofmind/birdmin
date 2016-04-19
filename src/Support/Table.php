@@ -161,9 +161,9 @@ class Table implements Jsonable, Renderable {
             }
             $this->setHeader($input->name, $input->label, $input->priority);
         });
-        if ($config = $class::getConfig()) {
-            $this->config(isset($config['table']) ? $config['table'] : array());
-        }
+//        if ($config = $class::getConfig()) {
+//            $this->config(isset($config['table']) ? $config['table'] : array());
+//        }
         return $this;
     }
 

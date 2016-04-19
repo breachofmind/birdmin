@@ -5,6 +5,7 @@ namespace Birdmin\Providers;
 use Birdmin\Core\Application;
 use Birdmin\Core\Extender;
 use Birdmin\Core\Model;
+use Birdmin\Support\ModelBluePrint;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Birdmin\Core\Template;
@@ -26,7 +27,6 @@ class AppServiceProvider extends ServiceProvider
         $this->app->call([$this,'boot_views']);
 
         $this->app->call([$this,'boot_models']);
-
     }
 
     /**
@@ -108,12 +108,11 @@ class AppServiceProvider extends ServiceProvider
             return new \Parsedown();
         });
 
-        // Attach Model configuration to base class.
-        $files = glob(birdmin_path('conf/*.yaml'));
-        foreach ($files as $file) {
-            $config = decode_model_yaml($file);
-            Model::$config[$config['model']] = $config;
-        }
+//        $files = glob(birdmin_path('conf/*.yaml'));
+//        foreach ($files as $file) {
+//            $config = decode_model_yaml($file);
+//            Model::$config[$config['model']] = $config;
+//        }
     }
 
 }

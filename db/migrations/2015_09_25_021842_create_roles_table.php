@@ -2,6 +2,8 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Birdmin\Support\ModelBluePrint;
+use Birdmin\Role;
 
 class CreateRolesTable extends Migration
 {
@@ -12,13 +14,7 @@ class CreateRolesTable extends Migration
      */
     public function up()
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('uid',32);
-            $table->string('name')->unique();
-            $table->text('description',1000);
-            $table->timestamps();
-        });
+        Role::blueprint()->createSchema();
     }
 
     /**
@@ -28,6 +24,6 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('roles');
+        Role::blueprint()->dropSchema();
     }
 }

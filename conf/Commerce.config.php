@@ -11,11 +11,11 @@ use Birdmin\ProductBundle;
  * PRODUCT MODEL
  * ------------------------------------------
  */
-$products = ModelBluePrint::create(Product::class, 'products')
+$products = ModelBlueprint::create(Product::class, 'products')
 
     ->_name         ("Name",        Field::TITLE,   Input::TEXT)
-    ->_slug         ('Slug',        Field::SLUG,    Input::SLUG)
-    ->_status       ("Status",      Field::STATUS,  Input::RADIO)
+    ->_slug         ('Slug',        Field::SLUG,    Input::SLUG, ['reference' => 'name'])
+    ->_status       ("Status",      Field::STATUS,  Input::RADIO, ['values' => Input::$statusFields])
     ->_brand        ("Brand",       Field::TEXT,    Input::TEXT)
     ->_sku          ("SKU",         Field::STRING,  Input::TEXT)
     ->_excerpt      ("Excerpt",     Field::STRING,  Input::TEXTAREA)
@@ -42,7 +42,6 @@ $products = ModelBluePrint::create(Product::class, 'products')
     ->module('Birdmin\Components\RelatedModels', ['Birdmin\ProductVariation'])
 
     ->setOptions ([
-        'slug' => ['reference' => 'name'],
         'category_id' => [
             'model' => \Birdmin\Category::class,
             'nullable' => true
@@ -51,9 +50,6 @@ $products = ModelBluePrint::create(Product::class, 'products')
             'model' => \Birdmin\ProductBundle::class,
             'nullable' => true
         ],
-        'status' => [
-            'values' => Input::$statusFields
-        ]
     ]);
 
 
@@ -62,11 +58,11 @@ $products = ModelBluePrint::create(Product::class, 'products')
  * VARIATION MODEL
  * ------------------------------------------
  */
-$variations = ModelBluePrint::create(ProductVariation::class, 'product_variations')
+$variations = ModelBlueprint::create(ProductVariation::class, 'product_variations')
 
     ->_name         ("Name",            Field::TITLE,   Input::TEXT)
     ->_product_id   ("Parent Product", [Field::REFERENCE, ['id','products']],   Input::MODEL)
-    ->_status       ("Status",          Field::STATUS,  Input::RADIO)
+    ->_status       ("Status",          Field::STATUS,  Input::RADIO, ['values' => Input::$statusFields])
     ->_sku          ("SKU",             Field::STRING,  Input::TEXT)
     ->_description  ("Description",     Field::TEXT,    Input::HTML)
     ->_attributes   ("Attributes",      Field::TEXT,    Input::HTML)
@@ -92,9 +88,6 @@ $variations = ModelBluePrint::create(ProductVariation::class, 'product_variation
             'model' => \Birdmin\Product::class,
             'nullable' => false
         ],
-        'status' => [
-            'values' => Input::$statusFields
-        ]
     ]);
 
 
@@ -103,7 +96,7 @@ $variations = ModelBluePrint::create(ProductVariation::class, 'product_variation
  * PRODUCT BUNDLE MODEL
  * ------------------------------------------
  */
-$bundles = ModelBluePrint::create(ProductVariation::class, 'product_bundles')
+$bundles = ModelBlueprint::create(ProductBundle::class, 'product_bundles')
 
     ->_name         ("Name",        Field::TITLE,   Input::TEXT)
     ->_slug         ('Slug',        Field::SLUG,    Input::SLUG)
@@ -112,7 +105,7 @@ $bundles = ModelBluePrint::create(ProductVariation::class, 'product_bundles')
     ->_excerpt      ("Excerpt",     Field::TEXT,    Input::HTML)
     ->_attributes   ("Attributes",  Field::TEXT,    Input::HTML)
     ->_description  ("Description", Field::TEXT,    Input::HTML)
-    ->_status       ("Status",      Field::STATUS,  Input::RADIO)
+    ->_status       ("Status",      Field::STATUS,  Input::RADIO, ['values' => Input::$statusFields])
     ->useTimestamps ()
     ->useSoftDeletes()
 
@@ -126,10 +119,4 @@ $bundles = ModelBluePrint::create(ProductVariation::class, 'product_bundles')
     ->no_image      ('/public/images/no-image.svg')
     ->url           ('bundle/{slug}')
 
-    ->module('Birdmin\Components\RelatedMedia')
-
-    ->setOptions ([
-        'status' => [
-            'values' => Input::$statusFields
-        ]
-    ]);
+    ->module('Birdmin\Components\RelatedMedia');

@@ -4,6 +4,7 @@ namespace Birdmin\Http\Middleware;
 
 use Birdmin\Core\Application;
 use Birdmin\Http\Responses\RESTResponse;
+use Birdmin\Support\ModelBlueprint;
 use Closure;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Http\Request;
@@ -46,13 +47,14 @@ class ModelRequest
     public function handle(Request $request, Closure $next)
     {
         $modelIndex = Application::context(Application::CXT_API) ? 3 : 2;
+        $idIndex = Application::context(Application::CXT_API) ? $modelIndex+1 : $modelIndex+2;
 
         // Check for the model slug. Throw 404 if not found.
         $modelSegment = $request->segment($modelIndex);
-        $idSegment = $request->segment($modelIndex+1);
+        $idSegment = $request->segment($idIndex);
+        $blueprint = ModelBlueprint::slug($modelSegment);
 
-
-        if (!array_key_exists($modelSegment, Model::$map))
+        if (! $blueprint)
         {
             $message = "Class for '$modelSegment' does not exist";
 
@@ -61,9 +63,7 @@ class ModelRequest
                 : response($message, 404);
         }
 
-
-        $class = Model::$map[$modelSegment];
-
+        $class = $blueprint->getClass();
 
         // Check if the model ID was given.
         if ($idSegment)

@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Birdmin\Input;
 
 class CreateInputTable extends Migration
 {
@@ -12,21 +13,14 @@ class CreateInputTable extends Migration
      */
     public function up()
     {
-        Schema::create('inputs', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('uid',32);
-            $table->integer('active')->unsigned()->default(1);
-            $table->integer('priority')->default(1);
-            $table->string('object',200)->index();
-            $table->string('name',100);
-            $table->string('label',200);
-            $table->text('options');
-            $table->string('type', 50)->default("text");
-            $table->text('description');
-            $table->integer('in_table')->unsigned()->default(0);
-            $table->integer('required')->unsigned()->default(0);
-            $table->integer('unique')->unsigned()->default(0);
-            $table->text('value');
+        Input::blueprint()->createSchema(function($table,$fields)
+        {
+            $fields['type']->default(Input::TEXT);
+            $fields['active']->default(1);
+            $fields['object']->index();
+            $fields['in_table']->default(0);
+            $fields['required']->default(0);
+            $fields['unique']->default(0);
         });
     }
 
@@ -37,6 +31,6 @@ class CreateInputTable extends Migration
      */
     public function down()
     {
-        Schema::drop('inputs');
+        Input::blueprint()->dropSchema();
     }
 }

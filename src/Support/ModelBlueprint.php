@@ -10,7 +10,7 @@ use Birdmin\Input;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
-class ModelBluePrint
+class ModelBlueprint
 {
     /**
      * The table name.
@@ -114,7 +114,7 @@ class ModelBluePrint
     }
 
     /**
-     * Adds typical fields based on the class constracts.
+     * Adds typical fields based on the class contracts.
      * @return void
      */
     protected function typicalSetup()
@@ -127,7 +127,6 @@ class ModelBluePrint
             $this->_uid ("UID", FieldBlueprint::UID,     null);
         }
     }
-
 
 
     /**
@@ -158,6 +157,22 @@ class ModelBluePrint
     public static function exists($class)
     {
         return isset(ModelBlueprint::$blueprints[$class]);
+    }
+
+    /**
+     * Return the model blueprint by the model's slug name.
+     * @param $slug string
+     * @return null|ModelBlueprint
+     */
+    public static function slug($slug)
+    {
+        foreach(ModelBlueprint::$blueprints as $blueprint)
+        {
+            if ($blueprint->label('slug') == $slug) {
+                return $blueprint;
+            }
+        }
+        return null;
     }
 
     /**
@@ -277,6 +292,25 @@ class ModelBluePrint
     }
 
     /**
+     * Get a label.
+     * @param $name string
+     * @return string|null
+     */
+    public function label($name)
+    {
+        return $this->labels->get($name);
+    }
+
+    /**
+     * Get the title field name.
+     * @return string
+     */
+    public function getTitleField()
+    {
+        return !$this->title ?: $this->title->getName();
+    }
+
+    /**
      * Register a component module.
      * @param $componentClass string
      * @param $args array
@@ -333,7 +367,7 @@ class ModelBluePrint
         return $this->labels([
             'singular'   => str_replace("_"," ",Str::singular($name)),
             'plural'     => str_replace("_"," ",Str::plural($name)),
-            'navigation' => Str::ucfirst($name),
+            'navigation' => str_replace("_"," ",Str::ucfirst($name)),
             'slug'       => Str::slug(Str::plural($name))
         ]);
     }
@@ -346,14 +380,20 @@ class ModelBluePrint
      */
     protected function createField($name,$arguments)
     {
-        list ($label,$fieldType,$inputType) = $arguments;
+        $label = array_get($arguments,0);
+        $fieldType = array_get($arguments,1);
+        $fieldArgs = null;
+        $inputType = array_get($arguments,2);
+        $inputOpts = array_get($arguments,3);
 
-        $type = is_array($fieldType) ? array_shift($fieldType) : $fieldType;
-        $args = is_array($fieldType) ? $fieldType : null;
+        if (is_array($fieldType)) {
+            list ($fieldType,$fieldArgs) = $fieldType;
+        }
 
-        $field = FieldBlueprint::create($name,$type,$args,$this)->withInput($label,$inputType,$this->fields->count());
+        $field = FieldBlueprint::create($name,$fieldType,$fieldArgs,$this)
+            ->withInput($label,$inputType,$this->fields->count(),$inputOpts);
 
-        if ($type === FieldBlueprint::TITLE) {
+        if ($fieldType === FieldBlueprint::TITLE) {
             $this->title = $field;
         }
         return $this->fields[$name] = $field;
@@ -400,15 +440,19 @@ class ModelBluePrint
 
     /**
      * Create the table schema for all the columns.
+     * @param $callable \Closure|null
      * @return void
      */
-    public function createSchema()
+    public function createSchema(\Closure $callable=null)
     {
-        Schema::create($this->table, function(Blueprint $table) {
+        Schema::create($this->table, function(Blueprint $table) use($callable) {
+            $fields = [];
+
             foreach ($this->fields as $field)
             {
-                $field->schema($table);
+                $fields[$field->getName()] = $field->createSchema($table);
             }
+            if ($callable) $callable($table,$fields);
         });
     }
 

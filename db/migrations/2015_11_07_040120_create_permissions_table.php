@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Birdmin\Permission;
 
 class CreatePermissionsTable extends Migration
 {

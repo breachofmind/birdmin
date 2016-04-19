@@ -12,7 +12,8 @@ class CreateRatingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('ratings', function (Blueprint $table) {
+        Schema::create('ratings', function (Blueprint $table)
+        {
             $table->increments('id');
             $table->string('session_id',100)->index()->references('session_id')->on('leads');
             $table->integer('rating')->default(2);

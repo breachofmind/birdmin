@@ -13,7 +13,7 @@ class CreateCategoryTable extends Migration
      */
     public function up()
     {
-        ModelBlueprint::get(Category::class)->createSchema();
+        Category::blueprint()->createSchema();
     }
 
     /**
@@ -22,6 +22,6 @@ class CreateCategoryTable extends Migration
      */
     public function down()
     {
-        ModelBlueprint::get(Category::class)->dropSchema();
+        Category::blueprint()->dropSchema();
     }
 }

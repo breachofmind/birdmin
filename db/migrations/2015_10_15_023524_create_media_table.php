@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Birdmin\Media;
 
 class CreateMediaTable extends Migration
 {
@@ -11,19 +12,8 @@ class CreateMediaTable extends Migration
      */
     public function up()
     {
-        Schema::create('media', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('uid',32);
-            $table->string('title', 200);
-            $table->string('file_name',250);
-            $table->integer('file_size');
-            $table->string('file_type',250);
-            $table->string('alt_text', 200);
-            $table->text('caption');
-            $table->string('category',250);
-            $table->text('metadata');
-            $table->string('etag',100)->index();
-            $table->timestamps();
+        Media::blueprint()->createSchema(function($table,$fields) {
+            $fields['etag']->index();
         });
     }
 
@@ -33,6 +23,6 @@ class CreateMediaTable extends Migration
      */
     public function down()
     {
-        Schema::drop('media');
+        Media::blueprint()->dropSchema();
     }
 }

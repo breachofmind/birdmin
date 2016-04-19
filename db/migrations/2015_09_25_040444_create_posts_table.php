@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Birdmin\Post;
 
 class CreatePostsTable extends Migration
 {
@@ -12,6 +13,8 @@ class CreatePostsTable extends Migration
      */
     public function up()
     {
+        Post::blueprint()->createSchema();
+
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('uid',32);
@@ -36,6 +39,6 @@ class CreatePostsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('posts');
+        Post::blueprint()->dropSchema();
     }
 }

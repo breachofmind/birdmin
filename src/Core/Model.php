@@ -68,15 +68,13 @@ class Model extends BaseModel
     {
         parent::boot();
 
-        // Use the model label for URL routing.
-        Model::$map[static::getLabel('slug')] = static::class;
-
         // Add the uid field.
         static::creating(function($model)
         {
             $model->uid = "b".sha1(uniqid().time());
         });
     }
+
 
     /**
      * Constructor.
@@ -109,16 +107,20 @@ class Model extends BaseModel
             return null;
         }
         $this->blueprint = $blueprint;
-        $this->appends[] = "objectTitle";
-        $this->appends[] = "objectUrl";
-        $this->appends[] = "objectEditUrl";
+        $this->table = $blueprint->table();
+
+        $this->appends = array_merge($this->appends, ['objectUrl','objectEditUrl','objectTitle']);
+
         if (!($this instanceof Media)) {
             $this->appends[] = "objectImage";
         }
 
-        $this->table = $blueprint->table();
-        $this->fillable = $blueprint->fillable()->keys()->toArray();
-        $this->guarded  = $blueprint->guarded()->keys()->toArray();
+        foreach( ['fillable',' guarded', 'hidden', 'dates', 'searchable'] as $property )
+        {
+            if ($blueprint->$property())
+            $this->$property = array_merge($this->$property, $blueprint->$property()->keys()->toArray());
+        }
+
         $this->timestamps = $blueprint->timestamps;
     }
 
@@ -215,7 +217,7 @@ class Model extends BaseModel
      */
     public static function saveGlobalMeta($key,$value)
     {
-        $class = get_called_class();
+        $class = static::getClass();
         $static = new $class;
         if ($meta = $static->meta()->getGlobal($key)) {
             return $meta->update(['value'=>$value]);
@@ -227,23 +229,6 @@ class Model extends BaseModel
         ]);
     }
 
-    /**
-     * Return the config info for the given class, or the called class.
-     * @param string $key optional
-     * @return null
-     */
-    public static function getConfig($key=null)
-    {
-        $class = get_called_class();
-        if (!array_key_exists($class, Model::$config)) {
-            return null;
-        }
-        $config = Model::$config[$class];
-        if (is_string($key)) {
-            return array_get($config,$key);
-        }
-        return $config;
-    }
 
     /**
      * Return the column names that are searchable in the database.
@@ -258,6 +243,11 @@ class Model extends BaseModel
         return $this->searchable;
     }
 
+    /**
+     * Return the object name.
+     * i.e. Birdmin\User\1
+     * @return string
+     */
     public function getObjectNameAttribute()
     {
         return $this->getClass()."\\".$this->id;
@@ -273,7 +263,7 @@ class Model extends BaseModel
     }
 
     /**
-     * Return the title field value.
+     * Accessor alias for getTitle().
      * @return string|null
      */
     public function getObjectTitleAttribute()
@@ -314,7 +304,7 @@ class Model extends BaseModel
      */
     public static function getTitleField()
     {
-        return static::getConfig('title');
+        return static::blueprint()->getTitleField();
     }
 
     /**
@@ -324,18 +314,19 @@ class Model extends BaseModel
      */
     public static function getLabel($name)
     {
-        return static::getConfig("labels.$name");
+
+        return static::blueprint()->label($name);
     }
 
     /**
      * Set a label value for this model.
      * @param string $name
      * @param string $value
-     * @return string
+     * @return void
      */
     public static function setLabel($name,$value)
     {
-        return array_set(static::getConfig(),"labels.".$name,$value);
+        static::blueprint()->labels([$name=>$value]);
     }
 
     /**
@@ -344,7 +335,7 @@ class Model extends BaseModel
      */
     public static function getIcon()
     {
-        return static::getConfig('icon');
+        return static::blueprint()->icon;
     }
 
     /**
@@ -437,7 +428,7 @@ class Model extends BaseModel
      */
     public function noImage($classes=null,$attrs=[])
     {
-        $missing_image_src = static::getConfig('no_image');
+        $missing_image_src = static::blueprint()->no_image;
         if (!$missing_image_src) {
             $missing_image_src = config('media.missing_image');
         }
@@ -583,13 +574,15 @@ class Model extends BaseModel
     public function getFillablePrepend($string)
     {
         return array_map(function($column) use ($string) {
+
             return DB::raw($this->table.".`$column` AS ".$string."_".$column);
+
         },$this->fillable);
     }
 
     /**
      * Perform a validation on this model, given the input.
-     * @param $input array
+     * @param $attrs array
      * @return Validator
      */
     public function validate ($attrs=[])
@@ -641,10 +634,14 @@ class Model extends BaseModel
         return $this->_components;
     }
 
+    /**
+     * Return array of module component objects.
+     * @return array
+     */
     public function getModuleComponents()
     {
         $out = [];
-        $components = static::getConfig('components');
+        $components = static::blueprint()->getModules();
         if (empty($components)) {
             return $out;
         }
@@ -657,7 +654,7 @@ class Model extends BaseModel
 
     /**
      * Register a component.
-     * @param $class string
+     * @param $componentClass string
      * @return mixed
      */
     public static function useComponent($componentClass)

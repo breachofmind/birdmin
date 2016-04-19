@@ -32,7 +32,7 @@ class ModelController extends Controller
      */
     public function index (Request $request)
     {
-        $class = $this->setClass($request->model->getClass());
+        $class = $this->setClass($request->Model->getClass());
 
         if ($request->ajax()) {
             $models = $class::request($request, $this->user);
@@ -62,7 +62,7 @@ class ModelController extends Controller
      */
     public function tree (Request $request)
     {
-        $class = $this->setClass($request->model->getClass());
+        $class = $this->setClass($request->Model->getClass());
 
         if ($request->ajax()) {
             $this->setData('roots',$class::roots()->get());
@@ -116,7 +116,7 @@ class ModelController extends Controller
      */
     public function create (Request $request)
     {
-        $class = $this->setClass($request->model->getClass());
+        $class = $this->setClass($request->Model->getClass());
         $model = $this->setData('model',new $class);
         $model->inputs();
 
@@ -144,7 +144,7 @@ class ModelController extends Controller
      */
     public function store (Request $request)
     {
-        $class = $this->setClass($request->model->getClass());
+        $class = $this->setClass($request->Model->getClass());
         $input = $request->all();
         $model = $this->setData('model',new $class($input));
 

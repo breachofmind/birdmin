@@ -4,6 +4,7 @@ namespace Birdmin\Support;
 
 use Birdmin\Input;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Routing\Matching\SchemeValidator;
 
 class FieldBlueprint
 {
@@ -22,6 +23,7 @@ class FieldBlueprint
     const TITLE     = 9;
     const DATE      = 10;
     const TIMESTAMP = 11;
+    const FLOAT = 12;
 
 
     /**
@@ -95,6 +97,9 @@ class FieldBlueprint
      */
     public $args;
 
+
+    protected $schema;
+
     /**
      * Fields that should not be fillable.
      * @var array
@@ -126,8 +131,8 @@ class FieldBlueprint
      */
     public function __construct($name,$type,$args, ModelBlueprint $parent=null)
     {
-        if (empty(FieldBlueprint::$fieldSetup)) {
-            FieldBlueprint::boot();
+        if (empty(static::$fieldSetup)) {
+            static::boot();
         }
         $this->name = $name;
         $this->type = $type;
@@ -212,6 +217,14 @@ class FieldBlueprint
         return $this->name;
     }
 
+    /**
+     * Return the schema for this column.
+     * @return mixed
+     */
+    public function getSchema()
+    {
+        return $this->schema;
+    }
 
     /**
      * Create a reference to an input model.
@@ -220,11 +233,12 @@ class FieldBlueprint
      * @param $priority int
      * @return $this
      */
-    public function withInput($label, $type, $priority=0)
+    public function withInput($label, $type, $priority=0,$options=null)
     {
         $this->label = $label;
         $this->input = $type;
         $this->priority = $priority;
+        $this->options = $options;
 
         return $this;
     }
@@ -274,9 +288,9 @@ class FieldBlueprint
     /**
      * Run the schema function.
      * @param Blueprint $table
-     * @return null
+     * @return Blueprint
      */
-    public function schema(Blueprint $table)
+    public function createSchema(Blueprint $table)
     {
         $callbacks = static::$fieldSetup;
         $callback = array_key_exists($this->type, $callbacks) ? $callbacks[$this->type] : null;
@@ -284,7 +298,13 @@ class FieldBlueprint
         if (! is_callable($callback)) {
             return null;
         }
-        return $callback($table,$this);
+
+        $this->schema = $callback($table,$this);
+        if ($this->unique) {
+            $this->schema->unique();
+        }
+
+        return $this->schema;
     }
 
     /**
@@ -307,47 +327,55 @@ class FieldBlueprint
     {
         $defaults = [
             static::PRIMARY => function(Blueprint $table, FieldBlueprint $field) {
-                $table->increments($field->getName());
+                return $table->increments($field->getName());
             },
 
             static::UID => function(Blueprint $table, FieldBlueprint $field) {
-                $table->string($field->getName(), 32);
+                return $table->string($field->getName(), 32);
             },
 
             static::TEXT => function(Blueprint $table, FieldBlueprint $field) {
-                $table->text($field->getName());
+                return $table->text($field->getName());
             },
 
             static::STRING => function(Blueprint $table, FieldBlueprint $field) {
-                $table->string($field->getName(), $field->arg(0,500));
+                return $table->string($field->getName(), $field->arg(0,500));
             },
 
             static::REFERENCE => function(Blueprint $table, FieldBlueprint $field) {
-                $table->integer($field->getName())->unsigned()->references($field->arg(0))->on($field->arg(1));
+                return $table->integer($field->getName())->unsigned()->references($field->arg(0))->on($field->arg(1));
             },
 
             static::STATUS => function(Blueprint $table, FieldBlueprint $field) {
-                $table->string($field->getName(),30)->default('draft');
+                return $table->string($field->getName(),30)->default('draft');
             },
 
             static::SLUG => function(Blueprint $table, FieldBlueprint $field) {
-                $table->string($field->getName(),200)->index();
+                return $table->string($field->getName(),200)->index();
             },
 
             static::INTEGER => function(Blueprint $table, FieldBlueprint $field) {
-                $table->integer($field->getName());
+                return$table->integer($field->getName());
             },
 
             static::TITLE => function(Blueprint $table, FieldBlueprint $field) {
-                $table->string($field->getName(), 300);
+                $column = $table->string($field->getName(), 300);
+                if ($field->input == Input::EMAIL) {
+                    $column->index();
+                }
+                return $column;
             },
 
             static::DATE => function(Blueprint $table, FieldBlueprint $field) {
-                $table->date($field->getName());
+                return $table->date($field->getName());
             },
 
             static::TIMESTAMP => function(Blueprint $table, FieldBlueprint $field) {
-                $table->timestamp($field->getName());
+                return $table->timestamp($field->getName());
+            },
+
+            static::FLOAT => function(Blueprint $table, FieldBlueprint $field) {
+                return $table->decimal($field->getName(),8,$field->arg(0,2));
             }
         ];
 

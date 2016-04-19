@@ -16,11 +16,11 @@ class CreateCommerceModule extends Migration
      */
     public function up()
     {
-        ModelBlueprint::get(Product::class)->createSchema();
+        Product::blueprint()->createSchema();
 
-        ModelBlueprint::get(ProductVariation::class)->createSchema();
+        ProductVariation::blueprint()->createSchema();
 
-        ModelBlueprint::get(ProductBundle::class)->createSchema();
+        ProductBundle::blueprint()->createSchema();
     }
 
     /**
@@ -30,11 +30,10 @@ class CreateCommerceModule extends Migration
      */
     public function down()
     {
-        ModelBlueprint::get(ProductBundle::class)->dropSchema();
+        ProductBundle::blueprint()->dropSchema();
 
-        ModelBlueprint::get(ProductVariation::class)->dropSchema();
+        ProductVariation::blueprint()->dropSchema();
 
-        ModelBlueprint::get(Product::class)->dropSchema();
-
+        Product::blueprint()->dropSchema();
     }
 }

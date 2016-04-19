@@ -32,4 +32,5 @@ $leads = ModelBlueprint::create(Lead::class, 'leads')
 
     ->icon          ('users2')
     ->no_image      ('/cms/public/images/no-user.svg')
-    ->url           ('leads/{uid}');
+    ->url           ('leads/{uid}')
+    ->public        (false);

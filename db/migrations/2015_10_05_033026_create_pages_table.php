@@ -14,7 +14,7 @@ class CreatePagesTable extends Migration
      */
     public function up()
     {
-        ModelBlueprint::get(Page::class)->createSchema();
+        Page::blueprint()->createSchema();
     }
 
     /**
@@ -24,6 +24,6 @@ class CreatePagesTable extends Migration
      */
     public function down()
     {
-        ModelBlueprint::get(Page::class)->dropSchema();
+        Page::blueprint()->dropSchema();
     }
 }
