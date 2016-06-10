@@ -180,7 +180,7 @@ class Button extends Component
     public function action($action=null)
     {
         $object = $this->parent;
-        $form = $object->uid ? $object->uid : $object::singular(true);
+        $form = $object->uid ? $object->uid : $object::getLabel('slug');
         $this->setupAction($action);
         return $this->attribute('brd-submit', $form."Form");
     }

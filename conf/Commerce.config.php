@@ -106,6 +106,7 @@ $bundles = ModelBlueprint::create(ProductBundle::class, 'product_bundles')
     ->_attributes   ("Attributes",  Field::TEXT,    Input::HTML)
     ->_description  ("Description", Field::TEXT,    Input::HTML)
     ->_status       ("Status",      Field::STATUS,  Input::RADIO, ['values' => Input::$statusFields])
+    ->_redirect     ("Redirect URL",Field::TEXT,    Input::URL)
     ->useTimestamps ()
     ->useSoftDeletes()
 

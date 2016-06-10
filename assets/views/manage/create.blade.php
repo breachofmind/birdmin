@@ -4,7 +4,7 @@
 
 @include('cms::common.errors')
 
-<form id="{{$class::singular(true)."Form"}}" action="{{ cms_url($class::plural()."/create") }}" method="POST" enctype="multipart/form-data">
+<form id="{{$class::getLabel('slug')."Form"}}" action="{{ cms_url($class::getLabel('slug')."/create") }}" method="POST" enctype="multipart/form-data">
 
     <div class="input-form">
         {!! csrf_field() !!}
